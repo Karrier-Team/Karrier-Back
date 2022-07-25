@@ -1,14 +1,14 @@
 # Karrier-Main-Project
 
 - Team_Lead: MJY
+- Team_Design: LKH
 - Team_Planner: MJH
 - Team_Back: BJM, CJ
 - Team_Front: HHL, LSY
-- Team_Design: LKH
 
 
 ## Goal
-- 
+- We are a platform that solves students who have career concerns through the Carrier service.
 
 
 ## Spec
