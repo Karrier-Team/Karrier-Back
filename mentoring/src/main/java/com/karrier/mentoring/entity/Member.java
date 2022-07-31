@@ -35,7 +35,7 @@ public class Member {
         member.setEmail(memberFormDto.getEmail());
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
-        member.setRole(Role.USER);  // USER or MENTOR or ADMIN 
+        member.setRole(Role.USER);  // USER or MENTOR or ADMIN
         member.setCreateAccountDate((LocalDateTime.now()));
 
         return member;
