@@ -2,6 +2,7 @@ package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,6 +22,8 @@ import javax.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping(value = "/new")
@@ -61,4 +65,13 @@ public class MemberController {
         model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
         return "/member/memberLoginForm";
     }
+
+    @GetMapping(value = "/update-login/{email}")
+    public String updateLoginTime(@PathVariable("email") String email) {
+        Member member = memberRepository.findByEmail(email);
+        Member.updateRecentlyLoginDate(member);
+        memberService.updateLoginInfo(member);
+        return "redirect:/";
+    }
+
 }

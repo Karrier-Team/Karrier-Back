@@ -1,5 +1,6 @@
 package com.karrier.mentoring.config;
 
+import com.karrier.mentoring.handler.LoginSuccessfulHandler;
 import com.karrier.mentoring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -28,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")
                 .usernameParameter("email")
                 .failureUrl("/members/login/error")
+                .successHandler(new LoginSuccessfulHandler())
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
@@ -37,7 +41,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/", "/members/**",
                         "/item/**", "/images/**").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }
 
     @Override

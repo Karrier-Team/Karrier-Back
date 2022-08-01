@@ -40,4 +40,11 @@ public class Member {
 
         return member;
     }
+
+    public static Member updateRecentlyLoginDate(Member member) {
+
+        member.setRecentlyLoginDate(LocalDateTime.now());
+
+        return member;
+    }
 }
