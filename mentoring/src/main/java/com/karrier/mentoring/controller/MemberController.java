@@ -1,77 +1,156 @@
 package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
+import com.karrier.mentoring.dto.MemberManagePasswordDto;
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.UploadFile;
 import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.service.MemberService;
+import com.karrier.mentoring.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequestMapping("/members")
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
     private final MemberRepository memberRepository;
+
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping(value = "/new")
-    public String memberForm(Model model) {
-        model.addAttribute("memberFormDto", new MemberFormDto());
-        return "member/memberForm";
-    }
+    private final S3Uploader s3Uploader;
+
+    String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
 
     @PostMapping(value = "/new")
-    public String memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult, Model model) {
+    public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "member/memberForm";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
         }
 
         if (!memberFormDto.getPassword().equals(memberFormDto.getPasswordCheck())) {
-            bindingResult.rejectValue("passwordCheck", "noMatch", "비밀번호가 일치하지 않습니다.");
-            return "member/memberForm";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("password check error");
         }
 
         try {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
-            memberService.saveMember(member);
+            Member newMember = memberService.saveMember(member);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
         } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "member/memberForm";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate email");
         }
-
-        return "redirect:/";
-    }
-
-    @GetMapping(value = "/login")
-    public String loginMember() {
-        return "/member/memberLoginForm";
     }
 
     @GetMapping(value = "/login/error")
-    public String loginError(Model model) {
-        model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-        return "/member/memberLoginForm";
+    public ResponseEntity<String> loginError() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("wrong id or password");
     }
 
     @GetMapping(value = "/update-login/{email}")
-    public String updateLoginTime(@PathVariable("email") String email) {
+    public ResponseEntity<Member> updateLoginTime(@PathVariable("email") String email) {
         Member member = memberRepository.findByEmail(email);
-        Member.updateRecentlyLoginDate(member);
-        memberService.updateLoginInfo(member);
-        return "redirect:/";
+        Member updatedMember = Member.updateRecentlyLoginDate(member);
+        Member savedMember = memberService.modifyMember(updatedMember);
+        return ResponseEntity.status(HttpStatus.OK).body(savedMember);
     }
 
+    @PostMapping(value = "/manage/password")
+    public ResponseEntity<Object> mentorManagePassword(@Valid MemberManagePasswordDto memberManagePasswordDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+        }
+        
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        //DB에 저장된 패스워드 가져와서 사용자가 입력한 패스워드와 일치 확인
+        Member member = memberService.getMember(email);
+        if (!passwordEncoder.matches(memberManagePasswordDto.getOldPassword(), member.getPassword())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("current password match error");
+        }
+
+        //새 비밀번호와 비밀번호 확인 일치 체크
+        if (!memberManagePasswordDto.getNewPassword().equals(memberManagePasswordDto.getPasswordCheck())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("password check error");
+        }
+
+        //비밀번호 변경 후 저장
+        Member updatedMember = Member.updatePassword(member, memberManagePasswordDto, passwordEncoder);
+        Member savedMember = memberService.modifyMember(updatedMember);
+
+        return ResponseEntity.status(HttpStatus.OK).body(savedMember);
+    }
+
+    @GetMapping(value = "/manage/profile")
+    public ResponseEntity<String> modifyProfile() {
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        Member member = memberRepository.findByEmail(email);
+        String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
+
+        return ResponseEntity.status(HttpStatus.OK).body(profileImageUrl);
+    }
+
+    @PostMapping(value = "/manage/profile")
+    public ResponseEntity<Object> modifyProfile(@RequestParam MultipartFile profileImageFile, @RequestParam String nickname) throws IOException {
+
+        //프로필 사진이 없을 때
+        if (profileImageFile.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("profile image empty error");
+        }
+
+        //프로필 사진이 없을 때
+        if (nickname.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("nickname empty error");
+        }
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        //프로필 사진 저장을 위해 유저 정보 가져오기
+        Member member = memberService.getMember(email);
+
+        //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
+        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile_image", member.getProfileImage().getStoreFileName());
+
+        //member 프로필 사진 정보 수정
+        Member updatedMember = Member.modifyProfile(member, profileImage, nickname);
+
+        //DB에 저장
+        Member savedMember = memberService.modifyMember(updatedMember);
+
+        return ResponseEntity.status(HttpStatus.OK).body(savedMember);
+    }
+
+    @PostMapping(value = "/manage/nickname")
+    public ResponseEntity<String> modifyProfile(@RequestParam String nickname) {
+
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(nickname)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
+        }
+        //중복이 아닐 경우
+        return ResponseEntity.status(HttpStatus.OK).body(nickname);
+    }
 }

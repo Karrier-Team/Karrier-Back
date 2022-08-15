@@ -1,6 +1,9 @@
 package com.karrier.mentoring.entity;
 
 import com.karrier.mentoring.dto.MentorFormDto;
+import com.karrier.mentoring.dto.MentorManageBasicDto;
+import com.karrier.mentoring.dto.MentorManageContactDto;
+import com.karrier.mentoring.dto.MentorManageDetailDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -63,13 +66,6 @@ public class Mentor {
     })
     private UploadFile studentInfo;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="uploadFileName", column = @Column(name="PROFILE_IMAGE_UPLOAD_NAME")),
-            @AttributeOverride(name="storeFileName", column = @Column(name="PROFILE_IMAGE_STORE_NAME")),
-    })
-    private UploadFile profileImage;
-
     private String answerPercent;
 
     private String answerNo;
@@ -78,10 +74,7 @@ public class Mentor {
 
     private LocalDateTime submitDate;
 
-    public static Mentor createMentor(MentorFormDto mentorFormDto, UploadFile studentInfo, UploadFile profileImage) {
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails) principal).getUsername();
+    public static Mentor createMentor(MentorFormDto mentorFormDto, UploadFile studentInfo, String email) {
 
         Mentor mentor = new Mentor();
 
@@ -105,8 +98,43 @@ public class Mentor {
         mentor.setCountry(mentorFormDto.getCountry());
         mentor.setCity(mentorFormDto.getCity());
         mentor.setStudentInfo(studentInfo);
-        mentor.setProfileImage(profileImage);
         mentor.setSubmitDate(LocalDateTime.now());
+
+        return mentor;
+    }
+
+    public static Mentor updateMentorBasic(Mentor mentor, MentorManageBasicDto mentorManageBasicDto) {
+
+        mentor.setName(mentorManageBasicDto.getName());
+        mentor.setGender(mentorManageBasicDto.getGender());
+        mentor.setUniversity(mentorManageBasicDto.getUniversity());
+        mentor.setCollege(mentorManageBasicDto.getCollege());
+        mentor.setMajor(mentorManageBasicDto.getMajor());
+        mentor.setStudentId(mentorManageBasicDto.getStudentId());
+        mentor.setYear(Integer.parseInt(mentorManageBasicDto.getYear()));
+
+        return mentor;
+    }
+
+    public static Mentor updateMentorDetail(Mentor mentor, MentorManageDetailDto mentorManageDetailDto) {
+
+        mentor.setIntroduce(mentorManageDetailDto.getIntroduce());
+        mentor.setClub(mentorManageDetailDto.getClub());
+        mentor.setContest(mentorManageDetailDto.getContest());
+        mentor.setExternalActivity(mentorManageDetailDto.getExternalActivity());
+        mentor.setIntern(mentorManageDetailDto.getIntern());
+        mentor.setNaverBlogAddress(mentorManageDetailDto.getNaverBlogAddress());
+        mentor.setFacebookAddress(mentorManageDetailDto.getFacebookAddress());
+        mentor.setInstarAddress(mentorManageDetailDto.getInstarAddress());
+
+        return mentor;
+    }
+
+    public static Mentor updateMentorContact(Mentor mentor, MentorManageContactDto mentorManageContactDto) {
+
+        mentor.setPhoneNo(mentorManageContactDto.getPhoneNo());
+        mentor.setCountry(mentorManageContactDto.getCountry());
+        mentor.setCity(mentorManageContactDto.getCity());
 
         return mentor;
     }

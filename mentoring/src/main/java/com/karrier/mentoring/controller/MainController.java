@@ -1,5 +1,7 @@
 package com.karrier.mentoring.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -7,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping(value = "/")
-    public String main() {
-        return "main";
+    public ResponseEntity<Object> main() {
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }
