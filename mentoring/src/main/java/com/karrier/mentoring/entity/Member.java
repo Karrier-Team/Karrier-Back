@@ -27,7 +27,7 @@ public class Member {
 
     private String nickname;
 
-    private boolean activate;
+    private boolean sleep;
 
     private boolean alarm;
 

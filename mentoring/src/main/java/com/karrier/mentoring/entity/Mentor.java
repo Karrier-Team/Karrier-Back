@@ -70,7 +70,7 @@ public class Mentor {
 
     private String answerNo;
 
-    private boolean alarm;
+    private int fallow_no;
 
     private LocalDateTime submitDate;
 
