@@ -74,6 +74,7 @@ public class Mentor {
 
     private LocalDateTime submitDate;
 
+    //멘토 회원가입시
     public static Mentor createMentor(MentorFormDto mentorFormDto, UploadFile studentInfo, String email) {
 
         Mentor mentor = new Mentor();
@@ -103,6 +104,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 기본정보 변경시
     public static Mentor updateMentorBasic(Mentor mentor, MentorManageBasicDto mentorManageBasicDto) {
 
         mentor.setName(mentorManageBasicDto.getName());
@@ -116,6 +118,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 상세정보 변경시
     public static Mentor updateMentorDetail(Mentor mentor, MentorManageDetailDto mentorManageDetailDto) {
 
         mentor.setIntroduce(mentorManageDetailDto.getIntroduce());
@@ -130,6 +133,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 연락처 변경시
     public static Mentor updateMentorContact(Mentor mentor, MentorManageContactDto mentorManageContactDto) {
 
         mentor.setPhoneNo(mentorManageContactDto.getPhoneNo());

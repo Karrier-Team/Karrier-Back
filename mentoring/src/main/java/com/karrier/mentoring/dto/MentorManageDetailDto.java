@@ -27,6 +27,7 @@ public class MentorManageDetailDto {
 
     private String instarAddress;
 
+    //멘토 전체 정보에서 상세정보 부분만 보내기
     public static MentorManageDetailDto createMentorManageDetailDto(Mentor mentor) {
 
         MentorManageDetailDto mentorManageDetailDto = new MentorManageDetailDto();

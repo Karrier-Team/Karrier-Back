@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,6 +19,7 @@ public class MentorService {
 
     private final MemberRepository memberRepository;
 
+    //멘토 저장
     @Transactional
     public ArrayList<Object> createMentor(Mentor mentor, Member member) {
 
@@ -30,11 +30,13 @@ public class MentorService {
         return objects;
     }
 
+    //멘토 정보 수정
     @Transactional
     public Mentor updateMentor(Mentor mentor) {
         return mentorRepository.save(mentor);
     }
 
+    //멘토 정보 가져오기
     public Mentor getMentor(String email) {
 
         return mentorRepository.findByEmail(email);

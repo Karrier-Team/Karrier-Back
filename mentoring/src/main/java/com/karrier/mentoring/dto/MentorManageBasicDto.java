@@ -31,6 +31,7 @@ public class MentorManageBasicDto {
     @NotBlank(message = "학년은 필수 입력 값입니다.")
     private String year;
 
+    //멘토 전체 정보에서 기본 정보 부분만 보내기
     public static MentorManageBasicDto createMentorManageBasicDto(Mentor mentor) {
 
         MentorManageBasicDto mentorManageBasicDto = new MentorManageBasicDto();
