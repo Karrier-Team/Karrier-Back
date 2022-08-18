@@ -24,7 +24,6 @@ import java.util.ArrayList;
 @RequestMapping("/mentors")
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class MentorController {
 
     private final MentorService mentorService;
