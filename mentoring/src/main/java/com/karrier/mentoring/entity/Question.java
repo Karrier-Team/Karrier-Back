@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Question")
@@ -31,7 +32,13 @@ public class Question implements Serializable {
 
     private String modifyDate;
 
-    private long likeNo;
+    private long questionLikeNo;
+
+    private long answerLikeNo;
+
+    private String answer;
+
+    private LocalDateTime answerDate;
 
     private boolean solve;
 }

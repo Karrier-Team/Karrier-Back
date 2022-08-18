@@ -1,6 +1,6 @@
 package com.karrier.mentoring.entity;
 
-import com.karrier.mentoring.key.AnswerKey;
+import com.karrier.mentoring.key.QuestionCommentKey;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +14,8 @@ import java.io.Serializable;
 @Table(name = "Answer")
 @Getter
 @Setter
-@IdClass(AnswerKey.class)
-public class Answer implements Serializable {
+@IdClass(QuestionCommentKey.class)
+public class QuestionComment implements Serializable {
 
     @Id
     private long programNo;
@@ -24,11 +24,11 @@ public class Answer implements Serializable {
     private long questionNo;
 
     @Id
-    private long answerNo;
+    private long commentNo;
 
-    private String answerEmail;
+    private String commentEmail;
 
-    private String answerContent;
+    private String commentContent;
 
-    private String answerDate;
+    private String commentDate;
 }

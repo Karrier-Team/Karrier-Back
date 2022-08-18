@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerKey implements Serializable {
+public class QuestionCommentKey implements Serializable {
 
     private long programNo;
 
