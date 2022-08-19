@@ -2,12 +2,10 @@ package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
-import com.karrier.mentoring.dto.ParticipationStudentFormDto;
-import com.karrier.mentoring.entity.*;
-import com.karrier.mentoring.repository.*;
-import com.karrier.mentoring.service.FollowService;
+import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.UploadFile;
+import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.service.MemberService;
-import com.karrier.mentoring.service.ParticipationStudentService;
 import com.karrier.mentoring.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequestMapping("/members")
 @RestController
@@ -31,63 +27,63 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    private final FollowService followService;
-
-    private final ParticipationStudentService participationStudentService;
-
-    private final ParticipationStudentRepository participationStudentRepository;
-
-    private final FollowRepository followRepository;
-
     private final MemberRepository memberRepository;
-
-    private final MentorRepository mentorRepository;
-
-    private final ProgramRepository programRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     private final S3Uploader s3Uploader;
 
-    String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
+    private static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
 
+    //회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
 
+        //빈칸 있을 경우
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
         }
 
+        //비밀번호와 비밀번호 확인이 일치하지 않을 경우
         if (!memberFormDto.getPassword().equals(memberFormDto.getPasswordCheck())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("password check error");
         }
 
-        try {
+        try { // member 형태로 변환 후 데이터베이스에 member 정보 저장
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             Member newMember = memberService.saveMember(member);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException e) { //이미 가입된 이메일일 경우
             return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate email");
         }
     }
 
-    @GetMapping(value = "/login/error")
+    //로그인시 아이디 패스워드가 틀릴경우
+    @GetMapping(value = "/login/error") 
     public ResponseEntity<String> loginError() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("wrong id or password");
     }
 
+    //유저가 로그인시 로그인 시간 저장
     @GetMapping(value = "/update-login/{email}")
     public ResponseEntity<Member> updateLoginTime(@PathVariable("email") String email) {
+
+        //로그인 한 회원 정보 찾기
         Member member = memberRepository.findByEmail(email);
+        
+        //로그인 날짜 업데이트 후 저장
         Member updatedMember = Member.updateRecentlyLoginDate(member);
         Member savedMember = memberService.modifyMember(updatedMember);
+
         return ResponseEntity.status(HttpStatus.OK).body(savedMember);
     }
 
+    //비밀번호 변경 요청시
     @PostMapping(value = "/manage/password")
     public ResponseEntity<Object> mentorManagePassword(@Valid MemberManagePasswordDto memberManagePasswordDto, BindingResult bindingResult) {
 
+        //빈칸있을 경우
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
         }
@@ -114,6 +110,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(savedMember);
     }
 
+    //프로필 변경 화면 띄웠을 경우 이전 프로필 사진 보여주기 위해
     @GetMapping(value = "/manage/profile")
     public ResponseEntity<String> modifyProfile() {
 
@@ -121,12 +118,14 @@ public class MemberController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
+        //해당 member 정보에서 S3에 저장된 파일 이름 가져와서 url 전송
         Member member = memberRepository.findByEmail(email);
         String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
         return ResponseEntity.status(HttpStatus.OK).body(profileImageUrl);
     }
 
+    //프로필 변경 요청시
     @PostMapping(value = "/manage/profile")
     public ResponseEntity<Object> modifyProfile(@RequestParam MultipartFile profileImageFile, @RequestParam String nickname) throws IOException {
 
@@ -135,7 +134,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("profile image empty error");
         }
 
-        //프로필 사진이 없을 때
+        //닉네임이 없을 때
         if (nickname.isEmpty()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("nickname empty error");
         }
@@ -150,7 +149,7 @@ public class MemberController {
         //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
         UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile_image", member.getProfileImage().getStoreFileName());
 
-        //member 프로필 사진 정보 수정
+        //member 프로필 사진 이름 정보 수정
         Member updatedMember = Member.modifyProfile(member, profileImage, nickname);
 
         //DB에 저장
@@ -168,71 +167,5 @@ public class MemberController {
         }
         //중복이 아닐 경우
         return ResponseEntity.status(HttpStatus.OK).body(nickname);
-    }
-
-    @GetMapping(value = "/viewPrograms/{major}")
-    public ResponseEntity<List<Program>> viewMajorPrograms(@PathVariable("major") String major){
-        List<String> emails = mentorRepository.findEmailByMajor(major);
-        List<Program> programs = programRepository.findAllByEmailInOrderByLikeCount(emails);
-
-        return ResponseEntity.status(HttpStatus.OK).body(programs);
-    }
-
-    @GetMapping(value = "/viewPrograms/{programNo}")
-    public ResponseEntity<Object> viewProgram(@PathVariable("programNo") Long programNo){
-        Program program = programRepository.findByProgramNo(programNo);
-        Mentor mentor = mentorRepository.findByEmail(program.getEmail());
-        List<String> emails = participationStudentRepository.findAllByProgramNo(programNo);
-        List<Member> members = memberRepository.findAllByEmailIn(emails);
-        //질의 응답과 수강 후기 추가해야 함
-
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.add(program);
-        objects.add(mentor);
-        objects.add(members);
-
-        return ResponseEntity.status(HttpStatus.OK).body(objects);
-    }
-
-    @PostMapping(value = "/viewPrograms/{programNo}/participate")
-    public ResponseEntity<Object> participateProgram(@PathVariable("programNo") Long programNo, @Valid ParticipationStudentFormDto participationStudentFormDto, BindingResult bindingResult) throws IOException {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
-        }
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails) principal).getUsername();
-
-        ParticipationStudent participationStudent = ParticipationStudent.createParticipationStudent(participationStudentFormDto, email, programNo);
-
-        ParticipationStudent newParticipationStudent = participationStudentService.createParticipationStudent(participationStudent);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newParticipationStudent);
-    }
-
-    @PostMapping(value = "/viewPrograms/{programNo}/follow")
-    public ResponseEntity<Follow> followMentor(@PathVariable("programNo") Long programNo){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails) principal).getUsername();
-
-        String mentorEmail = programRepository.findByProgramNo(programNo).getEmail();
-        Mentor mentor = mentorRepository.findByEmail(mentorEmail);
-
-
-        if(followRepository. findByMemberEmailAndMentorEmail(email, mentorEmail).equals(null)){
-            Follow follow = Follow.createFollow(email, mentorEmail);
-
-            Follow newFollow = followService.createFollow(follow);
-
-            mentor.setFollowNo(mentor.getFollowNo()+1);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(newFollow);
-        }
-        else{
-            followService.deleteFollow(email, mentorEmail);
-            mentor.setFollowNo(mentor.getFollowNo()-1);
-
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
     }
 }

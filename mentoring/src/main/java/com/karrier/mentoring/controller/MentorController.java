@@ -24,7 +24,6 @@ import java.util.ArrayList;
 @RequestMapping("/mentors")
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class MentorController {
 
     private final MentorService mentorService;
@@ -33,9 +32,11 @@ public class MentorController {
 
     private final S3Uploader s3Uploader;
 
+    //멘토 회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> mentorForm(@Valid MentorFormDto mentorFormDto, BindingResult bindingResult, Model model) throws IOException {
 
+        //필수입력 값을 입력하지 않은 경우
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
         }
@@ -50,6 +51,7 @@ public class MentorController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("student info file empty error");
         }
 
+        //유저 정보 가져오기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
@@ -70,6 +72,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(objects);
     }
 
+    //멘토관리 - 기본정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/basic")
     public ResponseEntity<MentorManageBasicDto> mentorManageBasic(){
 
@@ -84,6 +87,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(mentorManageBasicDto);
     }
 
+    //멘토관리 - 기본정보 변경 요청시
     @PostMapping(value = "/manage/basic")
     public ResponseEntity<Object> mentorManageBasic(@Valid MentorManageBasicDto mentorManageBasicDto, BindingResult bindingResult){
 
@@ -105,6 +109,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedMentorInfo);
     }
 
+    //멘토관리 - 상세정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/detail")
     public ResponseEntity<MentorManageDetailDto> mentorManageDetail(){
 
@@ -119,6 +124,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(mentorManageDetailDto);
     }
 
+    //멘토관리 - 상세정보 변경 요청시
     @PostMapping(value = "/manage/detail")
     public ResponseEntity<Object> mentorManageDetail(@Valid MentorManageDetailDto mentorManageDetailDto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
@@ -139,6 +145,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedMentorInfo);
     }
 
+    //멘토관리 - 연락 정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/contact")
     public ResponseEntity<MentorManageContactDto> mentorManageContact(){
 
@@ -153,6 +160,7 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(mentorManageContactDto);
     }
 
+    //멘토관리 - 연락 정보 변경 요청시
     @PostMapping(value = "/manage/contact")
     public ResponseEntity<Object> mentorManageContact(@Valid MentorManageContactDto mentorManageContactDto, BindingResult bindingResult){
 

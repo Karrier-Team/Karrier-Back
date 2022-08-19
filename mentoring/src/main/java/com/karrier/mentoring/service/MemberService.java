@@ -17,6 +17,7 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
+    //멤버 저장
     @Transactional
     public Member saveMember(Member member) {
 
@@ -24,15 +25,18 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member);
     }
 
+    //멤버 수정
     @Transactional
     public Member modifyMember(Member member) {
         return memberRepository.save(member);
     }
 
+    //멤버 정보 가져오기
     public Member getMember(String email) {
         return memberRepository.findByEmail(email);
     }
 
+    //닉네임 중복 체크
     public boolean checkDuplicateNickName(String nickname) {
 
         Member findMember = memberRepository.findByNickname(nickname);
@@ -44,6 +48,7 @@ public class MemberService implements UserDetailsService {
         return false;
     }
 
+    //이메일 중복 체크
     private void validateDuplicateMember(Member member) {
 
         Member findMember = memberRepository.findByEmail(member.getEmail());
