@@ -1,6 +1,8 @@
 package com.karrier.mentoring.service;
 
+import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.Review;
 import com.karrier.mentoring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -9,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

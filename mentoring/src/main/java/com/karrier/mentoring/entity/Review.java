@@ -38,8 +38,6 @@ public class Review implements Serializable {
 
     private long reviewLikeNo;
 
-    private long commentLikeNo;
-
     private String comment;
 
     private float star;
