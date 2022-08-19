@@ -26,7 +26,7 @@ public class CommunityQuestionController {
 
     //해당 프로그램 전체 질문 리스트 띄우기
     @GetMapping("/question")
-    public ResponseEntity<Object> reviewList(@RequestParam("programNo") String programNo) {
+    public ResponseEntity<Object> reviewList(@RequestParam("programNo") long programNo) {
         // 구현예정
 
         return ResponseEntity.status(HttpStatus.OK).body(null);

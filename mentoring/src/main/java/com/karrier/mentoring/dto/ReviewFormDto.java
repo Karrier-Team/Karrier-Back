@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class ReviewFormDto {
 
-    @NotBlank
     private long programNo;
 
     @NotBlank
@@ -18,6 +17,5 @@ public class ReviewFormDto {
     @NotBlank
     private String content;
 
-    @NotBlank
     private float star;
 }

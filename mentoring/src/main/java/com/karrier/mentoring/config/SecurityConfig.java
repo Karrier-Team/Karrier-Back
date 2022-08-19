@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .mvcMatchers("/mentors/new").hasRole("USER")
+                .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
                 .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
                 .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
                 .mvcMatchers("/", "/members/**").permitAll()

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Answer")
+@Table(name = "QuestionComment")
 @Getter
 @Setter
 @IdClass(QuestionCommentKey.class)

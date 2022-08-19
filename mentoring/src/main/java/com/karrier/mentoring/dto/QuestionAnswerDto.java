@@ -4,10 +4,8 @@ import javax.validation.constraints.NotBlank;
 
 public class QuestionAnswerDto {
 
-    @NotBlank
     private long programNo;
 
-    @NotBlank
     private long questionNo;
 
     @NotBlank

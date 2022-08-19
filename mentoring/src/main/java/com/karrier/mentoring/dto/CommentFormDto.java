@@ -9,10 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class CommentFormDto {
 
-    @NotBlank
     private long programNo;
 
-    @NotBlank
     private long reviewNo;
 
     @NotBlank
