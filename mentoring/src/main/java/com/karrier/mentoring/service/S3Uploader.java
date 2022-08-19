@@ -33,6 +33,26 @@ public class S3Uploader {
         return upload(uploadFile, dirName);
     }
 
+    public UploadFile modifyProfileImage(MultipartFile multipartFile, String dirName, String profileImageStoreName) throws IOException {
+
+        //이전 파일 삭제
+        deleteProfileImage(profileImageStoreName);
+
+        //새로운 파일 저장
+        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
+                .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
+
+        return upload(uploadFile, dirName);
+    }
+
+    private void deleteProfileImage(String profileImageStoreName) {
+        try{
+            amazonS3Client.deleteObject(bucket+"/profile_image",profileImageStoreName );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     // S3로 파일 업로드하기
     private UploadFile upload(File uploadFile, String dirName) {
         String storeName = UUID.randomUUID() + uploadFile.getName();

@@ -11,23 +11,44 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
+    //멤버 저장
+    @Transactional
     public Member saveMember(Member member) {
 
         validateDuplicateMember(member);
         return memberRepository.save(member);
-
     }
 
-    public Member updateLoginInfo(Member member) {
+    //멤버 수정
+    @Transactional
+    public Member modifyMember(Member member) {
         return memberRepository.save(member);
     }
 
+    //멤버 정보 가져오기
+    public Member getMember(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    //닉네임 중복 체크
+    public boolean checkDuplicateNickName(String nickname) {
+
+        Member findMember = memberRepository.findByNickname(nickname);
+        //이미 존재하는 닉네임일 경우
+        if (findMember != null) {
+            return true;
+        }
+        //중복이 아닐 경우
+        return false;
+    }
+
+    //이메일 중복 체크
     private void validateDuplicateMember(Member member) {
 
         Member findMember = memberRepository.findByEmail(member.getEmail());
