@@ -92,7 +92,7 @@ public class CommunityReviewController {
         String email = ((UserDetails) principal).getUsername();
 
         ReviewLike reviewLike = communityReviewService.findReviewLike(programNo, reviewNo, email);
-        if (reviewLike != null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
+        if (reviewLike != null) { //이미 좋아요 한 회원일 경우
             return ResponseEntity.status(HttpStatus.CONFLICT).body("already like error");
         }
 
