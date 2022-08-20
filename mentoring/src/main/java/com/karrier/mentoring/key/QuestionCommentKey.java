@@ -14,6 +14,4 @@ public class QuestionCommentKey implements Serializable {
     private long programNo;
 
     private long questionNo;
-
-    private long commentNo;
 }

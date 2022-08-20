@@ -1,6 +1,6 @@
 package com.karrier.mentoring.entity;
 
-import com.karrier.mentoring.dto.CommentFormDto;
+import com.karrier.mentoring.dto.ReviewCommentFormDto;
 import com.karrier.mentoring.dto.ReviewFormDto;
 import com.karrier.mentoring.key.ReviewKey;
 import lombok.Getter;
@@ -58,9 +58,9 @@ public class Review implements Serializable {
     }
 
     //기존 review에 댓글 정보 추가해서 반환
-    public static Review createComment(CommentFormDto commentFormDto, Review review) {
+    public static Review createComment(ReviewCommentFormDto reviewCommentFormDto, Review review) {
 
-        review.setComment(commentFormDto.getComment());
+        review.setComment(reviewCommentFormDto.getComment());
         review.setCommentDate(LocalDateTime.now());
 
         return review;

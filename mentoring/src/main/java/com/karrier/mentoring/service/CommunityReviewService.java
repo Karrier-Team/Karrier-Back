@@ -1,15 +1,15 @@
 package com.karrier.mentoring.service;
 
-import com.karrier.mentoring.dto.CommentFormDto;
 import com.karrier.mentoring.dto.ReviewDetailDto;
 import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.entity.Review;
 import com.karrier.mentoring.entity.ReviewLike;
-import com.karrier.mentoring.repository.MemberRepository;
-import com.karrier.mentoring.repository.ReviewLikeRepository;
-import com.karrier.mentoring.repository.ReviewRepository;
+import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +27,17 @@ public class CommunityReviewService {
 
     private final MemberRepository memberRepository;
 
+    private final MentorRepository mentorRepository;
+
+    private final ProgramRepository programRepository;
+
     //새로운 수강후기 등록
     @Transactional
     public Review saveReview(Review review) {
 
         List<Review> reviewList = reviewRepository.findByProgramNo(review.getProgramNo());
 
-        long max = 1;
+        long max = 0;
         if (reviewList != null) { // 수강후기 번호 자동 생성
             for (Review review1 : reviewList) {
                 if (review1.getReviewNo() > max) {
@@ -55,16 +59,47 @@ public class CommunityReviewService {
     public List<ReviewListDto> findReviewList(long programNo) {
 
         List<Review> reviewList = reviewRepository.findByProgramNo(programNo);
+        if (reviewList.size() == 0) {
+            return null;
+        }
 
-        /**
-         * 프로그램 이름 찾는 코드 추가예정
-         */
+        ArrayList<ReviewListDto> reviewListDto = getReviewListDtos(programNo, reviewList);
+        return reviewListDto;
+    }
 
+    //한 프로그램내의 수강후기 키워드로 검색
+    public List<ReviewListDto> ReviewSearchList(long programNo, String category, String keyword) {
+
+        List<Review> reviewList = new ArrayList<>();
+
+        if (category.equals("후기제목")) {
+            reviewList = reviewRepository.findByProgramNoAndTitleContaining(programNo, keyword);
+        }
+        else if (category.equals("후기내용")) {
+            reviewList = reviewRepository.findByProgramNoAndContentContaining(programNo, keyword);
+        }
+        else if (category.equals("닉네임")) {
+            List<Member> memberList = memberRepository.findByNicknameContaining(keyword); //해당 닉네임의 member 정보 찾기 (이메일을 찾기 위해)
+            for (Member member : memberList) {
+                reviewList.addAll(reviewRepository.findByProgramNoAndEmail(programNo, member.getEmail()));//이메일과 프로그램 번호로 리뷰찾아서 리스트에 추가
+            }
+        }
+        if (reviewList.size() == 0) {
+            return null;
+        }
+        ArrayList<ReviewListDto> reviewListDto = getReviewListDtos(programNo, reviewList);
+
+        return reviewListDto;
+    }
+
+    //리뷰리스트에서 ReviewListDto로 변환
+    private ArrayList<ReviewListDto> getReviewListDtos(long programNo, List<Review> reviewList) {
+
+        String title = programRepository.findByProgramNo(programNo).getTitle();//프로그램 이름 찾기
         ArrayList<ReviewListDto> reviewListDto = new ArrayList<>();
-
         for (Review review : reviewList) {
             String nickname = memberRepository.findByEmail(review.getEmail()).getNickname(); //닉네임 찾기
-            reviewListDto.add(ReviewListDto.createReviewListDto(review, "프로그램 이름", nickname));
+            reviewListDto.add(ReviewListDto.createReviewListDto(review, title, nickname));
         }
         return reviewListDto;
     }
@@ -74,15 +109,15 @@ public class CommunityReviewService {
 
         Review review = reviewRepository.findByProgramNoAndReviewNo(programNo, reviewNo);
 
-        /**
-         * 프로그램 이름 찾는 코드 추가예정
-         */
-
+        Program program = programRepository.findByProgramNo(programNo);//프로그램 정보 찾기
         String writerNickname = memberRepository.findByEmail(review.getEmail()).getNickname(); //작성자 닉네임 찾기
-        /**
-         * 프로그램 만든 멘토 이름 찾는 코드 추가 예정
-         */
-        return ReviewDetailDto.createReviewDetailDto(review, "프로그램 이름", writerNickname, "멘토이름");
+        String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+        
+        return ReviewDetailDto.createReviewDetailDto(review, program, writerNickname, name, email);
     }
 
     @Transactional
@@ -99,19 +134,18 @@ public class CommunityReviewService {
     //리뷰 댓글 삭제
     @Transactional
     public Review deleteComment(long programNo, long reviewNo) {
-        Review review = findReview(programNo, reviewNo); //해당리뷰 찾기
-        if (review == null) {
-            return null;
-        }
+        Review review = findReview(programNo, reviewNo);
         review.setComment(null);
         review.setCommentDate(null);
         return reviewRepository.save(review);
     }
 
+    //리뷰 좋아요 정보 찾기 (좋아요 눌렀는지 확인하기 위해)
     public ReviewLike findReviewLike(long programNo, long reviewNo, String email) {
         return reviewLikeRepository.findByProgramNoAndReviewNoAndEmail(programNo, reviewNo, email);
     }
 
+    //좋아요1 증가와 누가 좋아요 눌렀는지 저장
     @Transactional
     public ArrayList<Object> likeReview(Review review, ReviewLike reviewLike) {
 

@@ -1,11 +1,13 @@
 package com.karrier.mentoring.controller;
 
-import com.karrier.mentoring.dto.CommentFormDto;
+import com.karrier.mentoring.dto.ReviewCommentFormDto;
 import com.karrier.mentoring.dto.ReviewDetailDto;
 import com.karrier.mentoring.dto.ReviewFormDto;
 import com.karrier.mentoring.dto.ReviewListDto;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.entity.Review;
 import com.karrier.mentoring.entity.ReviewLike;
+import com.karrier.mentoring.repository.ProgramRepository;
 import com.karrier.mentoring.service.CommunityReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ public class CommunityReviewController {
 
     private final CommunityReviewService communityReviewService;
 
+    private final ProgramRepository programRepository;
+
     //전체 프로그램 리스트 띄우기
     @GetMapping("/reviews")
     public ResponseEntity<Object> programList(@RequestParam("department") String department) {
@@ -36,10 +40,26 @@ public class CommunityReviewController {
 
     //해당 프로그램 전체 리뷰 리스트 띄우기
     @GetMapping("/review")
-    public ResponseEntity<List<ReviewListDto>> reviewList(@RequestParam("programNo") long programNo) {
+    public ResponseEntity<Object> reviewList(@RequestParam("programNo") long programNo) {
 
         List<ReviewListDto> reviewList = communityReviewService.findReviewList(programNo);
+        if (reviewList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review error");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(reviewList);
+    }
 
+    //해당 프로그램 전체 리뷰 리스트에서 검색할 경우 (후기제목, 후기내용, 닉네임)
+    @GetMapping("/review/search")
+    public ResponseEntity<Object> reviewList(@RequestParam("programNo") long programNo, @RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+
+        if (programNo == 0 || category.isEmpty() || keyword.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+        }
+        List<ReviewListDto> reviewList = communityReviewService.ReviewSearchList(programNo, category, keyword);
+        if (reviewList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review error");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(reviewList);
     }
 
@@ -77,18 +97,26 @@ public class CommunityReviewController {
 
     //수강후기 댓글 등록 요청
     @PostMapping("/review/comment/new")
-    public ResponseEntity<Object> createComment(@Valid CommentFormDto commentFormDto, BindingResult bindingResult) {
+    public ResponseEntity<Object> createComment(@Valid ReviewCommentFormDto reviewCommentFormDto, BindingResult bindingResult) {
         //빈칸있을 경우
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
         }
-        Review review = communityReviewService.findReview(commentFormDto.getProgramNo(), commentFormDto.getReviewNo()); //이전에 저장했던 후기 정보 가져오기
+        Review review = communityReviewService.findReview(reviewCommentFormDto.getProgramNo(), reviewCommentFormDto.getReviewNo()); //이전에 저장했던 후기 정보 가져오기
 
         if (review == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review error");
         }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
 
-        Review reviewWithComment = Review.createComment(commentFormDto, review); //후기에 댓글 정보 추가하기
+        Program program = programRepository.findByProgramNo(reviewCommentFormDto.getProgramNo());
+        if (!program.getEmail().equals(email)) { // 해당 프로그램 멘토인지 확인
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not mentor error");
+        }
+
+        Review reviewWithComment = Review.createComment(reviewCommentFormDto, review); //후기에 댓글 정보 추가하기
         Review updatedReview = communityReviewService.updateReview(reviewWithComment); //DB에 저장
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedReview);
@@ -127,6 +155,12 @@ public class CommunityReviewController {
         if (review == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review error");
         }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+        if (!review.getEmail().equals(email)) { //작성자가 아닐 경우
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not writer error");
+        }
         communityReviewService.deleteReview(programNo, reviewNo);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -136,10 +170,20 @@ public class CommunityReviewController {
     @PostMapping("/review/comment/delete")
     public ResponseEntity<Object> deleteComment(@RequestParam("programNo") long programNo, @RequestParam("reviewNo") long reviewNo) {
 
-        Review review = communityReviewService.deleteComment(programNo, reviewNo);
-        if (review == null) {//해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
+        Review review = communityReviewService.findReview(programNo, reviewNo);
+        if (review == null || review.getCommentDate() == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 댓글이 없을 때
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review error");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(review);
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        String commentEmail = programRepository.findByProgramNo(programNo).getEmail();//수강후기 댓글 단 사람 이메일 찾기
+        if (!email.equals(commentEmail)) { //작성자가 아닐 경우
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not writer error");
+        }
+        Review updatedReview = communityReviewService.deleteComment(programNo, reviewNo);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedReview);
     }
 }

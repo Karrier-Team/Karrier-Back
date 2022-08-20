@@ -23,9 +23,6 @@ public class QuestionComment implements Serializable {
     @Id
     private long questionNo;
 
-    @Id
-    private long commentNo;
-
     private String commentEmail;
 
     private String commentContent;
