@@ -60,7 +60,18 @@ public class Question implements Serializable {
         return question;
     }
 
-    //기존 review에 댓글 정보 추가해서 반환
+    //질문 수정시
+    public static Question updateQuestion(QuestionFormDto questionFormDto, Question question) {
+
+        question.setTitle(questionFormDto.getTitle());
+        question.setContent(questionFormDto.getContent());
+        question.setModifyDate(LocalDateTime.now());
+
+        return question;
+    }
+
+
+    //답변 추가 && 답변 수정시
     public static Question createAnswer(QuestionAnswerFormDto questionAnswerFormDto, Question question) {
 
         question.setAnswer(questionAnswerFormDto.getAnswer());

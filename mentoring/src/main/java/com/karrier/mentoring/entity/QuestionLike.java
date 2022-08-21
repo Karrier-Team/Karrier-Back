@@ -1,6 +1,6 @@
 package com.karrier.mentoring.entity;
 
-import com.karrier.mentoring.key.QuestionKey;
+import com.karrier.mentoring.key.QuestionLikeKey;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "QuestionLike")
 @Getter
 @Setter
-@IdClass(QuestionKey.class)
+@IdClass(QuestionLikeKey.class)
 public class QuestionLike implements Serializable {
 
     @Id
@@ -21,6 +21,7 @@ public class QuestionLike implements Serializable {
     @Id
     private long questionNo;
 
+    @Id
     @Column(nullable = false)
     private String email;
 

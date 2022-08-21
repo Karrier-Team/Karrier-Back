@@ -1,6 +1,6 @@
 package com.karrier.mentoring.entity;
 
-import com.karrier.mentoring.key.ReviewKey;
+import com.karrier.mentoring.key.ReviewLikeKey;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "ReviewLike")
 @Getter
 @Setter
-@IdClass(ReviewKey.class)
+@IdClass(ReviewLikeKey.class)
 public class ReviewLike implements Serializable {
 
     @Id
@@ -21,6 +21,7 @@ public class ReviewLike implements Serializable {
     @Id
     private long reviewNo;
 
+    @Id
     @Column(nullable = false)
     private String email;
 

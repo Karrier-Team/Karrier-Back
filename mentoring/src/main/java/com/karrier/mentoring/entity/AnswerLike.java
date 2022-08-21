@@ -1,6 +1,6 @@
 package com.karrier.mentoring.entity;
 
-import com.karrier.mentoring.key.QuestionKey;
+import com.karrier.mentoring.key.QuestionLikeKey;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "AnswerLike")
 @Getter
 @Setter
-@IdClass(QuestionKey.class)
+@IdClass(QuestionLikeKey.class)
 public class AnswerLike implements Serializable {
 
     @Id
@@ -21,13 +21,14 @@ public class AnswerLike implements Serializable {
     @Id
     private long questionNo;
 
+    @Id
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private LocalDateTime likeDate;
 
-    public static AnswerLike createReviewLike(long programNo, long questionNo, String email) {
+    public static AnswerLike createAnswerLike(long programNo, long questionNo, String email) {
 
         AnswerLike answerLike = new AnswerLike();
 

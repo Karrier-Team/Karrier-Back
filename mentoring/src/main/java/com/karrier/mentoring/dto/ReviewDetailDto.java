@@ -1,5 +1,6 @@
 package com.karrier.mentoring.dto;
 
+import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.entity.Review;
 import lombok.Getter;
@@ -19,7 +20,11 @@ public class ReviewDetailDto {
 
     private String writerNickname;
 
+    private String writerProfileImage;
+
     private String mentorName;
+
+    private String mentorProfileImage;
 
     private String title;
 
@@ -39,15 +44,19 @@ public class ReviewDetailDto {
 
     private boolean mentor;
 
-    public static ReviewDetailDto createReviewDetailDto(Review review, Program program, String writerNickname, String mentorName, String myEmail) {
+    public static ReviewDetailDto createReviewDetailDto(Review review, Program program, Member writer, String mentorName, String mentorProfileImage, String baseUrl, String myEmail) {
 
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto();
 
         reviewDetailDto.setProgramName(program.getTitle());
         reviewDetailDto.setProgramNo(review.getProgramNo());
         reviewDetailDto.setReviewNo(review.getReviewNo());
-        reviewDetailDto.setWriterNickname(writerNickname);
+        reviewDetailDto.setWriterNickname(writer.getNickname());
+        if (writer.getProfileImage() != null) { //프로필 사진이 있을 경우에만
+            reviewDetailDto.setWriterProfileImage(baseUrl + writer.getProfileImage().getStoreFileName());
+        }
         reviewDetailDto.setMentorName(mentorName);
+        reviewDetailDto.setMentorProfileImage(baseUrl + mentorProfileImage);
         reviewDetailDto.setTitle(review.getTitle());
         reviewDetailDto.setContent(review.getContent());
         reviewDetailDto.setComment(review.getComment());

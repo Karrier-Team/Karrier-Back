@@ -1,12 +1,11 @@
 package com.karrier.mentoring.dto;
 
-import com.karrier.mentoring.entity.Program;
-import com.karrier.mentoring.entity.Question;
-import com.karrier.mentoring.entity.Review;
+import com.karrier.mentoring.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +19,11 @@ public class QuestionDetailDto {
 
     private String writerNickname;
 
+    private String writerProfileImage;
+
     private String mentorName;
+
+    private String mentorProfileImage;
 
     private String title;
 
@@ -40,15 +43,22 @@ public class QuestionDetailDto {
 
     private boolean mentor;
 
-    public static QuestionDetailDto createQuestionDetailDto(Question question, Program program, String writerNickname, String mentorName, String myEmail) {
+    private List<QuestionCommentListDto> questionCommentListDto;
+
+    //세부화면에 필요한 정보들 담기
+    public static QuestionDetailDto createQuestionDetailDto(Question question, Program program, Member member, String mentorName, String mentorProfileImage, String baseUrl, String myEmail, List<QuestionCommentListDto> questionCommentListDto) {
 
         QuestionDetailDto questionDetailDto = new QuestionDetailDto();
 
         questionDetailDto.setProgramName(program.getTitle());
         questionDetailDto.setProgramNo(question.getProgramNo());
         questionDetailDto.setQuestionNo(question.getQuestionNo());
-        questionDetailDto.setWriterNickname(writerNickname);
+        questionDetailDto.setWriterNickname(member.getNickname());
+        if (member.getProfileImage() != null) { // 작성자 프로필 사진이 있을 때만
+            questionDetailDto.setWriterProfileImage(baseUrl + member.getProfileImage().getStoreFileName());
+        }
         questionDetailDto.setMentorName(mentorName);
+        questionDetailDto.setMentorProfileImage(baseUrl + mentorProfileImage);
         questionDetailDto.setTitle(question.getTitle());
         questionDetailDto.setContent(question.getContent());
         questionDetailDto.setAnswer(question.getAnswer());
@@ -56,13 +66,13 @@ public class QuestionDetailDto {
         questionDetailDto.setAnswerLikeNo(question.getAnswerLikeNo());
         questionDetailDto.setModifyDate(question.getModifyDate());
         questionDetailDto.setAnswerDate(question.getAnswerDate());
+        questionDetailDto.setQuestionCommentListDto(questionCommentListDto);
         if (question.getEmail().equals(myEmail)) {//질문 삭제, 수정 가능 여부
             questionDetailDto.setWriter(true);
         }
         if (program.getEmail().equals(myEmail)) {//답변 삭제, 수정 가능 여부 && 답변 작성 가능 여부 판단 가능
             questionDetailDto.setMentor(true);
         }
-
         return questionDetailDto;
     }
 }

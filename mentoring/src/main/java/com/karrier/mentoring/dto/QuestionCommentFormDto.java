@@ -1,12 +1,19 @@
 package com.karrier.mentoring.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 
+@Getter
+@Setter
 public class QuestionCommentFormDto {
 
     private long programNo;
 
-    private long reviewNo;
+    private long questionNo;
+
+    private long commentNo;
 
     @NotBlank
     private String comment;

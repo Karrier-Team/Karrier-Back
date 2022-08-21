@@ -9,11 +9,11 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionCommentKey implements Serializable {
+public class ReviewLikeKey implements Serializable {
 
     private long programNo;
 
-    private long questionNo;
+    private long reviewNo;
 
-    private long commentNo;
+    private String email;
 }

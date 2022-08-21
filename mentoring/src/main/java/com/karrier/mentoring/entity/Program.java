@@ -59,7 +59,7 @@ public class Program {
 
     private Integer likeCount;
 
-    private Integer averageStar;
+    private Float averageStar;
 
     @ElementCollection
     private List<String> curriculumTitleList;

@@ -1,5 +1,6 @@
 package com.karrier.mentoring.service;
 
+import com.karrier.mentoring.controller.MemberController;
 import com.karrier.mentoring.dto.ReviewDetailDto;
 import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.Member;
@@ -25,11 +26,11 @@ public class CommunityReviewService {
 
     private final ReviewLikeRepository reviewLikeRepository;
 
+    private final ProgramRepository programRepository;
+
     private final MemberRepository memberRepository;
 
     private final MentorRepository mentorRepository;
-
-    private final ProgramRepository programRepository;
 
     //새로운 수강후기 등록
     @Transactional
@@ -38,14 +39,24 @@ public class CommunityReviewService {
         List<Review> reviewList = reviewRepository.findByProgramNo(review.getProgramNo());
 
         long max = 0;
+        long index = 1;
+        float sum = review.getStar();
+        float averageStar = 0;
         if (reviewList != null) { // 수강후기 번호 자동 생성
             for (Review review1 : reviewList) {
+                index++;
+                sum += review1.getStar(); // 평균 별점 계산을 위해
                 if (review1.getReviewNo() > max) {
                     max = review1.getReviewNo();
                 }
             }
         }
         review.setReviewNo(max+1); // 수강후기 번호 세팅
+
+        averageStar = sum / (float) index;//평균 별점 계산
+        Program program = programRepository.findByProgramNo(review.getProgramNo());
+        program.setAverageStar(averageStar);
+        programRepository.save(program);
 
         return reviewRepository.save(review);
     }
@@ -110,14 +121,15 @@ public class CommunityReviewService {
         Review review = reviewRepository.findByProgramNoAndReviewNo(programNo, reviewNo);
 
         Program program = programRepository.findByProgramNo(programNo);//프로그램 정보 찾기
-        String writerNickname = memberRepository.findByEmail(review.getEmail()).getNickname(); //작성자 닉네임 찾기
+        Member writer = memberRepository.findByEmail(review.getEmail());//작성자 닉네임, 프로필사진 찾기 위해
         String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
+        String mentorProfileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
         
-        return ReviewDetailDto.createReviewDetailDto(review, program, writerNickname, name, email);
+        return ReviewDetailDto.createReviewDetailDto(review, program, writer, name, mentorProfileImage, MemberController.profileImageBaseUrl, email);
     }
 
     @Transactional
