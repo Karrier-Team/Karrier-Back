@@ -33,7 +33,7 @@ public class MemberController {
 
     private final S3Uploader s3Uploader;
 
-    private static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
+    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
 
     //회원가입 요청시
     @PostMapping(value = "/new")

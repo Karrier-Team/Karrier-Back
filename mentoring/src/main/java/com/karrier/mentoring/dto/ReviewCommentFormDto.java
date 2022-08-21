@@ -7,13 +7,12 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class QuestionFormDto {
+public class ReviewCommentFormDto {
 
     private long programNo;
 
-    @NotBlank
-    private String title;
+    private long reviewNo;
 
     @NotBlank
-    private String content;
+    private String comment;
 }
