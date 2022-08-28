@@ -17,6 +17,10 @@ public class ReviewListDto {
 
     private String programName;
 
+    private float averageStar;
+
+    private float reviewStar;
+
     private long reviewNo;
 
     private String nickname;
@@ -31,12 +35,14 @@ public class ReviewListDto {
 
     private long reviewLikeNo;
 
-    public static ReviewListDto createReviewListDto(Review review, String programName, String nickname) {
+    public static ReviewListDto createReviewListDto(Review review, String programName, String nickname, float averageStar) {
 
         ReviewListDto reviewListDto = new ReviewListDto();
 
         reviewListDto.setProgramName(programName);
         reviewListDto.setProgramNo(review.getProgramNo());
+        reviewListDto.setAverageStar(averageStar);
+        reviewListDto.setReviewStar(review.getStar());
         reviewListDto.setReviewNo(review.getReviewNo());
         reviewListDto.setNickname(nickname);
         reviewListDto.setTitle(review.getTitle());

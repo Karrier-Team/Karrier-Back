@@ -8,7 +8,5 @@ import java.util.List;
 public interface ProgramRepository extends JpaRepository<Program, Long> {
     Program findByProgramNo(Long programNo);
 
-    List<Program> findAllByEmail(String email);
-
-    List<Program> findAllByEmailInOrderByLikeCount(List<String> emails);
+    List<Program> findByEmail(String email);
 }

@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MentorRepository extends JpaRepository<Mentor, String> {
     Mentor findByEmail(String email);
+
+    long deleteByEmail(String email);
 }

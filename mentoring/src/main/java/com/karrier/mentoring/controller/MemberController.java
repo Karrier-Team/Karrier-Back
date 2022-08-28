@@ -34,7 +34,6 @@ public class MemberController {
     private final S3Uploader s3Uploader;
 
     public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
-
     //회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
@@ -167,5 +166,24 @@ public class MemberController {
         }
         //중복이 아닐 경우
         return ResponseEntity.status(HttpStatus.OK).body(nickname);
+    }
+
+    @PostMapping(value = "/manage/delete")
+    public ResponseEntity<String> deleteMember(@RequestParam String email) {
+
+        Member byEmail = memberRepository.findByEmail(email);
+        if (byEmail == null) { //해당 이메일의 회원정보를 찾을 수 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no member error");
+        }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String myEmail = ((UserDetails) principal).getUsername();
+
+        if (!myEmail.equals(email)) { //삭제하려는 계정과 로그인된 계정이 다를 경우
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not match email error");
+        }
+        memberService.deleteMember(byEmail);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

@@ -23,6 +23,8 @@ public class QuestionListDto {
 
     private String content;
 
+    private boolean answer;
+
     private boolean solve;
 
     private LocalDateTime modifyDate;
@@ -43,6 +45,9 @@ public class QuestionListDto {
         questionListDto.setQuestionLikeNo(question.getQuestionLikeNo());
         questionListDto.setModifyDate(question.getModifyDate());
         if (question.getAnswerDate() != null) { //수강후기 답변 여부 반환
+            questionListDto.setAnswer(true);
+        }
+        if (question.isSolve() == true) { //수강후기 해결 여부 반환
             questionListDto.setSolve(true);
         }
         return questionListDto;

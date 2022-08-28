@@ -1,12 +1,10 @@
 package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.controller.MemberController;
+import com.karrier.mentoring.dto.QuestionListDto;
 import com.karrier.mentoring.dto.ReviewDetailDto;
 import com.karrier.mentoring.dto.ReviewListDto;
-import com.karrier.mentoring.entity.Member;
-import com.karrier.mentoring.entity.Program;
-import com.karrier.mentoring.entity.Review;
-import com.karrier.mentoring.entity.ReviewLike;
+import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -74,7 +72,7 @@ public class CommunityReviewService {
             return null;
         }
 
-        ArrayList<ReviewListDto> reviewListDto = getReviewListDtos(programNo, reviewList);
+        ArrayList<ReviewListDto> reviewListDto = getReviewListDtoList(programNo, reviewList);
         return reviewListDto;
     }
 
@@ -98,19 +96,35 @@ public class CommunityReviewService {
         if (reviewList.size() == 0) {
             return null;
         }
-        ArrayList<ReviewListDto> reviewListDto = getReviewListDtos(programNo, reviewList);
+        ArrayList<ReviewListDto> reviewListDto = getReviewListDtoList(programNo, reviewList);
 
         return reviewListDto;
     }
 
-    //리뷰리스트에서 ReviewListDto로 변환
-    private ArrayList<ReviewListDto> getReviewListDtos(long programNo, List<Review> reviewList) {
+    //나의 모든 수강후기 찾아서 필요한 데이터 추가해서 반환
+    public List<ReviewListDto> findMyPageReviewList(String email) {
 
-        String title = programRepository.findByProgramNo(programNo).getTitle();//프로그램 이름 찾기
+        List<Review> reviewList = reviewRepository.findByEmail(email);
+        if (reviewList.size() == 0) {
+            return null;
+        }
+        List<ReviewListDto> reviewListDto = new ArrayList<>();
+        for (Review review : reviewList) { // 수강후기 한개씩 reviewListDto 형태로 변환
+            List<Review> reviewList1 = new ArrayList<>();
+            reviewList1.add(review);
+            reviewListDto.addAll(getReviewListDtoList(review.getProgramNo(), reviewList1)); //변환된 reviewListDto List에 추가
+        }
+        return reviewListDto;
+    }
+
+    //리뷰리스트에서 ReviewListDto로 변환
+    private ArrayList<ReviewListDto> getReviewListDtoList(long programNo, List<Review> reviewList) {
+
+        Program byProgramNo = programRepository.findByProgramNo(programNo);//프로그램 이름 찾기
         ArrayList<ReviewListDto> reviewListDto = new ArrayList<>();
         for (Review review : reviewList) {
             String nickname = memberRepository.findByEmail(review.getEmail()).getNickname(); //닉네임 찾기
-            reviewListDto.add(ReviewListDto.createReviewListDto(review, title, nickname));
+            reviewListDto.add(ReviewListDto.createReviewListDto(review, byProgramNo.getTitle(), nickname, byProgramNo.getAverageStar()));
         }
         return reviewListDto;
     }

@@ -7,4 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AnswerLikeRepository extends JpaRepository<AnswerLike, QuestionLikeKey> {
 
     AnswerLike findByProgramNoAndQuestionNoAndEmail(long programNo, long questionNo, String email);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }

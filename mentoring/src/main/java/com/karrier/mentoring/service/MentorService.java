@@ -2,13 +2,16 @@ package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.entity.Mentor;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.repository.MentorRepository;
+import com.karrier.mentoring.repository.ProgramRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,6 +21,8 @@ public class MentorService {
     private final MentorRepository mentorRepository;
 
     private final MemberRepository memberRepository;
+
+    private final ProgramRepository programRepository;
 
     //멘토 저장
     @Transactional
@@ -40,5 +45,10 @@ public class MentorService {
     public Mentor getMentor(String email) {
 
         return mentorRepository.findByEmail(email);
+    }
+
+    //멘토 프로그램 정보 가져오기
+    public List<Program> getProgramList(String email) {
+        return programRepository.findByEmail(email);
     }
 }

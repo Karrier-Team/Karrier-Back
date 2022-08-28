@@ -45,9 +45,25 @@ public class S3Uploader {
         return upload(uploadFile, dirName);
     }
 
-    private void deleteProfileImage(String profileImageStoreName) {
+    public void deleteProfileImage(String profileImageStoreName) { //프로필 사진 삭제
         try{
             amazonS3Client.deleteObject(bucket+"/profile_image",profileImageStoreName );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteStudentInfo(String studentInfoStoreName) { //재학증명서 삭제
+        try{
+            amazonS3Client.deleteObject(bucket+"/student_info",studentInfoStoreName );
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteMainImage(String mainImageStoreName) { //프로그램 메인 이미지 삭제
+        try{
+            amazonS3Client.deleteObject(bucket+"/main_image",mainImageStoreName );
         }catch(Exception e){
             e.printStackTrace();
         }
