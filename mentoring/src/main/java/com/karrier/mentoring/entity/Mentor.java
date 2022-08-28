@@ -7,8 +7,6 @@ import com.karrier.mentoring.dto.MentorManageDetailDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -70,7 +68,7 @@ public class Mentor {
 
     private String answerNo;
 
-    private int fallow_no;
+    private int follow_no;
 
     private LocalDateTime submitDate;
 

@@ -47,7 +47,7 @@ public class S3Uploader {
 
     public void deleteProfileImage(String profileImageStoreName) { //프로필 사진 삭제
         try{
-            amazonS3Client.deleteObject(bucket+"/profile_image",profileImageStoreName );
+            amazonS3Client.deleteObject(bucket+"/profile-image",profileImageStoreName );
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -55,7 +55,7 @@ public class S3Uploader {
 
     public void deleteStudentInfo(String studentInfoStoreName) { //재학증명서 삭제
         try{
-            amazonS3Client.deleteObject(bucket+"/student_info",studentInfoStoreName );
+            amazonS3Client.deleteObject(bucket+"/student-info",studentInfoStoreName );
         }catch(Exception e){
             e.printStackTrace();
         }

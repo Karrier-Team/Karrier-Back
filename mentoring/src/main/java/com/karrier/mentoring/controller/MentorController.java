@@ -60,8 +60,8 @@ public class MentorController {
         String email = ((UserDetails) principal).getUsername();
 
         //S3 스토리지에 파일 저장 후 파일 이름 반환
-        UploadFile studentInfo = s3Uploader.upload(mentorFormDto.getStudentInfoFile(), "student_info");
-        UploadFile profileImage = s3Uploader.upload(mentorFormDto.getProfileImageFile(), "profile_image");
+        UploadFile studentInfo = s3Uploader.upload(mentorFormDto.getStudentInfoFile(), "student-info");
+        UploadFile profileImage = s3Uploader.upload(mentorFormDto.getProfileImageFile(), "profile-image");
 
         //멘토 정보 저장
         Mentor mentor = Mentor.createMentor(mentorFormDto, studentInfo, email);

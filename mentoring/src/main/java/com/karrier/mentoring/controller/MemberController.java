@@ -33,7 +33,7 @@ public class MemberController {
 
     private final S3Uploader s3Uploader;
 
-    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
+    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/";
     //회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
@@ -146,7 +146,7 @@ public class MemberController {
         Member member = memberService.getMember(email);
 
         //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
-        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile_image", member.getProfileImage().getStoreFileName());
+        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
 
         //member 프로필 사진 이름 정보 수정
         Member updatedMember = Member.modifyProfile(member, profileImage, nickname);
