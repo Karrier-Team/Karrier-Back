@@ -21,8 +21,10 @@ public class MentorFormDto {
 
     @NotBlank(message = "단과대학은 필수 입력 값입니다.")
     private String college;
-
-    @NotBlank(message = "전공은 필수 입력 값입니다.")
+    
+    @NotBlank(message = "학과는 필수 입력 값입니다.")
+    private String department;
+    
     private String major;
 
     @NotBlank(message = "학번은 필수 입력 값입니다.")

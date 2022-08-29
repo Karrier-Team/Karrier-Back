@@ -48,6 +48,11 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("password check error");
         }
 
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(memberFormDto.getNickname())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
+        }
+
         try { // member 형태로 변환 후 데이터베이스에 member 정보 저장
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             Member newMember = memberService.saveMember(member);
@@ -136,6 +141,11 @@ public class MemberController {
         //닉네임이 없을 때
         if (nickname.isEmpty()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("nickname empty error");
+        }
+
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(nickname)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
         }
 
         //사용자 email 얻기

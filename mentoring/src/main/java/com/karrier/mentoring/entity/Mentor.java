@@ -29,6 +29,8 @@ public class Mentor {
 
     private String college;
 
+    private String department;
+
     private String major;
 
     private String studentId;
@@ -82,6 +84,7 @@ public class Mentor {
         mentor.setGender(mentorFormDto.getGender());
         mentor.setUniversity(mentorFormDto.getUniversity());
         mentor.setCollege(mentorFormDto.getCollege());
+        mentor.setDepartment(mentorFormDto.getDepartment());
         mentor.setMajor(mentorFormDto.getMajor());
         mentor.setStudentId(mentorFormDto.getStudentId());
         mentor.setYear(Integer.parseInt(mentorFormDto.getYear()));
