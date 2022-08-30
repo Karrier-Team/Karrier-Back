@@ -17,7 +17,6 @@
 - Spring Data JPA
 - IntelliJ IDEA CE
 - MariaDB (v3.0.6)
-- Thymeleaf (v3.1.0)
 
 
 ## Spring Initializr - Selected Dependencies
@@ -28,9 +27,6 @@
 
 ### Web
 - Spring Web
-
-### Template Engins
-- Thymeleaf
 
 ### Security
 - Spring Security
