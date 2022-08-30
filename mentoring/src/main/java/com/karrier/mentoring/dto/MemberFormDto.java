@@ -9,7 +9,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@Getter @Setter
+@Getter
+@Setter
 public class MemberFormDto {
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -22,6 +23,4 @@ public class MemberFormDto {
 
     @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
     private String passwordCheck;
-
-    private String role;
 }

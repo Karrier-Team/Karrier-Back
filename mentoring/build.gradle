@@ -40,6 +40,7 @@ dependencies {
 	implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '3.1.0'
 	implementation 'org.springframework.security:spring-security-config'
 	implementation 'org.springframework.security:spring-security-web'
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 }
 
 tasks.named('test') {

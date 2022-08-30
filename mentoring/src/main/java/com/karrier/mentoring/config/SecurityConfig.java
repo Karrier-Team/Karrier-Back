@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/members/login")
-                .defaultSuccessUrl("/")
                 .usernameParameter("email")
                 .failureUrl("/members/login/error")
                 .successHandler(new LoginSuccessfulHandler())
@@ -38,9 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/");
 
         http.authorizeRequests()
-                .mvcMatchers("/", "/members/**",
-                        "/item/**", "/images/**").permitAll()
+                .mvcMatchers("/mentors/new", "members/manage/**", "wishlist/**", "admin/**").hasRole("USER")
+                .mvcMatchers("/mentors/manage/**", "members/manage/**").hasRole("MENTOR_APPROVE")
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
+                .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
