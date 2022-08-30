@@ -1,5 +1,7 @@
 package com.karrier.mentoring.config;
 
+
+import com.karrier.mentoring.auth.CustomOAuth2UserService;
 import com.karrier.mentoring.handler.LoginSuccessfulHandler;
 import com.karrier.mentoring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    CustomOAuth2UserService customOAuth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -47,6 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
+
+        http.oauth2Login()
+                        .userInfoEndpoint()
+                                .userService(customOAuth2UserService);
 
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
