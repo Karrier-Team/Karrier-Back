@@ -1,5 +1,6 @@
 package com.karrier.mentoring.entity;
 
+import com.karrier.mentoring.dto.*;
 import com.karrier.mentoring.dto.MentorFormDto;
 import com.karrier.mentoring.dto.MentorManageBasicDto;
 import com.karrier.mentoring.dto.MentorManageContactDto;
@@ -101,6 +102,7 @@ public class Mentor {
         mentor.setCity(mentorFormDto.getCity());
         mentor.setStudentInfo(studentInfo);
         mentor.setSubmitDate(LocalDateTime.now());
+        mentor.setFollowNo(0);
 
         return mentor;
     }
@@ -141,6 +143,19 @@ public class Mentor {
         mentor.setPhoneNo(mentorManageContactDto.getPhoneNo());
         mentor.setCountry(mentorManageContactDto.getCountry());
         mentor.setCity(mentorManageContactDto.getCity());
+
+        return mentor;
+    }
+
+    public static Mentor updateMentorDetailByProgram(Mentor mentor, ProgramFormDto programFormDto){
+        mentor.setIntroduce(programFormDto.getMentorIntroduce());
+        mentor.setClub(programFormDto.getClub());
+        mentor.setContest(programFormDto.getContest());
+        mentor.setExternalActivity(programFormDto.getExternalActivity());
+        mentor.setIntern(programFormDto.getIntern());
+        mentor.setNaverBlogAddress(programFormDto.getNaverBlogAddress());
+        mentor.setFacebookAddress(programFormDto.getFacebookAddress());
+        mentor.setInstarAddress(programFormDto.getInstarAddress());
 
         return mentor;
     }

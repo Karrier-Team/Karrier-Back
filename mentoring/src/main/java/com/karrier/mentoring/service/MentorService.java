@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -50,5 +52,8 @@ public class MentorService {
     //멘토 프로그램 정보 가져오기
     public List<Program> getProgramList(String email) {
         return programRepository.findByEmail(email);
+
+    public List<Mentor> getEmailsByMajor(String major){
+        return mentorRepository.findByMajor(major);
     }
 }

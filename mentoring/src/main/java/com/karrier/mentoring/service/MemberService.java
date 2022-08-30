@@ -4,6 +4,10 @@ import com.karrier.mentoring.controller.MemberController;
 import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.repository.*;
+import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.Role;
+import com.karrier.mentoring.entity.Review;
+import com.karrier.mentoring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -142,4 +146,5 @@ public class MemberService implements UserDetailsService {
                 .roles(member.getRole().toString())
                 .build();
     }
+
 }

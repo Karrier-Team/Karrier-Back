@@ -1,10 +1,18 @@
 package com.karrier.mentoring.entity;
 
+import com.karrier.mentoring.dto.ParticipationStudentFormDto;
+import com.karrier.mentoring.key.ParticipationStudentKey;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import javax.persistence.IdClass;
+import javax.persistence.Table;
+import java.io.Serializable;
+
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -12,10 +20,13 @@ import java.time.LocalDateTime;
 @Table(name = "ParticipationStudent")
 @Getter
 @Setter
-public class ParticipationStudent {
+@IdClass(ParticipationStudentKey.class)
+public class ParticipationStudent implements Serializable {
 
     @Id
-    private String program_no;
+    private long programNo;
+
+    @Id
 
     private String email;
 
@@ -23,9 +34,9 @@ public class ParticipationStudent {
 
     private String gender;
 
-    private String phone_no;
+    private String phoneNo;
 
-    private int age;
+    private String age;
 
     private String region;
 
@@ -35,9 +46,29 @@ public class ParticipationStudent {
 
     private String introduce;
 
-    private String question_category;
+    private String questionCategory;
 
-    private String question_content;
+    private String questionContent;
 
     private LocalDateTime applyDate;
+
+    public static ParticipationStudent createParticipationStudent(ParticipationStudentFormDto participationStudentFormDto, String email, long programNo){
+        ParticipationStudent participationStudent = new ParticipationStudent();
+
+        participationStudent.setProgramNo(programNo);
+        participationStudent.setEmail(email);
+        participationStudent.setName(participationStudentFormDto.getName());
+        participationStudent.setGender(participationStudentFormDto.getGender());
+        participationStudent.setAge(participationStudentFormDto.getAge());
+        participationStudent.setRegion(participationStudentFormDto.getRegion());
+        participationStudent.setSchoolName(participationStudentFormDto.getSchoolName());
+        participationStudent.setApplicationRoute(participationStudentFormDto.getApplicationRoute());
+        participationStudent.setIntroduce(participationStudentFormDto.getIntroduce());
+        participationStudent.setQuestionCategory(participationStudentFormDto.getQuestionCategory());
+        participationStudent.setQuestionContent(participationStudentFormDto.getQuestionContent());
+        participationStudent.setApplyDate(LocalDateTime.now());
+
+        return participationStudent;
+
+    }
 }

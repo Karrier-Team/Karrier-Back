@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
                 .mvcMatchers("/", "/members/**").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
+                .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

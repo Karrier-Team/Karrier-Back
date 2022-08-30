@@ -9,4 +9,12 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     Program findByProgramNo(Long programNo);
 
     List<Program> findByEmail(String email);
+
+    List<Program> findByEmailAndProgramState(String email, Boolean complete);
+
+    List<Program> findByProgramStateAndEmailInAndTitleContaining(Boolean complete, List<String> emails, String Title);
+
+    List<Program> findByProgramStateAndEmailIn(Boolean complete, List<String> emails);
+
+    List<Program> findAllByEmailInOrderByLikeCount(List<String> emails);
 }
