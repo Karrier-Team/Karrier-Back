@@ -16,4 +16,5 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
     List<Program> findByProgramStateAndEmailIn(Boolean complete, List<String> emails);
 
+    List<Program> findAllByEmailInOrderByLikeCount(List<String> emails);
 }

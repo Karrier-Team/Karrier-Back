@@ -13,4 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, String>{
     Member findByNickname(String nickname);
 
     List<Member> findByRole(Role role);
+
+    List<Member> findByNicknameContaining(String keyword);
+
 }

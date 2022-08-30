@@ -1,5 +1,6 @@
 package com.karrier.mentoring.entity;
 
+
 import com.karrier.mentoring.dto.ProgramFormDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +19,15 @@ public class Program {
 
     @Id
     private long programNo;
-
+    
     private String email;
 
     @Embedded
     @AttributeOverrides({
+
             @AttributeOverride(name="uploadFileName", column = @Column(name="MAIN_IMAGE_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="MAIN_IMAGE_STORE_NAME")),
+
     })
     private UploadFile mainImage;
 

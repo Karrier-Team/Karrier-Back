@@ -1,6 +1,10 @@
 package com.karrier.mentoring.entity;
 
 import com.karrier.mentoring.dto.*;
+import com.karrier.mentoring.dto.MentorFormDto;
+import com.karrier.mentoring.dto.MentorManageBasicDto;
+import com.karrier.mentoring.dto.MentorManageContactDto;
+import com.karrier.mentoring.dto.MentorManageDetailDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -67,12 +71,11 @@ public class Mentor {
 
     private String answerNo;
 
-    private boolean alarm;
+    private int fallow_no;
 
     private LocalDateTime submitDate;
 
-    private int followNo;
-
+    //멘토 회원가입시
     public static Mentor createMentor(MentorFormDto mentorFormDto, UploadFile studentInfo, String email) {
 
         Mentor mentor = new Mentor();
@@ -103,6 +106,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 기본정보 변경시
     public static Mentor updateMentorBasic(Mentor mentor, MentorManageBasicDto mentorManageBasicDto) {
 
         mentor.setName(mentorManageBasicDto.getName());
@@ -116,6 +120,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 상세정보 변경시
     public static Mentor updateMentorDetail(Mentor mentor, MentorManageDetailDto mentorManageDetailDto) {
 
         mentor.setIntroduce(mentorManageDetailDto.getIntroduce());
@@ -130,6 +135,7 @@ public class Mentor {
         return mentor;
     }
 
+    //멘토 연락처 변경시
     public static Mentor updateMentorContact(Mentor mentor, MentorManageContactDto mentorManageContactDto) {
 
         mentor.setPhoneNo(mentorManageContactDto.getPhoneNo());
