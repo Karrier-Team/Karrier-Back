@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Member")
@@ -28,6 +29,7 @@ public class Member {
     private String nickname;
 
     private boolean sleep;
+
 
     private boolean alarm;
 
@@ -87,6 +89,12 @@ public class Member {
 
         String password = passwordEncoder.encode(memberManagePasswordDto.getNewPassword());
         member.setPassword(password);
+
+        return member;
+    }
+
+    public static Member changeMentorRole(Member member){
+        member.setRole(Role.MENTOR_APPROVE);
 
         return member;
     }

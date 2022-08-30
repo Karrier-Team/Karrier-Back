@@ -2,10 +2,12 @@ package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
-import com.karrier.mentoring.entity.Member;
-import com.karrier.mentoring.entity.UploadFile;
-import com.karrier.mentoring.repository.MemberRepository;
+import com.karrier.mentoring.dto.ParticipationStudentFormDto;
+import com.karrier.mentoring.entity.*;
+import com.karrier.mentoring.repository.*;
+import com.karrier.mentoring.service.FollowService;
 import com.karrier.mentoring.service.MemberService;
+import com.karrier.mentoring.service.ParticipationStudentService;
 import com.karrier.mentoring.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,13 +56,17 @@ public class MemberController {
             Member newMember = memberService.saveMember(member);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
+
         } catch (IllegalStateException e) { //이미 가입된 이메일일 경우
+
             return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate email");
         }
     }
 
+
     //로그인시 아이디 패스워드가 틀릴경우
     @GetMapping(value = "/login/error") 
+
     public ResponseEntity<String> loginError() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("wrong id or password");
     }
@@ -135,6 +141,7 @@ public class MemberController {
         }
 
         //닉네임이 없을 때
+
         if (nickname.isEmpty()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("nickname empty error");
         }
@@ -148,6 +155,7 @@ public class MemberController {
 
         //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
         UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile_image", member.getProfileImage().getStoreFileName());
+
 
         //member 프로필 사진 이름 정보 수정
         Member updatedMember = Member.modifyProfile(member, profileImage, nickname);

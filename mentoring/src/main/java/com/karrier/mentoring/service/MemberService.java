@@ -2,6 +2,7 @@ package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.Role;
 import com.karrier.mentoring.entity.Review;
 import com.karrier.mentoring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,4 +77,5 @@ public class MemberService implements UserDetailsService {
                 .roles(member.getRole().toString())
                 .build();
     }
+
 }
