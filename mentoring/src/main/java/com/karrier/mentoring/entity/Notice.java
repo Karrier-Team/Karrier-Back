@@ -53,6 +53,7 @@ public class Notice {
         notice.setModifyDate(LocalDateTime.now());
         notice.setOpenDate(LocalDateTime.now());
 
+        return notice;
     }
 
 }
