@@ -112,6 +112,7 @@ public class Mentor {
         mentor.setGender(mentorManageBasicDto.getGender());
         mentor.setUniversity(mentorManageBasicDto.getUniversity());
         mentor.setCollege(mentorManageBasicDto.getCollege());
+        mentor.setDepartment(mentorManageBasicDto.getDepartment());
         mentor.setMajor(mentorManageBasicDto.getMajor());
         mentor.setStudentId(mentorManageBasicDto.getStudentId());
         mentor.setYear(Integer.parseInt(mentorManageBasicDto.getYear()));
