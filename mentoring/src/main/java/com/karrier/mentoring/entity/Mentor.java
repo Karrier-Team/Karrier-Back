@@ -71,7 +71,7 @@ public class Mentor {
 
     private String answerNo;
 
-    private int follow_no;
+    private int followNo;
 
     private LocalDateTime submitDate;
 
