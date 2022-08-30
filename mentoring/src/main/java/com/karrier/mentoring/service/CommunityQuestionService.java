@@ -124,6 +124,22 @@ public class CommunityQuestionService {
         return questionListDto;
     }
 
+    //나의 모든 질문 찾아서 필요한 데이터 추가해서 반환
+    public List<QuestionListDto> findMyPageQuestionList(String email) {
+
+        List<Question> questionList = questionRepository.findByEmail(email);
+        if (questionList.size() == 0) {
+            return null;
+        }
+        List<QuestionListDto> questionListDto = new ArrayList<>();
+        for (Question question : questionList) { // 질문 한개씩 questionListDto 형태로 변환
+            List<Question> questionList1 = new ArrayList<>();
+            questionList1.add(question);
+            questionListDto.addAll(getQuestionListDtoList(question.getProgramNo(), questionList1)); //변환된 questionListDto를 List에 추가
+        }
+        return questionListDto;
+    }
+
     //questionList에서 QuestionListDto로 변환
     private ArrayList<QuestionListDto> getQuestionListDtoList(long programNo, List<Question> questionList) {
 

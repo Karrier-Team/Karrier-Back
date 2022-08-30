@@ -7,5 +7,7 @@ import java.util.List;
 public interface MentorRepository extends JpaRepository<Mentor, String> {
     Mentor findByEmail(String email);
 
+    long deleteByEmail(String email);
+    
     List<Mentor> findByMajor(String major);
 }

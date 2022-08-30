@@ -7,4 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReviewLikeRepository extends JpaRepository<ReviewLike, ReviewLikeKey> {
 
     ReviewLike findByProgramNoAndReviewNoAndEmail(long programNo, long reviewNo, String email);
+
+    long deleteByProgramNoAndReviewNo(long programNo, long reviewNo);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }

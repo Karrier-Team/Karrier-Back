@@ -50,6 +50,7 @@ public class Member {
 
         Member member = new Member();
         member.setEmail(memberFormDto.getEmail());
+        member.setNickname(memberFormDto.getNickname());
         String password = passwordEncoder.encode(memberFormDto.getPassword()); //비밀번호 암호화해서 저장하기 위해
         member.setPassword(password);
         member.setRole(Role.USER);  // USER or MENTOR_WAIT or MENTOR_APPROVE or ADMIN

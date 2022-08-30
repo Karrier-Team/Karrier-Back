@@ -13,4 +13,10 @@ public interface QuestionCommentRepository extends JpaRepository<QuestionComment
     QuestionComment findByProgramNoAndQuestionNoAndCommentNo(long programNo, long questionNo, long commentNo);
 
     long deleteByProgramNoAndQuestionNoAndCommentNo(long programNo, long questionNo, long commentNo);
+
+    long deleteByProgramNoAndQuestionNo(long programNo, long questionNo);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }

@@ -19,4 +19,8 @@ public interface ReviewRepository extends JpaRepository<Review, ReviewKey> {
     List<Review> findByProgramNoAndContentContaining(long programNo, String keyword);
 
     List<Review> findByProgramNoAndEmail(long programNo, String email);
+
+    List<Review> findByEmail(String email);
+
+    long deleteByProgramNo(long programNo);
 }

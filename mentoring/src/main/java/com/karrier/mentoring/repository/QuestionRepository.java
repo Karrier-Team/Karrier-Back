@@ -19,4 +19,10 @@ public interface QuestionRepository extends JpaRepository<Question, QuestionKey>
     List<Question> findByProgramNoAndContentContaining(long programNo, String keyword);
 
     List<Question> findByProgramNoAndEmail(long programNo, String email);
+
+    List<Question> findByEmail(String email);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }

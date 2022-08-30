@@ -35,8 +35,7 @@ public class MemberController {
 
     private final S3Uploader s3Uploader;
 
-    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile_image/";
-
+    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/";
     //회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
@@ -49,6 +48,11 @@ public class MemberController {
         //비밀번호와 비밀번호 확인이 일치하지 않을 경우
         if (!memberFormDto.getPassword().equals(memberFormDto.getPasswordCheck())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("password check error");
+        }
+
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(memberFormDto.getNickname())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
         }
 
         try { // member 형태로 변환 후 데이터베이스에 member 정보 저장
@@ -146,6 +150,11 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("nickname empty error");
         }
 
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(nickname)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
+        }
+
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
@@ -154,7 +163,7 @@ public class MemberController {
         Member member = memberService.getMember(email);
 
         //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
-        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile_image", member.getProfileImage().getStoreFileName());
+        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
 
 
         //member 프로필 사진 이름 정보 수정
@@ -175,5 +184,24 @@ public class MemberController {
         }
         //중복이 아닐 경우
         return ResponseEntity.status(HttpStatus.OK).body(nickname);
+    }
+
+    @PostMapping(value = "/manage/delete")
+    public ResponseEntity<String> deleteMember(@RequestParam String email) {
+
+        Member byEmail = memberRepository.findByEmail(email);
+        if (byEmail == null) { //해당 이메일의 회원정보를 찾을 수 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no member error");
+        }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String myEmail = ((UserDetails) principal).getUsername();
+
+        if (!myEmail.equals(email)) { //삭제하려는 계정과 로그인된 계정이 다를 경우
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not match email error");
+        }
+        memberService.deleteMember(byEmail);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

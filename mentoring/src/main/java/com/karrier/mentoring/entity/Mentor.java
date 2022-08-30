@@ -8,8 +8,6 @@ import com.karrier.mentoring.dto.MentorManageDetailDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,6 +29,8 @@ public class Mentor {
     private String university;
 
     private String college;
+
+    private String department;
 
     private String major;
 
@@ -71,7 +71,7 @@ public class Mentor {
 
     private String answerNo;
 
-    private int fallow_no;
+    private int follow_no;
 
     private LocalDateTime submitDate;
 
@@ -85,6 +85,7 @@ public class Mentor {
         mentor.setGender(mentorFormDto.getGender());
         mentor.setUniversity(mentorFormDto.getUniversity());
         mentor.setCollege(mentorFormDto.getCollege());
+        mentor.setDepartment(mentorFormDto.getDepartment());
         mentor.setMajor(mentorFormDto.getMajor());
         mentor.setStudentId(mentorFormDto.getStudentId());
         mentor.setYear(Integer.parseInt(mentorFormDto.getYear()));
@@ -113,6 +114,7 @@ public class Mentor {
         mentor.setGender(mentorManageBasicDto.getGender());
         mentor.setUniversity(mentorManageBasicDto.getUniversity());
         mentor.setCollege(mentorManageBasicDto.getCollege());
+        mentor.setDepartment(mentorManageBasicDto.getDepartment());
         mentor.setMajor(mentorManageBasicDto.getMajor());
         mentor.setStudentId(mentorManageBasicDto.getStudentId());
         mentor.setYear(Integer.parseInt(mentorManageBasicDto.getYear()));
