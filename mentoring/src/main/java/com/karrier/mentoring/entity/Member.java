@@ -45,7 +45,7 @@ public class Member {
     private UploadFile profileImage;
 
     @Builder
-    public Member(String email, String nickname, Role role ){
+    public Member(String email, String nickname, Role role){
         this.email = email;
         this.nickname = nickname;
         this.role = role;
@@ -122,4 +122,5 @@ public class Member {
 
         return member;
     }
+
 }

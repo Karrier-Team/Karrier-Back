@@ -31,36 +31,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin()
-                .loginPage("/members/login")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .successHandler(new LoginSuccessfulHandler())
+        http
+                    .cors()
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/");
-
-        http.authorizeRequests()
-                .mvcMatchers("/mentors/new").hasRole("USER")
-                .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
-                .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
-                .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
-                .mvcMatchers("/", "/members/**").permitAll()
-                .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
-                .anyRequest().authenticated()
+                    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-                .httpBasic();
-
-        http.oauth2Login()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .and()
+                    .headers().frameOptions().disable()
+                .and()
+                    .logout()
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                            .logoutSuccessUrl("/")
+                .and()
+                    .authorizeRequests()
+                    .mvcMatchers("/mentors/new").hasRole("USER")
+                    .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
+                    .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
+                    .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
+                    .mvcMatchers("/", "/members/**").permitAll()
+                    .mvcMatchers("/admin/**").hasRole("ADMIN")
+                    .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                    .httpBasic()
+                .and()
+                    .formLogin()
+                        .loginPage("/members/login")
+                        .usernameParameter("email")
+                        .failureUrl("/members/login/error")
+                        .successHandler(new LoginSuccessfulHandler())
+                .and()
+                    .oauth2Login()
                         .userInfoEndpoint()
-                                .userService(customOAuth2UserService);
-
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                            .userService(customOAuth2UserService);
+        
     }
 
     @Override

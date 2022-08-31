@@ -14,17 +14,15 @@ public class OAuthAttributes {
     private String nameAttributeKey;
     private String name;
     private String email;
-    private String picture;
 
     @Builder
     public OAuthAttributes(Map<String, Object> attributes,
                            String nameAttributeKey, String name,
-                           String email, String picture) {
+                           String email) {
         this.attributes = attributes;
         this.nameAttributeKey= nameAttributeKey;
         this.name = name;
         this.email = email;
-        this.picture = picture;
     }
 
     // 해당 로그인인 서비스가 naver인지 google인지 구분하여, 알맞게 매핑
@@ -39,22 +37,21 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response"); // 네이버에서 받은 데이터에서 프로필 정보가 담긴 response 값을 꺼낸다.
         return new OAuthAttributes(attributes, userNameAttributeName,
                 (String) response.get("name"),
-                (String) response.get("email"),
-                (String) response.get("profile_image"));
+                (String) response.get("email"));
     }
 
     private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return new OAuthAttributes(attributes, userNameAttributeName,
                 (String) attributes.get("name"),
-                (String) attributes.get("email"),
-                (String) attributes.get("picture"));
+                (String) attributes.get("email"));
     }
 
     public Member toEntity() {
-        return Member.builder()
+        Member member = Member.builder()
                 .nickname(name)
                 .email(email)
                 .role(Role.USER)
                 .build();
+        return member;
     }
 }
