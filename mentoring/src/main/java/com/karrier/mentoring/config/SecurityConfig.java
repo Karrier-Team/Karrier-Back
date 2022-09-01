@@ -1,5 +1,7 @@
 package com.karrier.mentoring.config;
 
+
+import com.karrier.mentoring.auth.CustomOAuth2UserService;
 import com.karrier.mentoring.handler.LoginSuccessfulHandler;
 import com.karrier.mentoring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,35 +25,48 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    CustomOAuth2UserService customOAuth2UserService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin()
-                .loginPage("/members/login")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .successHandler(new LoginSuccessfulHandler())
+        http
+                    .cors()
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/");
-
-        http.authorizeRequests()
-                .mvcMatchers("/mentors/new").hasRole("USER")
-                .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
-                .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
-                .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
-                .mvcMatchers("/", "/members/**").permitAll()
-                .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
-                .anyRequest().authenticated()
+                    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-                .httpBasic();
-
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .and()
+                    .headers().frameOptions().disable()
+                .and()
+                    .logout()
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                            .logoutSuccessUrl("/")
+                .and()
+                    .authorizeRequests()
+                    .mvcMatchers("/mentors/new").hasRole("USER")
+                    .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
+                    .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
+                    .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
+                    .mvcMatchers("/", "/members/**").permitAll()
+                    .mvcMatchers("/admin/**").hasRole("ADMIN")
+                    .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                    .httpBasic()
+                .and()
+                    .formLogin()
+                        .loginPage("/members/login")
+                        .usernameParameter("email")
+                        .failureUrl("/members/login/error")
+                        .successHandler(new LoginSuccessfulHandler())
+                .and()
+                    .oauth2Login()
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService);
+        
     }
 
     @Override

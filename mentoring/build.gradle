@@ -41,6 +41,9 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-config'
 	implementation 'org.springframework.security:spring-security-web'
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+	//oauth
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // oauth2
+	testImplementation 'org.springframework.security:spring-security-test' //oauth2 test
 }
 
 tasks.named('test') {
