@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                    .cors()
+                .cors()
                 .and()
                     .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
                     .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
                     .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
-                    .mvcMatchers("/", "/members/**").permitAll()
+                    .mvcMatchers("/", "/members/**","/members/password/change").permitAll()
                     .mvcMatchers("/admin/**").hasRole("ADMIN")
                     .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
                     .anyRequest().authenticated()
