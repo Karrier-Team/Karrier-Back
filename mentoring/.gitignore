@@ -17,6 +17,8 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 application.properties
+application-oauth.properties
+application-mail.properties
 
 ### IntelliJ IDEA ###
 .idea
