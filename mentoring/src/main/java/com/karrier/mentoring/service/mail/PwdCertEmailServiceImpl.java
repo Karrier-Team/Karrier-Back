@@ -45,7 +45,7 @@ public class PwdCertEmailServiceImpl implements EmailService{
         msgg+= emailKey+"</strong><div><br/> ";
         msgg+= "</div>";
         message.setText(msgg, "utf-8", "html");//내용
-        message.setFrom(new InternetAddress("properties에 작성한 이메일","BZshop"));//보내는 사람
+        message.setFrom(new InternetAddress("tsi0521o@gmail.com","Karrier"));//보내는 사람
 
         return message;
     }
