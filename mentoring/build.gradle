@@ -44,6 +44,8 @@ dependencies {
 	//oauth
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // oauth2
 	testImplementation 'org.springframework.security:spring-security-test' //oauth2 test
+	//mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
