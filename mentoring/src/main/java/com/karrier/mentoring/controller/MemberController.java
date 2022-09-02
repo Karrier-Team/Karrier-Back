@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/members")
 @RestController
 @RequiredArgsConstructor

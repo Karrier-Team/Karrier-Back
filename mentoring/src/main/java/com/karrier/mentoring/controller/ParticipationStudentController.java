@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/participation")
 @RestController
 @RequiredArgsConstructor
