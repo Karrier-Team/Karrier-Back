@@ -9,4 +9,6 @@ import java.util.List;
 public interface RecommendedTargetRepository extends JpaRepository<RecommendedTarget, RecommendedTargetKey> {
 
     List<RecommendedTarget> findByProgramNo(long programNo);
+
+    long deleteByProgramNo(long programNo);
 }

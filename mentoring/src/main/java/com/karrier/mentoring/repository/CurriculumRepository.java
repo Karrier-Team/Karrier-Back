@@ -9,4 +9,6 @@ import java.util.List;
 public interface CurriculumRepository extends JpaRepository<Curriculum, CurriculumKey> {
 
     List<Curriculum> findByProgramNo(long programNo);
+
+    long deleteByProgramNo(long programNo);
 }

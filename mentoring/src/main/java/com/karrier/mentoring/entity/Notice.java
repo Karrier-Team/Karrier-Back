@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -23,20 +24,28 @@ public class Notice {
     @Id
     private long noticeNo;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime registerDate;
 
+    @Column(nullable = false)
     private String registerWriter;
 
+    @Column(nullable = false)
     private LocalDateTime modifyDate;
 
+    @Column(nullable = false)
     private String modifyWriter;
 
+    @Column(nullable = false)
     private LocalDateTime openDate;
 
+    @Column(nullable = false)
     private LocalDateTime closeDate;
 
     // 조회수

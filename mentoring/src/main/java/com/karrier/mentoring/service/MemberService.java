@@ -42,6 +42,16 @@ public class MemberService implements UserDetailsService {
 
     private final ProgramRepository programRepository;
 
+    private final CurriculumRepository curriculumRepository;
+
+    private final FollowRepository followRepository;
+
+    private final ParticipationStudentRepository participationStudentRepository;
+
+    private final RecommendedTargetRepository recommendedTargetRepository;
+
+    private final WishListRepository wishListRepository;
+
     private final S3Uploader s3Uploader;
 
     //멤버 저장
@@ -74,15 +84,19 @@ public class MemberService implements UserDetailsService {
                 answerLikeRepository.deleteByProgramNo(program.getProgramNo());//답변 좋아요 삭제
                 questionCommentRepository.deleteByProgramNo(program.getProgramNo());//댓글 삭제
                 programRepository.delete(program);//프로그램 삭제
-                //커리큘럼 삭제
-                //팔로우 정보 삭제
-                //참여학생 정보 삭제
-                //찜목록 삭제
+                curriculumRepository.deleteByProgramNo(program.getProgramNo());//커리큘럼 삭제
+                participationStudentRepository.deleteByProgramNo(program.getProgramNo());//참여학생 정보 삭제
+                wishListRepository.deleteByProgramNo(program.getProgramNo());//찜목록 삭제
+                recommendedTargetRepository.deleteByProgramNo(program.getProgramNo());//추천대상 삭제
                 //차단회원 삭제
+                //태그??
             }
+            followRepository.deleteByMentorEmail(member.getEmail());//팔로우 정보 삭제
             mentorRepository.deleteByEmail(member.getEmail()); //멘토 삭제
         }
-        s3Uploader.deleteProfileImage(member.getProfileImage().getStoreFileName());//프로필 사진 삭제
+        if (member.getProfileImage() != null) {
+            s3Uploader.deleteProfileImage(member.getProfileImage().getStoreFileName());//프로필 사진 삭제
+        }
         List<Review> reviewList = reviewRepository.findByEmail(member.getEmail());//해당 멤버가 작성한 수강후기 검색
         for (Review review : reviewList) {
             reviewLikeRepository.deleteByEmail(member.getEmail()); //해당 멤버가 좋아요 누른 기록 삭제
@@ -99,9 +113,9 @@ public class MemberService implements UserDetailsService {
             questionRepository.delete(question);//질문 삭제
         }
         questionCommentRepository.deleteByEmail(member.getEmail());//댓글 삭제
-        //팔로우 정보 삭제
-        //참여학생 정보 삭제
-        //찜목록 삭제
+        followRepository.deleteByMemberEmail(member.getEmail());//팔로우 정보 삭제
+        participationStudentRepository.deleteByEmail(member.getEmail());//참여학생 정보 삭제
+        wishListRepository.deleteByEmail(member.getEmail());//찜목록 삭제
         //차단회원 삭제
         memberRepository.delete(member); //회원정보 테이블에서 삭제
     }

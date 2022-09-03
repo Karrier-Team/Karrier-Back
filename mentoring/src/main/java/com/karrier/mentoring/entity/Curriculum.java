@@ -5,10 +5,7 @@ import com.karrier.mentoring.key.CurriculumKey;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -24,6 +21,7 @@ public class Curriculum implements Serializable {
     @Id
     private String curriculumTitle;
 
+    @Column(nullable = false)
     private String content;
 
     public static Curriculum createCurriculum(long programNo, String curriculumTitle, String content){

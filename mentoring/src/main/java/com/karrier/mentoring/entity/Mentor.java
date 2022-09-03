@@ -22,22 +22,29 @@ public class Mentor {
     @Id
     private String email;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String gender;
 
+    @Column(nullable = false)
     private String university;
 
+    @Column(nullable = false)
     private String college;
 
+    @Column(nullable = false)
     private String department;
 
     private String major;
 
+    @Column(nullable = false)
     private String studentId;
 
     private int year;
 
+    @Column(nullable = false)
     private String introduce;
 
     private String club;
@@ -54,10 +61,13 @@ public class Mentor {
 
     private String instarAddress;
 
+    @Column(nullable = false)
     private String phoneNo;
 
+    @Column(nullable = false)
     private String country;
 
+    @Column(nullable = false)
     private String city;
 
     @Embedded
@@ -65,6 +75,7 @@ public class Mentor {
             @AttributeOverride(name="uploadFileName", column = @Column(name="STUDENT_INFO_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="STUDENT_INFO_STORE_NAME")),
     })
+    @Column(nullable = false)
     private UploadFile studentInfo;
 
     private String answerPercent;
@@ -73,6 +84,7 @@ public class Mentor {
 
     private int followNo;
 
+    @Column(nullable = false)
     private LocalDateTime submitDate;
 
     //멘토 회원가입시

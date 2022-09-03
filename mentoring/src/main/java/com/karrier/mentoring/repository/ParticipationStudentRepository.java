@@ -11,4 +11,8 @@ public interface ParticipationStudentRepository extends JpaRepository<Participat
     List<ParticipationStudent> findByProgramNo(Long programNo);
 
     List<ParticipationStudent> findByEmail(String email);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }

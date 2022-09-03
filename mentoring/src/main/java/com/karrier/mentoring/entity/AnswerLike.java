@@ -22,7 +22,6 @@ public class AnswerLike implements Serializable {
     private long questionNo;
 
     @Id
-    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

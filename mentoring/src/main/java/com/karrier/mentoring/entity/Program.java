@@ -19,7 +19,8 @@ public class Program {
 
     @Id
     private long programNo;
-    
+
+    @Column(nullable = false)
     private String email;
 
     @Embedded
@@ -29,34 +30,44 @@ public class Program {
             @AttributeOverride(name="storeFileName", column = @Column(name="MAIN_IMAGE_STORE_NAME")),
 
     })
+    @Column(nullable = false)
     private UploadFile mainImage;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String shortIntroduce;
 
+    @Column(nullable = false)
     private Boolean onlineOffline; //온라인이 true
 
     private String offlinePlace; // onlineOffline이 false일시에만
 
+    @Column(nullable = false)
     private String openDate;
 
+    @Column(nullable = false)
     private String closeDate;
 
+    @Column(nullable = false)
     private String runningTime;
 
     private int maxPeople;
 
     private int price;
 
+    @Column(nullable = false)
     private LocalDateTime createDate;
 
     private LocalDateTime tempDate;
 
+    @Column(nullable = false)
     private LocalDateTime modifiedDate;
 
     private int applyPeople;
 
+    @Column(nullable = false)
     private String state;
 
     private int likeCount;
@@ -65,6 +76,7 @@ public class Program {
 
     private String tag;
 
+    @Column(nullable = false)
     private Boolean programState;
 
 
