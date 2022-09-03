@@ -3,10 +3,7 @@ package com.karrier.mentoring.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -23,6 +20,7 @@ public class WishList implements Serializable {
     @Id
     private String email;
 
+    @Column(nullable = false)
     private LocalDateTime wishDate;
 
     public static WishList createWishList(long programNo, String email){

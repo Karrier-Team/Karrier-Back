@@ -19,7 +19,8 @@ public class Program {
 
     @Id
     private long programNo;
-    
+
+    @Column(nullable = false)
     private String email;
 
     @Embedded
@@ -49,6 +50,7 @@ public class Program {
 
     private int price;
 
+    @Column(nullable = false)
     private LocalDateTime createDate;
 
     private LocalDateTime tempDate;
@@ -65,6 +67,7 @@ public class Program {
 
     private String tag;
 
+    @Column(nullable = false)
     private Boolean programState;
 
 
