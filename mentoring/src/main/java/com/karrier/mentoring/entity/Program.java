@@ -61,8 +61,7 @@ public class Program {
     private LocalDateTime createDate;
 
     private LocalDateTime tempDate;
-
-    @Column(nullable = false)
+    
     private LocalDateTime modifiedDate;
 
     private int applyPeople;
