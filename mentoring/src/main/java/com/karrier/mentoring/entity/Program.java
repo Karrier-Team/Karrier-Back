@@ -30,27 +30,20 @@ public class Program {
             @AttributeOverride(name="storeFileName", column = @Column(name="MAIN_IMAGE_STORE_NAME")),
 
     })
-    @Column(nullable = false)
     private UploadFile mainImage;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String shortIntroduce;
 
-    @Column(nullable = false)
     private Boolean onlineOffline; //온라인이 true
 
     private String offlinePlace; // onlineOffline이 false일시에만
 
-    @Column(nullable = false)
     private String openDate;
 
-    @Column(nullable = false)
     private String closeDate;
 
-    @Column(nullable = false)
     private String runningTime;
 
     private int maxPeople;
@@ -61,12 +54,11 @@ public class Program {
     private LocalDateTime createDate;
 
     private LocalDateTime tempDate;
-    
+
     private LocalDateTime modifiedDate;
 
     private int applyPeople;
 
-    @Column(nullable = false)
     private String state;
 
     private int likeCount;

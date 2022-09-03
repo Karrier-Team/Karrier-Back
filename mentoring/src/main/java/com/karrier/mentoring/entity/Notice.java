@@ -36,10 +36,8 @@ public class Notice {
     @Column(nullable = false)
     private String registerWriter;
 
-    @Column(nullable = false)
     private LocalDateTime modifyDate;
 
-    @Column(nullable = false)
     private String modifyWriter;
 
     @Column(nullable = false)
