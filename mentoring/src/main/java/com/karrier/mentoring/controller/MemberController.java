@@ -208,9 +208,16 @@ public class MemberController {
     }
 
     @PostMapping(value = "/password/change")
-    public void sendPwdChange(@RequestParam(required = true) String email){
+    public ResponseEntity<String> sendPwdChange(@RequestParam(required = true) String email) throws Exception {
         System.out.println("email : "+email);
         emailService.sendSimpleMessage(email);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @PostMapping(value = "/password/email/verify")
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam(required = true) String token){
+        boolean result = emailService.verifyEmail(token);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 

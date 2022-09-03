@@ -1,29 +1,51 @@
 package com.karrier.mentoring.service.mail;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
+import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
+import javax.transaction.Transactional;
 
+@Transactional
+@RequiredArgsConstructor
 @Service
 public class PwdCertEmailServiceImpl implements EmailService{
 
-    @Autowired
-    JavaMailSender javaMailSender;
 
-    private MimeMessage createMessage(String to)throws Exception{
+    private final JavaMailSender javaMailSender;
 
-        String emailKey = EmailService.createKey();
+    private final MemberService memberService;
+
+    private final EmailTokenService emailTokenService;
+
+    private void validateExistEmailAndSocialMember(String to){
+        Member member = memberService.getMember(to);
+        if(member==null){
+            throw new IllegalArgumentException("회원 등록된 사용자 이메일이 없습니다.");
+        }
+        else {
+            if (memberService.isSocialMember(member)) {
+                throw new IllegalArgumentException("Social 계정으로 회원가입 된 유저는 비밀번호를 변경 할 수 없습니다.");
+            }
+        }
+    }
+
+    @Override
+    public MimeMessage createMessage(String to) throws Exception{
+
+        // 존재하는 이메일인지 그리고 소셜 멤버인지 필터
+        //validateExistEmailAndSocialMember(to);
+
+        // 현재는 보내는 사람의 id(PK)가 receiver의 email이다. // 추후 변경 가능
+        String emailToken = emailTokenService.createEmailToken(to,to);
 
         System.out.println("보내는 대상 : "+ to);
-        System.out.println("인증 번호 : "+emailKey);
+        System.out.println("인증 번호 : "+emailToken);
 
         MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -42,7 +64,7 @@ public class PwdCertEmailServiceImpl implements EmailService{
         msgg+= "<h3 style='color:blue;'>인증 코드입니다.</h3>";
         msgg+= "<div style='font-size:130%'>";
         msgg+= "CODE : <strong>";
-        msgg+= emailKey+"</strong><div><br/> ";
+        msgg+= emailToken+"</strong><div><br/> ";
         msgg+= "</div>";
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("tsi0521o@gmail.com","Karrier"));//보내는 사람
@@ -51,30 +73,19 @@ public class PwdCertEmailServiceImpl implements EmailService{
     }
 
     @Override
-    public void sendSimpleMessage(String to) {
-        try {
-            MimeMessage message = createMessage(to);
-            javaMailSender.send(message);
-        }
-        catch (AddressException e){
-            e.printStackTrace();
-            throw new IllegalArgumentException("메세지 전송과정에서 AddressException이 발생했습니다.");
-        }
-        catch (MessagingException e){
-            e.printStackTrace();
-            throw new IllegalArgumentException("메세지 전송과정에서 MessagingException이 발생했습니다.");
-        }
-        catch (MailException e){
-            e.printStackTrace();
-            throw new IllegalArgumentException("메세지 전송과정에서 MailException이 발생했습니다.");
-        }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("메세지 전송과정에서 UnsupportedEncodingException이 발생했습니다.");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("메세지 전송과정에서 Exception이 발생했습니다.");
-        }
+    public boolean verifyEmail(String token) {
+
+        // 이메일 토큰을 찾아옴
+        EmailToken findEmailToken = emailTokenService.findByTokenAndExpirationDateAfterAndExpired(token);
+        // 사용 완료
+        findEmailToken.setTokenToUsed();
+
+        return true;
+    }
+
+    @Override
+    public void sendSimpleMessage(String to) throws Exception {
+        MimeMessage message = createMessage(to);
+        javaMailSender.send(message);
     }
 }

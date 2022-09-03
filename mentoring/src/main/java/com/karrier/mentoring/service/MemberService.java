@@ -132,6 +132,15 @@ public class MemberService implements UserDetailsService {
         }
     }
 
+    // Social Login 유저인지 확인
+    public boolean isSocialMember(Member member){
+        if(member.getPassword() == null)
+            return true;
+        else
+            return false;
+    }
+
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(email);

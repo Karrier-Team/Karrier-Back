@@ -1,30 +1,16 @@
 package com.karrier.mentoring.service.mail;
 
+import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
 // 추후 이메일 서비스의 확정성을 고려
 public interface EmailService {
     // 메세지 전송
-    public void sendSimpleMessage(String to);
+    public void sendSimpleMessage(String to) throws Exception;
 
-    // 인증번호 만들기
-    public static String createKey() {
-        StringBuffer key = new StringBuffer();
-        Random rnd = new Random();
-        for (int i = 0; i < 6; i++) {
-            int index = rnd.nextInt(3);
-            switch (index) {
-                case 0:
-                    key.append((char)((rnd.nextInt(26)) + 97));
-                    break;
-                case 1:
-                    key.append((char)((rnd.nextInt(26)) + 65));
-                    break;
-                case 2:
-                    key.append((rnd.nextInt(10)));
-                    break;
-            }
-        }
-        return key.toString();
-    }
+    //이메일 만들기
+    public MimeMessage createMessage(String to) throws Exception;
+
+    //이메일 인증
+    public boolean verifyEmail(String token);
 }
