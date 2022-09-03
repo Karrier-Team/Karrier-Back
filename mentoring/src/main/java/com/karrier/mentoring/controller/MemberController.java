@@ -2,6 +2,7 @@ package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
+import com.karrier.mentoring.dto.MemberPasswordDto;
 import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.entity.UploadFile;
 import com.karrier.mentoring.repository.MemberRepository;
@@ -207,18 +208,34 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @PostMapping(value = "/password/change")
-    public ResponseEntity<String> sendPwdChange(@RequestParam(required = true) String email) throws Exception {
-        System.out.println("email : "+email);
+    @PostMapping(value = "/change/password")
+    public ResponseEntity<String> sendPasswordChangeTokenEmail(@RequestParam(required = true) String email) throws Exception {
         emailService.sendSimpleMessage(email);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @PostMapping(value = "/password/email/verify")
+    @PutMapping(value = "/change/password")
+    public ResponseEntity<String> changePasswordWithToken(@Valid MemberPasswordDto memberPasswordDto, BindingResult bindingResult) {
+        //빈칸있을 경우
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+        }
+        boolean passwordChangeCheck = memberService.changePasswordWithToken(memberPasswordDto,passwordEncoder);
+        if(passwordChangeCheck){
+            return ResponseEntity.status(HttpStatus.OK).body("password change success");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body("password change failed");
+        }
+}
+
+    @PostMapping(value = "/verify/password/token")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam(required = true) String token){
         boolean result = emailService.verifyEmail(token);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+
 
 
 }

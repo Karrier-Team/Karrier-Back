@@ -22,12 +22,16 @@ public class EmailToken {
     @Column(name = "id", unique = true)
     private Long id;
 
+    @Column(nullable = false)
     private String token;
 
+    @Column(nullable = false)
     private LocalDateTime expirationDate;
 
+    @Column(nullable = false)
     private boolean expired;
 
+    @Column(nullable = false)
     private String memberEmail;
 
     // 이메일 인증 토큰 생성

@@ -1,5 +1,6 @@
 package com.karrier.mentoring.service.mail;
 
+import com.karrier.mentoring.auth.SessionMember;
 import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -22,6 +24,8 @@ public class PwdCertEmailServiceImpl implements EmailService{
     private final MemberService memberService;
 
     private final EmailTokenService emailTokenService;
+
+    private final HttpSession httpSession;
 
     private void validateExistEmailAndSocialMember(String to){
         Member member = memberService.getMember(to);
@@ -79,6 +83,8 @@ public class PwdCertEmailServiceImpl implements EmailService{
         EmailToken findEmailToken = emailTokenService.findByTokenAndExpirationDateAfterAndExpired(token);
         // 사용 완료
         findEmailToken.setTokenToUsed();
+        // 비밀번호 수정을 진행하는 사용자의 아이디를 세션에 등록한다.
+        httpSession.setAttribute("verifiedMemberEmail", findEmailToken.getMemberEmail());
 
         return true;
     }
