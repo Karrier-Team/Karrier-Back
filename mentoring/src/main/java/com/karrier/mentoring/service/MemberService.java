@@ -2,6 +2,9 @@ package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.dto.MemberPasswordDto;
 import com.karrier.mentoring.entity.*;
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.BadRequestException;
+import com.karrier.mentoring.http.error.exception.NotFoundException;
 import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -153,29 +156,26 @@ public class MemberService {
     }
 
     @Transactional
-    public boolean changePasswordWithToken(MemberPasswordDto memberPasswordDto, PasswordEncoder passwordEncoder){
+    public void changePasswordWithToken(MemberPasswordDto memberPasswordDto, PasswordEncoder passwordEncoder){
         //사용자 email 얻기
         Object emailObject = httpSession.getAttribute("verifiedMemberEmail");
-        if(emailObject==null){
-            return false;
-        }
-        String email = emailObject.toString();
-        System.out.println("세션에 등록된 사용자 이메일 : "+ email);
+        if(emailObject==null)
+            throw new NotFoundException(ErrorCode.VERIFIED_EMAIL_NOT_FOUND);
 
-        //DB에 저장된 패스워드 가져와서 사용자가 입력한 패스워드와 일치 확인
+        String email = emailObject.toString();
+
+        //인증된 이메일을 가진 멤버 객체를 가져온다.
         Member member = getMember(email);
+        if(member==null)
+            throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
 
         //새 비밀번호와 비밀번호 확인 일치 체크
-        if (memberPasswordDto.getNewPassword().equals(memberPasswordDto.getPasswordCheck())) {
-            member.updatePassword(member, memberPasswordDto, passwordEncoder);
-            modifyMember(member);
-            System.out.println(member.toString());
-            httpSession.removeAttribute("verifiedMemberEmail");
-            return true;
-        }
-        else {
-            return false;
-        }
+        if (!memberPasswordDto.getNewPassword().equals(memberPasswordDto.getPasswordCheck()))
+            throw new BadRequestException(ErrorCode.PASSWORD_CHECK_MISMATCH);
+
+        member.updatePassword(member, memberPasswordDto, passwordEncoder);
+        modifyMember(member);
+        httpSession.removeAttribute("verifiedMemberEmail");
     }
 
 }
