@@ -6,6 +6,7 @@ import com.karrier.mentoring.dto.MemberPasswordDto;
 import com.karrier.mentoring.dto.ParticipationStudentFormDto;
 import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.http.BasicResponse;
+import com.karrier.mentoring.http.SuccessDataResponse;
 import com.karrier.mentoring.http.SuccessResponse;
 import com.karrier.mentoring.http.error.ErrorCode;
 import com.karrier.mentoring.http.error.exception.*;
@@ -141,7 +142,7 @@ public class MemberController {
         Member member = memberRepository.findByEmail(email);
         String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<String>(profileImageUrl));
     }
 
     //프로필 변경 요청시
