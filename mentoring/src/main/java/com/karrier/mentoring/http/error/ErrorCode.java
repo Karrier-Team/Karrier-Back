@@ -8,16 +8,27 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     /* 400 BAD_REQUEST : 잘못된 요청 */
+    PASSWORD_CHECK_MISMATCH(HttpStatus.BAD_REQUEST, "비밀번호 확인이 일치하지 않습니다."),
+    ACCOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "아이디 혹은 비밀번호가 틀렸습니다"),
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다"),
+
+    BLANK_FORM(HttpStatus.BAD_REQUEST, "필수 입력 값이 비었습니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "권한이 없는 사용자 입니다."),
 
+
     /* 403 FORBIDDEN : 해당 권한으로 접근이 허락 되지 않는 정보*/
     AUTH_ENTRY_DENIED(HttpStatus.FORBIDDEN, "유효한 토큰이 아닙니다."),
 
+
+
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버 정보를 찾을 수 없습니다."),
+
     /* 409 CONFLICT : DB 데이터 관리 충돌 */
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다"),
 
     /* 500 핸들링 하지 않은 에러 */
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러입니다.");

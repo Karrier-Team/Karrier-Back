@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MemberNotFoundException extends RuntimeException{
+public class ConflictException extends RuntimeException{
     private final ErrorCode errorCode;
 }

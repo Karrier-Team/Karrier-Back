@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class UnAuthorizedMemberException extends RuntimeException{
+public class ForbiddenException extends RuntimeException{
     private final ErrorCode errorCode;
 }

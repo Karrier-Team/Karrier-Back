@@ -63,7 +63,7 @@ public class S3Uploader {
 
     public void deleteMainImage(String mainImageStoreName) { //프로그램 메인 이미지 삭제
         try{
-            amazonS3Client.deleteObject(bucket+"/main_image",mainImageStoreName );
+            amazonS3Client.deleteObject(bucket+"/main-image",mainImageStoreName );
         }catch(Exception e){
             e.printStackTrace();
         }
