@@ -1,5 +1,7 @@
 package com.karrier.mentoring.service.mail;
 
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class EmailTokenService {
         Optional<EmailToken> emailToken = emailTokenRepository
                 .findByTokenAndExpirationDateAfterAndExpired(emailTokenId, LocalDateTime.now(), false);
         // 토큰이 없다면 예외 발생
-        return emailToken.orElseThrow(() -> new IllegalArgumentException("인증 Token 정보가 일치하지 않습니다."));
+        return emailToken.orElseThrow(() -> new NotFoundException(ErrorCode.TOKEN_NOT_FOUND));
     }
 
 }

@@ -56,7 +56,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorResponse.toResponseEntity(conflictException.getErrorCode(),request);
     }
 
+    //415
+    @ExceptionHandler(value = ConflictException.class)
+    protected ResponseEntity<ErrorResponse> handleUnsupportedMediaTypeException(HttpServletRequest request, UnsupportedMediaTypeException unsupportedMediaTypeException) {
+        log.error("ErrorExceptionURI : " + request.getRequestURI());
+        log.error("handleUnsupportedMediaTypeException throw Exception : {}", unsupportedMediaTypeException.getErrorCode());
+        return ErrorResponse.toResponseEntity(unsupportedMediaTypeException.getErrorCode(),request);
+    }
+
     //500
+    @ExceptionHandler( value = InternalServerException.class)
+    protected ResponseEntity<ErrorResponse> handleInternalServerException(HttpServletRequest request,InternalServerException internalServerException) {
+        log.error("ErrorExceptionURI : " + request.getRequestURI());
+        log.error("handleInternalServerException throw Exception : {}", internalServerException.getErrorCode());
+        return ErrorResponse.toResponseEntity(internalServerException.getErrorCode(),request);
+    }
+    // unknown
     @ExceptionHandler( value = Exception.class)
     protected ResponseEntity<ErrorResponse> handleUnknownException(HttpServletRequest request,Exception e) {
         log.error("ErrorExceptionURI : " + request.getRequestURI());
