@@ -2,6 +2,7 @@ package com.karrier.mentoring.entity;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
+import com.karrier.mentoring.dto.MemberPasswordDto;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -109,9 +110,9 @@ public class Member {
     }
 
     //비밀번호 변경시
-    public static Member updatePassword(Member member, MemberManagePasswordDto memberManagePasswordDto, PasswordEncoder passwordEncoder) {
+    public static Member updatePassword(Member member, MemberPasswordDto MemberPasswordDto, PasswordEncoder passwordEncoder) {
 
-        String password = passwordEncoder.encode(memberManagePasswordDto.getNewPassword());
+        String password = passwordEncoder.encode(MemberPasswordDto.getNewPassword());
         member.setPassword(password);
 
         return member;

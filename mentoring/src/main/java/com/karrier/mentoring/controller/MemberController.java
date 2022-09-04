@@ -2,13 +2,13 @@ package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
-import com.karrier.mentoring.dto.ParticipationStudentFormDto;
-import com.karrier.mentoring.entity.*;
-import com.karrier.mentoring.repository.*;
-import com.karrier.mentoring.service.FollowService;
+import com.karrier.mentoring.dto.MemberPasswordDto;
+import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.UploadFile;
+import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.service.MemberService;
-import com.karrier.mentoring.service.ParticipationStudentService;
 import com.karrier.mentoring.service.S3Uploader;
+import com.karrier.mentoring.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +36,9 @@ public class MemberController {
     private final S3Uploader s3Uploader;
 
     public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/";
+
+    private final EmailService emailService;
+
     //회원가입 요청시
     @PostMapping(value = "/new")
     public ResponseEntity<Object> memberForm(@Valid MemberFormDto memberFormDto, BindingResult bindingResult) {
@@ -204,4 +207,35 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+
+    @PostMapping(value = "/change/password")
+    public ResponseEntity<String> sendPasswordChangeTokenEmail(@RequestParam(required = true) String email) throws Exception {
+        emailService.sendSimpleMessage(email);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @PutMapping(value = "/change/password")
+    public ResponseEntity<String> changePasswordWithToken(@Valid MemberPasswordDto memberPasswordDto, BindingResult bindingResult) {
+        //빈칸있을 경우
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+        }
+        boolean passwordChangeCheck = memberService.changePasswordWithToken(memberPasswordDto,passwordEncoder);
+        if(passwordChangeCheck){
+            return ResponseEntity.status(HttpStatus.OK).body("password change success");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body("password change failed");
+        }
+}
+
+    @PostMapping(value = "/verify/password/token")
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam(required = true) String token){
+        boolean result = emailService.verifyEmail(token);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+
+
+
 }

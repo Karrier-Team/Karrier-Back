@@ -1,28 +1,24 @@
 package com.karrier.mentoring.service;
 
-import com.karrier.mentoring.controller.MemberController;
-import com.karrier.mentoring.dto.ReviewListDto;
+import com.karrier.mentoring.dto.MemberPasswordDto;
 import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.repository.*;
-import com.karrier.mentoring.entity.Member;
-import com.karrier.mentoring.entity.Role;
-import com.karrier.mentoring.entity.Review;
-import com.karrier.mentoring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
     private final MemberRepository memberRepository;
 
@@ -43,6 +39,8 @@ public class MemberService implements UserDetailsService {
     private final ProgramRepository programRepository;
 
     private final S3Uploader s3Uploader;
+
+    private final HttpSession httpSession;
 
     //멤버 저장
     @Transactional
@@ -132,19 +130,38 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email);
+    // Social Login 유저인지 확인
+    public boolean isSocialMember(Member member){
+        if(member.getPassword() == null)
+            return true;
+        else
+            return false;
+    }
 
-        if (member == null) {
-            throw new UsernameNotFoundException(email);
+    @Transactional
+    public boolean changePasswordWithToken(MemberPasswordDto memberPasswordDto, PasswordEncoder passwordEncoder){
+        //사용자 email 얻기
+        Object emailObject = httpSession.getAttribute("verifiedMemberEmail");
+        if(emailObject==null){
+            return false;
         }
+        String email = emailObject.toString();
+        System.out.println("세션에 등록된 사용자 이메일 : "+ email);
 
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPassword())
-                .roles(member.getRole().toString())
-                .build();
+        //DB에 저장된 패스워드 가져와서 사용자가 입력한 패스워드와 일치 확인
+        Member member = getMember(email);
+
+        //새 비밀번호와 비밀번호 확인 일치 체크
+        if (memberPasswordDto.getNewPassword().equals(memberPasswordDto.getPasswordCheck())) {
+            member.updatePassword(member, memberPasswordDto, passwordEncoder);
+            modifyMember(member);
+            System.out.println(member.toString());
+            httpSession.removeAttribute("verifiedMemberEmail");
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 }
