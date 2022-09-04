@@ -4,6 +4,14 @@ import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
 import com.karrier.mentoring.dto.ParticipationStudentFormDto;
 import com.karrier.mentoring.entity.*;
+<<<<<<< Updated upstream
+=======
+import com.karrier.mentoring.http.BasicResponse;
+import com.karrier.mentoring.http.SuccessDataResponse;
+import com.karrier.mentoring.http.SuccessResponse;
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.*;
+>>>>>>> Stashed changes
 import com.karrier.mentoring.repository.*;
 import com.karrier.mentoring.service.FollowService;
 import com.karrier.mentoring.service.MemberService;
@@ -60,7 +68,11 @@ public class MemberController {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             Member newMember = memberService.saveMember(member);
 
+<<<<<<< Updated upstream
             return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
+=======
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Member>(newMember));
+>>>>>>> Stashed changes
 
         } catch (IllegalStateException e) { //이미 가입된 이메일일 경우
 
@@ -87,7 +99,11 @@ public class MemberController {
         Member updatedMember = Member.updateRecentlyLoginDate(member);
         Member savedMember = memberService.modifyMember(updatedMember);
 
+<<<<<<< Updated upstream
         return ResponseEntity.status(HttpStatus.OK).body(savedMember);
+=======
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Member>(savedMember));
+>>>>>>> Stashed changes
     }
 
     //비밀번호 변경 요청시
@@ -118,7 +134,11 @@ public class MemberController {
         Member updatedMember = Member.updatePassword(member, memberManagePasswordDto, passwordEncoder);
         Member savedMember = memberService.modifyMember(updatedMember);
 
+<<<<<<< Updated upstream
         return ResponseEntity.status(HttpStatus.OK).body(savedMember);
+=======
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Member>(savedMember));
+>>>>>>> Stashed changes
     }
 
     //프로필 변경 화면 띄웠을 경우 이전 프로필 사진 보여주기 위해
@@ -133,7 +153,13 @@ public class MemberController {
         Member member = memberRepository.findByEmail(email);
         String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
+<<<<<<< Updated upstream
         return ResponseEntity.status(HttpStatus.OK).body(profileImageUrl);
+=======
+        UploadFile uploadFile = new UploadFile(member.getProfileImage().getUploadFileName(), profileImageUrl);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(uploadFile));
+>>>>>>> Stashed changes
     }
 
     //프로필 변경 요청시
@@ -173,7 +199,11 @@ public class MemberController {
         //DB에 저장
         Member savedMember = memberService.modifyMember(updatedMember);
 
+<<<<<<< Updated upstream
         return ResponseEntity.status(HttpStatus.OK).body(savedMember);
+=======
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Member>(savedMember));
+>>>>>>> Stashed changes
     }
 
     @PostMapping(value = "/manage/nickname")
@@ -184,7 +214,11 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate nickname");
         }
         //중복이 아닐 경우
+<<<<<<< Updated upstream
         return ResponseEntity.status(HttpStatus.OK).body(nickname);
+=======
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<String>(nickname));
+>>>>>>> Stashed changes
     }
 
     @PostMapping(value = "/manage/delete")
@@ -205,4 +239,28 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+<<<<<<< Updated upstream
+=======
+
+    @PutMapping(value = "/change/password")
+    public ResponseEntity<String> changePasswordWithToken(@Valid MemberPasswordDto memberPasswordDto, BindingResult bindingResult) {
+        //빈칸있을 경우
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+        }
+        boolean passwordChangeCheck = memberService.changePasswordWithToken(memberPasswordDto,passwordEncoder);
+        if(passwordChangeCheck){
+            return ResponseEntity.status(HttpStatus.OK).body("password change success");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body("password change failed");
+        }
+}
+
+    @PostMapping(value = "/verify/password/token")
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam(required = true) String token){
+        boolean result = emailService.verifyEmail(token);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+>>>>>>> Stashed changes
 }

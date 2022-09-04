@@ -4,6 +4,13 @@ import com.karrier.mentoring.dto.QuestionListDto;
 import com.karrier.mentoring.dto.ReviewListDto;
 import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.entity.Question;
+import com.karrier.mentoring.http.BasicResponse;
+import com.karrier.mentoring.http.SuccessDataResponse;
+import com.karrier.mentoring.http.SuccessResponse;
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.BadRequestException;
+import com.karrier.mentoring.http.error.exception.NotFoundException;
+import com.karrier.mentoring.http.error.exception.UnAuthorizedException;
 import com.karrier.mentoring.repository.QuestionRepository;
 import com.karrier.mentoring.dto.FollowShowDto;
 import com.karrier.mentoring.dto.ProgramViewDto;
@@ -51,22 +58,24 @@ public class MyPageController {
 
     //나의 전체 질문 리스트 띄우기
     @GetMapping("/manage/question")
-    public ResponseEntity<Object> questionList() {
+    public ResponseEntity<? extends BasicResponse> questionList() {
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
         List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);
-        if (myPageQuestionList == null) {//나의 질문이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(myPageQuestionList);
+
+        return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageQuestionList));
     }
 
     //나의 전체 질문 리스트 검색
     @GetMapping("/manage/question/search")
-    public ResponseEntity<Object> questionListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+    public ResponseEntity<? extends BasicResponse> questionListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+
+        if (category.isEmpty() || keyword.isEmpty()) { //빈칸있을 경우
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        }
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -74,7 +83,7 @@ public class MyPageController {
 
         List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);
         if (myPageQuestionList == null) {//나의 질문이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question");
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(null));
         }
         List<QuestionListDto> questionListDtoList = new ArrayList<>();
         for (QuestionListDto questionListDto : myPageQuestionList) {
@@ -89,29 +98,32 @@ public class MyPageController {
                 }
             }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(questionListDtoList);
+        if (questionListDtoList.size() == 0) {//검색 조건의 질문이 없을 때
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(null));
+        }
+        return ResponseEntity.ok().body(new SuccessDataResponse<>(questionListDtoList));
     }
 
     @PostMapping("/manage/question/solve")
-    public ResponseEntity<Object> questionSolve(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
+    public ResponseEntity<? extends BasicResponse> questionSolve(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
 
         Question byProgramNoAndQuestionNo = questionRepository.findByProgramNoAndQuestionNo(programNo, questionNo);
         if (byProgramNoAndQuestionNo == null) { // 해결할 프로그램이 존재하지 않을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question error");
+            throw new NotFoundException(ErrorCode.QUESTION_NOT_FOUND);
         }
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
         if (!email.equals(byProgramNoAndQuestionNo.getEmail())) { //작성자와 해결 누른사람이 일치하지 않을 때
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not writer error");
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
         }
         Question question = myPageService.solveQuestion(byProgramNoAndQuestionNo);//해결완료로 변경
-        return ResponseEntity.status(HttpStatus.OK).body(question);
+        return ResponseEntity.ok().body(new SuccessDataResponse<>(question));
     }
 
     //나의 전체 리뷰 리스트 띄우기
     @GetMapping("/manage/review")
-    public ResponseEntity<Object> reviewList() {
+    public ResponseEntity<? extends BasicResponse> reviewList() {
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -119,14 +131,18 @@ public class MyPageController {
 
         List<ReviewListDto> myPageReviewList = communityReviewService.findMyPageReviewList(email);
         if (myPageReviewList == null) { //나의 수강후기 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(null));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(myPageReviewList);
+        return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageReviewList));
     }
 
     //나의 전체 리뷰 리스트 검색
     @GetMapping("/manage/review/search")
-    public ResponseEntity<Object> reviewListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+    public ResponseEntity<? extends BasicResponse> reviewListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+
+        if (category.isEmpty() || keyword.isEmpty()) { //빈칸있을 경우
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        }
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -134,7 +150,7 @@ public class MyPageController {
 
         List<ReviewListDto> myPageReviewList = communityReviewService.findMyPageReviewList(email);
         if (myPageReviewList == null) { //나의 수강후기 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(null));
         }
         List<ReviewListDto> reviewListDtoList = new ArrayList<>();
         for (ReviewListDto reviewListDto : myPageReviewList) {
@@ -149,7 +165,7 @@ public class MyPageController {
                 }
             }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(reviewListDtoList);
+        return ResponseEntity.ok().body(new SuccessDataResponse<>(reviewListDtoList));
     }
 
     @GetMapping(value = "/participation")
