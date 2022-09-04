@@ -5,10 +5,7 @@ import com.karrier.mentoring.key.QuestionCommentKey;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,10 +25,13 @@ public class QuestionComment implements Serializable {
     @Id
     private long commentNo;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime commentDate;
 
     //questionCommentFormDto QuestionComment형태로 변환

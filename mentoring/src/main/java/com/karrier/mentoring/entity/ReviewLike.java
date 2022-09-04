@@ -22,7 +22,6 @@ public class ReviewLike implements Serializable {
     private long reviewNo;
 
     @Id
-    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

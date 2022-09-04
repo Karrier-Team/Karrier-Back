@@ -24,16 +24,17 @@ public class Member {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
     private String nickname;
 
     private boolean sleep;
 
-
     private boolean alarm;
 
-    @Column(updatable = false)
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createAccountDate;
 
     private LocalDateTime recentlyLoginDate;

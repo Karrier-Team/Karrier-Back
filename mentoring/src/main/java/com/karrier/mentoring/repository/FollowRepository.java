@@ -15,4 +15,8 @@ public interface FollowRepository extends JpaRepository<Follow, FollowKey> {
     void deleteByMemberEmailAndMentorEmail(String memberEmail, String mentorEmail);
 
     List<Follow> findByMemberEmail(String memberEmail);
+
+    long deleteByMentorEmail(String mentorEmail);
+
+    long deleteByMemberEmail(String memberEmail);
 }

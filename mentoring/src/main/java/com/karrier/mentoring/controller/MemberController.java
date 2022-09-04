@@ -3,9 +3,15 @@ package com.karrier.mentoring.controller;
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
 import com.karrier.mentoring.dto.MemberPasswordDto;
-import com.karrier.mentoring.entity.Member;
-import com.karrier.mentoring.entity.UploadFile;
-import com.karrier.mentoring.repository.MemberRepository;
+import com.karrier.mentoring.dto.ParticipationStudentFormDto;
+import com.karrier.mentoring.entity.*;
+import com.karrier.mentoring.http.BasicResponse;
+import com.karrier.mentoring.http.SuccessResponse;
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.MemberNotFoundException;
+import com.karrier.mentoring.http.error.exception.UnAuthorizedMemberException;
+import com.karrier.mentoring.repository.*;
+import com.karrier.mentoring.service.FollowService;
 import com.karrier.mentoring.service.MemberService;
 import com.karrier.mentoring.service.S3Uploader;
 import com.karrier.mentoring.service.mail.EmailService;
@@ -22,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/members")
 @RestController
 @RequiredArgsConstructor
@@ -190,22 +197,22 @@ public class MemberController {
     }
 
     @PostMapping(value = "/manage/delete")
-    public ResponseEntity<String> deleteMember(@RequestParam String email) {
+    public ResponseEntity<? extends BasicResponse>  deleteMember(@RequestParam String email) {
 
         Member byEmail = memberRepository.findByEmail(email);
         if (byEmail == null) { //해당 이메일의 회원정보를 찾을 수 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no member error");
+            throw new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
         }
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String myEmail = ((UserDetails) principal).getUsername();
 
         if (!myEmail.equals(email)) { //삭제하려는 계정과 로그인된 계정이 다를 경우
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("not match email error");
+            throw new UnAuthorizedMemberException(ErrorCode.UNAUTHORIZED_USER);
         }
         memberService.deleteMember(byEmail);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        return ResponseEntity.ok().body(new SuccessResponse());
     }
 
     @PostMapping(value = "/change/password")

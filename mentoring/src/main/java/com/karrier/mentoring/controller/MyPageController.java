@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/my-page")
 @RestController
 @RequiredArgsConstructor
@@ -63,6 +64,34 @@ public class MyPageController {
         return ResponseEntity.status(HttpStatus.OK).body(myPageQuestionList);
     }
 
+    //나의 전체 질문 리스트 검색
+    @GetMapping("/manage/question/search")
+    public ResponseEntity<Object> questionListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);
+        if (myPageQuestionList == null) {//나의 질문이 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question");
+        }
+        List<QuestionListDto> questionListDtoList = new ArrayList<>();
+        for (QuestionListDto questionListDto : myPageQuestionList) {
+            if (category.equals("질문제목")) {
+                if (questionListDto.getTitle().contains(keyword)) {//해당 키워드가 있을 경우
+                    questionListDtoList.add(questionListDto);
+                }
+            }
+            else if (category.equals("질문내용")) {
+                if (questionListDto.getContent().contains(keyword)) {//해당 키워드가 있을 경우
+                    questionListDtoList.add(questionListDto);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(questionListDtoList);
+    }
+
     @PostMapping("/manage/question/solve")
     public ResponseEntity<Object> questionSolve(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
 
@@ -93,6 +122,34 @@ public class MyPageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
         }
         return ResponseEntity.status(HttpStatus.OK).body(myPageReviewList);
+    }
+
+    //나의 전체 리뷰 리스트 검색
+    @GetMapping("/manage/review/search")
+    public ResponseEntity<Object> reviewListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        List<ReviewListDto> myPageReviewList = communityReviewService.findMyPageReviewList(email);
+        if (myPageReviewList == null) { //나의 수강후기 없을 때
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
+        }
+        List<ReviewListDto> reviewListDtoList = new ArrayList<>();
+        for (ReviewListDto reviewListDto : myPageReviewList) {
+            if (category.equals("후기제목")) {
+                if (reviewListDto.getTitle().contains(keyword)) {//해당 키워드가 있을 경우
+                    reviewListDtoList.add(reviewListDto);
+                }
+            }
+            else if (category.equals("후기내용")) {
+                if (reviewListDto.getContent().contains(keyword)) {//해당 키워드가 있을 경우
+                    reviewListDtoList.add(reviewListDto);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(reviewListDtoList);
     }
 
     @GetMapping(value = "/participation")

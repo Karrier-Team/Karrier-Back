@@ -13,4 +13,8 @@ public interface WishListRepository extends JpaRepository<WishList, WishListKey>
     WishList findByProgramNoAndEmail(long programNo, String email);
 
     List<WishList> findAllByEmail(String email);
+
+    long deleteByProgramNo(long programNo);
+
+    long deleteByEmail(String email);
 }
