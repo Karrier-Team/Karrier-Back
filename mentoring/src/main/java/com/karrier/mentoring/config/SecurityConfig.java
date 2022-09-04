@@ -1,7 +1,9 @@
 package com.karrier.mentoring.config;
 
+
+import com.karrier.mentoring.auth.CustomOAuth2UserService;
+import com.karrier.mentoring.auth.PrincipalDetailsService;
 import com.karrier.mentoring.handler.LoginSuccessfulHandler;
-import com.karrier.mentoring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,39 +26,49 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    MemberService memberService;
+    PrincipalDetailsService principalDetailsService;
+
+    @Autowired
+    CustomOAuth2UserService customOAuth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.formLogin()
-                .loginPage("/members/login")
-                .usernameParameter("email")
-                .failureUrl("/members/login/error")
-                .successHandler(new LoginSuccessfulHandler())
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                .logoutSuccessUrl("/");
-
-        http.authorizeRequests()
-                .mvcMatchers("/mentors/new").hasRole("USER")
-                .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
-                .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
-                .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
-                .mvcMatchers("/", "/members/**").permitAll()
-                .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
+        http
                 .cors()
                 .and()
-                .httpBasic();
-
-        http.csrf().disable();
-
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                    .csrf().disable()
+                .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .and()
+                    .headers().frameOptions().disable()
+                .and()
+                    .logout()
+                            .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                            .logoutSuccessUrl("/")
+                .and()
+                    .authorizeRequests()
+                    .mvcMatchers("/mentors/new").hasRole("USER")
+                    .mvcMatchers("community/**").hasAnyRole("USER", "MENTOR_WAIT")
+                    .mvcMatchers("members/manage/**", "/members/update-info/**").hasAnyRole("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
+                    .mvcMatchers("/mentors/manage/**").hasRole("MENTOR_APPROVE")
+                    .mvcMatchers("/", "/members/**","/members/password/change").permitAll()
+                    .mvcMatchers("/admin/**").hasRole("ADMIN")
+                    .mvcMatchers("/members/**", "wishList/addWishList", "participation/my/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                    .httpBasic()
+                .and()
+                    .formLogin()
+                        .loginPage("/members/login")
+                        .usernameParameter("email")
+                        .failureUrl("/members/login/error")
+                        .successHandler(new LoginSuccessfulHandler())
+                .and()
+                    .oauth2Login()
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService);
     }
 
     @Override
@@ -72,7 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.userDetailsService(memberService)
+        auth.userDetailsService(principalDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 

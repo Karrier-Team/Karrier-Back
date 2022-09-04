@@ -2,15 +2,15 @@ package com.karrier.mentoring.entity;
 
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.karrier.mentoring.dto.MemberPasswordDto;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "Member")
 @Getter
@@ -45,6 +45,30 @@ public class Member {
             @AttributeOverride(name="storeFileName", column = @Column(name="PROFILE_IMAGE_STORE_NAME")),
     })
     private UploadFile profileImage;
+
+    @Builder
+    public Member(String email, String nickname, Role role){
+        this.email = email;
+        this.nickname = nickname;
+        this.role = role;
+        this.createAccountDate = LocalDateTime.now();
+    }
+
+    // by 이승민
+    // 원래는 이런식으로 구현 하면 안됨.. 확장성 고려 안한 코드
+    // 정석은 Enum 안에서 문자열 값도 함께 선언해야되는데 현재 수정 시, 코드 구조 변경 사항이 커질듯..
+    public String getRoleKey(){
+        if(this.role == Role.USER)
+            return "USER";
+        else if(this.role == Role.MENTOR_WAIT)
+            return "MENTOR_WAIT";
+        else if(this.role == Role.MENTOR_WAIT)
+            return "MENTOR_WAIT";
+        else if(this.role == Role.MENTOR_APPROVE)
+            return "MENTOR_APPROVE";
+        else
+            return "ADMIN";
+    }
 
     //회원가입시 member 생성
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
@@ -87,9 +111,9 @@ public class Member {
     }
 
     //비밀번호 변경시
-    public static Member updatePassword(Member member, MemberManagePasswordDto memberManagePasswordDto, PasswordEncoder passwordEncoder) {
+    public static Member updatePassword(Member member, MemberPasswordDto MemberPasswordDto, PasswordEncoder passwordEncoder) {
 
-        String password = passwordEncoder.encode(memberManagePasswordDto.getNewPassword());
+        String password = passwordEncoder.encode(MemberPasswordDto.getNewPassword());
         member.setPassword(password);
 
         return member;
@@ -100,4 +124,5 @@ public class Member {
 
         return member;
     }
+
 }

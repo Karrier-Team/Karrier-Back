@@ -7,7 +7,10 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class MemberManagePasswordDto extends MemberPasswordDto {
+public class MemberPasswordDto {
     @NotBlank
-    String oldPassword;
+    String newPassword;
+
+    @NotBlank
+    String passwordCheck;
 }
