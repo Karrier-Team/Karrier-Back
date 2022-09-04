@@ -1,6 +1,5 @@
 package com.karrier.mentoring.service.mail;
 
-import com.karrier.mentoring.auth.SessionMember;
 import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.service.MemberService;
 import lombok.RequiredArgsConstructor;
