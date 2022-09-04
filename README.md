@@ -3,7 +3,7 @@
 - Team_Lead: MJY
 - Team_Design: LKH
 - Team_Planner: MJH
-- Team_Back: PJM, CJ
+- Team_Back: PJM, CJ, LSM
 - Team_Front: HHL, LSY
 
 
