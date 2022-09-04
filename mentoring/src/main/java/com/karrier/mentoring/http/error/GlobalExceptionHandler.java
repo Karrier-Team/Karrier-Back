@@ -57,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     //415
-    @ExceptionHandler(value = ConflictException.class)
+    @ExceptionHandler(value = UnsupportedMediaTypeException.class)
     protected ResponseEntity<ErrorResponse> handleUnsupportedMediaTypeException(HttpServletRequest request, UnsupportedMediaTypeException unsupportedMediaTypeException) {
         log.error("ErrorExceptionURI : " + request.getRequestURI());
         log.error("handleUnsupportedMediaTypeException throw Exception : {}", unsupportedMediaTypeException.getErrorCode());
