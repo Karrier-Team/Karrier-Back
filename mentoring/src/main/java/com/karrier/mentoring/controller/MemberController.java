@@ -69,7 +69,7 @@ public class MemberController {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             Member newMember = memberService.saveMember(member);
 
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(newMember));
 
         } catch (IllegalStateException e) { //이미 가입된 이메일일 경우
 
@@ -96,7 +96,7 @@ public class MemberController {
         Member updatedMember = Member.updateRecentlyLoginDate(member);
         Member savedMember = memberService.modifyMember(updatedMember);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(savedMember));
     }
 
     //비밀번호 변경 요청시
@@ -127,7 +127,7 @@ public class MemberController {
         Member updatedMember = Member.updatePassword(member, memberManagePasswordDto, passwordEncoder);
         Member savedMember = memberService.modifyMember(updatedMember);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(savedMember));
     }
 
     //프로필 변경 화면 띄웠을 경우 이전 프로필 사진 보여주기 위해
@@ -142,7 +142,9 @@ public class MemberController {
         Member member = memberRepository.findByEmail(email);
         String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<String>(profileImageUrl));
+        UploadFile uploadFile = new UploadFile(member.getProfileImage().getStoreFileName(), profileImageUrl);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(uploadFile));
     }
 
     //프로필 변경 요청시
@@ -181,10 +183,10 @@ public class MemberController {
         //DB에 저장
         Member savedMember = memberService.modifyMember(updatedMember);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(savedMember));
     }
 
-    @PostMapping(value = "/manage/nickname")
+    @GetMapping(value = "/manage/nickname")
     public ResponseEntity<? extends BasicResponse> modifyProfile(@RequestParam String nickname) {
 
         //중복된 닉네임일 경우
@@ -192,7 +194,7 @@ public class MemberController {
             throw new ConflictException(ErrorCode.DUPLICATE_NICKNAME);
         }
         //중복이 아닐 경우
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(nickname));
     }
 
     @PostMapping(value = "/manage/delete")
