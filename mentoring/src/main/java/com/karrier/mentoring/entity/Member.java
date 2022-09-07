@@ -101,12 +101,15 @@ public class Member {
         return member;
     }
 
-    //프로필 변경시 닉네임과 프로필 사진 변경
-    public static Member modifyProfile(Member member, UploadFile uploadFile, String nickname) {
-
-        member.setNickname(nickname);
+    //프로필 변경시 프로필 사진 변경
+    public static Member modifyProfile(Member member, UploadFile uploadFile) {
         member.setProfileImage(uploadFile);
+        return member;
+    }
 
+    //프로필 변경시 닉네임 변경
+    public static Member modifyNickName(Member member, String nickname) {
+        member.setNickname(nickname);
         return member;
     }
 

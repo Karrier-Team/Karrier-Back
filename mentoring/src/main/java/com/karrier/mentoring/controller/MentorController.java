@@ -5,6 +5,11 @@ import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.entity.Mentor;
 import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.entity.UploadFile;
+import com.karrier.mentoring.http.BasicResponse;
+import com.karrier.mentoring.http.SuccessDataResponse;
+import com.karrier.mentoring.http.SuccessResponse;
+import com.karrier.mentoring.http.error.ErrorCode;
+import com.karrier.mentoring.http.error.exception.BadRequestException;
 import com.karrier.mentoring.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,21 +44,21 @@ public class MentorController {
 
     //멘토 회원가입 요청시
     @PostMapping(value = "/new")
-    public ResponseEntity<Object> mentorForm(@Valid MentorFormDto mentorFormDto, BindingResult bindingResult, Model model) throws IOException {
+    public ResponseEntity<? extends BasicResponse> mentorForm(@Valid MentorFormDto mentorFormDto, BindingResult bindingResult, Model model) throws IOException {
 
         //필수입력 값을 입력하지 않은 경우
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //프로필 사진이 없을 때
         if (mentorFormDto.getProfileImageFile().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("profile image empty error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //프로필 사진이 없을 때
         if (mentorFormDto.getStudentInfoFile().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("student info file empty error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //유저 정보 가져오기
@@ -74,12 +79,12 @@ public class MentorController {
         //DB에 저장
         ArrayList<Object> objects = mentorService.createMentor(mentor, updatedMember);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(objects);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Object>(objects));
     }
 
     //멘토관리 - 기본정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/basic")
-    public ResponseEntity<MentorManageBasicDto> mentorManageBasic(){
+    public ResponseEntity<? extends BasicResponse> mentorManageBasic(){
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -89,15 +94,15 @@ public class MentorController {
         Mentor mentor = mentorService.getMentor(email);
         MentorManageBasicDto mentorManageBasicDto = MentorManageBasicDto.createMentorManageBasicDto(mentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(mentorManageBasicDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<MentorManageBasicDto>(mentorManageBasicDto));
     }
 
     //멘토관리 - 기본정보 변경 요청시
-    @PostMapping(value = "/manage/basic")
-    public ResponseEntity<Object> mentorManageBasic(@Valid MentorManageBasicDto mentorManageBasicDto, BindingResult bindingResult){
+    @PutMapping(value = "/manage/basic")
+    public ResponseEntity<? extends BasicResponse> mentorManageBasic(@Valid MentorManageBasicDto mentorManageBasicDto, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //사용자 email 얻기
@@ -111,12 +116,12 @@ public class MentorController {
         //멘토 정보 저장
         Mentor updatedMentorInfo = mentorService.updateMentor(updatedMentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedMentorInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Mentor>(updatedMentorInfo));
     }
 
     //멘토관리 - 상세정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/detail")
-    public ResponseEntity<MentorManageDetailDto> mentorManageDetail(){
+    public ResponseEntity<? extends BasicResponse> mentorManageDetail(){
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -126,14 +131,14 @@ public class MentorController {
         Mentor mentor = mentorService.getMentor(email);
         MentorManageDetailDto mentorManageDetailDto = MentorManageDetailDto.createMentorManageDetailDto(mentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(mentorManageDetailDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<MentorManageDetailDto>(mentorManageDetailDto));
     }
 
     //멘토관리 - 상세정보 변경 요청시
-    @PostMapping(value = "/manage/detail")
-    public ResponseEntity<Object> mentorManageDetail(@Valid MentorManageDetailDto mentorManageDetailDto, BindingResult bindingResult){
+    @PutMapping(value = "/manage/detail")
+    public ResponseEntity<? extends BasicResponse> mentorManageDetail(@Valid MentorManageDetailDto mentorManageDetailDto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //사용자 email 얻기
@@ -147,12 +152,12 @@ public class MentorController {
         //멘토 정보 저장
         Mentor updatedMentorInfo = mentorService.updateMentor(updatedMentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedMentorInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Mentor>(updatedMentorInfo));
     }
 
     //멘토관리 - 연락 정보 화면 띄울 때 이전 입력 정보 보여주기 위해
     @GetMapping(value = "/manage/contact")
-    public ResponseEntity<MentorManageContactDto> mentorManageContact(){
+    public ResponseEntity<? extends BasicResponse> mentorManageContact(){
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -162,15 +167,15 @@ public class MentorController {
         Mentor mentor = mentorService.getMentor(email);
         MentorManageContactDto mentorManageContactDto = MentorManageContactDto.createMentorManageContactDto(mentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(mentorManageContactDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<MentorManageContactDto>(mentorManageContactDto));
     }
 
     //멘토관리 - 연락 정보 변경 요청시
-    @PostMapping(value = "/manage/contact")
-    public ResponseEntity<Object> mentorManageContact(@Valid MentorManageContactDto mentorManageContactDto, BindingResult bindingResult){
+    @PutMapping(value = "/manage/contact")
+    public ResponseEntity<? extends BasicResponse> mentorManageContact(@Valid MentorManageContactDto mentorManageContactDto, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //사용자 email 얻기
@@ -184,95 +189,85 @@ public class MentorController {
         //멘토 정보 저장
         Mentor updatedMentorInfo = mentorService.updateMentor(updatedMentor);
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedMentorInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Mentor>(updatedMentorInfo));
     }
 
     //나의 프로그램 전체 질문 리스트 띄우기
     @GetMapping("/manage/question")
-    public ResponseEntity<Object> questionList() {
+    public ResponseEntity<? extends BasicResponse> questionList() {
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
         List<Program> programList = mentorService.getProgramList(email);
-
-        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no program");
-        }
         List<QuestionListDto> questionList = new ArrayList<>();
+        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
+        }
         for (Program program : programList) { // 해당 멘토의 모든 프로그램의 모든 질문 정보 가져오기
             List<QuestionListDto> questionList1 = communityQuestionService.findQuestionList(program.getProgramNo());
             if (questionList1 != null) {
                 questionList.addAll(questionList1);
             }
         }
-        if (questionList.size() == 0) {//해당 프로그램에 해당하는 질문이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question");
-        }
 
-        return ResponseEntity.status(HttpStatus.OK).body(questionList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
     }
 
     //나의 프로그램 전체 리뷰 리스트에서 검색할 경우 (질문제목, 질문내용, 닉네임)
     @GetMapping("/manage/question/search")
-    public ResponseEntity<Object> questionList(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+    public ResponseEntity<? extends BasicResponse> questionList(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
 
         if (category.isEmpty() || keyword.isEmpty()) { //빈칸있을 때
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
         List<Program> programList = mentorService.getProgramList(email);
-        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no program");
-        }
         List<QuestionListDto> questionList = new ArrayList<>();
+        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
+        }
         for (Program program : programList) { // 해당멘토의 모든 프로그램의 검색조건에 부합하는 질문 정보 가져오기
             List<QuestionListDto> questionList1 = communityQuestionService.QuestionSearchList(program.getProgramNo(), category, keyword);
             if (questionList1 != null) {
                 questionList.addAll(questionList1);
             }
         }
-        if (questionList.size() == 0) {//해당 프로그램에 해당하는 질문이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no question");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(questionList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
     }
 
     //나의 프로그램 전체 리뷰 리스트 띄우기
     @GetMapping("/manage/review")
-    public ResponseEntity<Object> reviewList() {
+    public ResponseEntity<? extends BasicResponse> reviewList() {
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
         List<Program> programList = mentorService.getProgramList(email);
-        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no program");
-        }
         List<ReviewListDto> reviewList = new ArrayList<>();
+        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
+        }
         for (Program program : programList) { // 해당 멘토의 모든 프로그램의 모든 질문 정보 가져오기
             List<ReviewListDto> reviewList1 = communityReviewService.findReviewList(program.getProgramNo());
             if (reviewList1 != null) {
                 reviewList.addAll(reviewList1);
             }
         }
-        if (reviewList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(reviewList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
     }
 
     //나의 프로그램 전체 리뷰 리스트에서 검색할 경우 (후기제목, 후기내용, 닉네임)
     @GetMapping("/manage/review/search")
-    public ResponseEntity<Object> reviewList(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
+    public ResponseEntity<? extends BasicResponse> reviewList(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
 
         if (category.isEmpty() || keyword.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("blank error");
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
         //사용자 email 얻기
@@ -280,19 +275,16 @@ public class MentorController {
         String email = ((UserDetails) principal).getUsername();
 
         List<Program> programList = mentorService.getProgramList(email);
-        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no program");
-        }
         List<ReviewListDto> reviewList = new ArrayList<>();
+        if (programList.size() == 0) {//해당 프로그램에 해당하는 데이터가 없을 때
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
+        }
         for (Program program : programList) { // 해당멘토의 모든 프로그램의 검색조건에 부합하는 질문 정보 가져오기
             List<ReviewListDto> reviewList1 = communityReviewService.ReviewSearchList(program.getProgramNo(), category, keyword);
             if (reviewList1 != null) {
                 reviewList.addAll(reviewList1);
             }
         }
-        if (reviewList.size() == 0) {//나의 프로그램의 리뷰가 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no review");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(reviewList);
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
     }
 }

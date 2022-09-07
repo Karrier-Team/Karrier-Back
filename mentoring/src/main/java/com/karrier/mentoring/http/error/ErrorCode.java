@@ -27,12 +27,18 @@ public enum ErrorCode {
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버 정보를 찾을 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 정보를 찾을 수 없습니다"),
+    QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "질문 정보를 찾을 수 없습니다"),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글 정보를 찾을 수 없습니다"),
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "답변 정보를 찾을 수 없습니다"),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "유효한 토큰 정보를 찾을 수 없습니다."),
     VERIFIED_EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "인증된 이메일 정보가 없습니다."),
 
     /* 409 CONFLICT : DB 데이터 관리 충돌 */
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다"),
+
+    DUPLICATE_LIKE(HttpStatus.CONFLICT, "이미 좋아요 한 회원입니다"),
 
     /* 415 UNSUPPORTED_MEDIA_TYPE : 지원하지 않는 미디어 타입 에러 */
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE,"지원하지 않는 미디어 타입입니다."),

@@ -1,5 +1,6 @@
 package com.karrier.mentoring.service;
 
+import com.karrier.mentoring.dto.MemberWithoutPasswordDto;
 import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.entity.Mentor;
 import com.karrier.mentoring.entity.Program;
@@ -31,7 +32,8 @@ public class MentorService {
     public ArrayList<Object> createMentor(Mentor mentor, Member member) {
 
         ArrayList<Object> objects = new ArrayList<>();
-        objects.add(memberRepository.save(member));
+        MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberRepository.save(member));
+        objects.add(memberWithoutPasswordDto);
         objects.add(mentorRepository.save(mentor));
 
         return objects;
