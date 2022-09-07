@@ -97,7 +97,7 @@ public class CommunityReviewController {
     }
 
     //수강후기 댓글 등록 요청
-    @PostMapping("/review/comment/new")
+    @PutMapping("/review/comment/new")
     public ResponseEntity<? extends BasicResponse> createComment(@Valid ReviewCommentFormDto reviewCommentFormDto, BindingResult bindingResult) {
         //빈칸있을 경우
         if (bindingResult.hasErrors()) {
@@ -150,7 +150,7 @@ public class CommunityReviewController {
     }
 
     //수강후기 삭제 요청시
-    @PostMapping("/review/delete")
+    @DeleteMapping("/review")
     public ResponseEntity<? extends BasicResponse> deleteReview(@RequestParam("programNo") long programNo, @RequestParam("reviewNo") long reviewNo) {
 
         Review review = communityReviewService.findReview(programNo, reviewNo);
@@ -169,7 +169,7 @@ public class CommunityReviewController {
     }
 
     //수강후기 댓글 삭제 요청시
-    @PostMapping("/review/comment/delete")
+    @DeleteMapping("/review/comment")
     public ResponseEntity<? extends BasicResponse> deleteComment(@RequestParam("programNo") long programNo, @RequestParam("reviewNo") long reviewNo) {
 
         Review review = communityReviewService.findReview(programNo, reviewNo);

@@ -107,7 +107,7 @@ public class MyPageController {
         return ResponseEntity.ok().body(new SuccessDataResponse<>(questionListDtoList));
     }
 
-    @PostMapping("/manage/question/solve")
+    @PutMapping("/manage/question/solve")
     public ResponseEntity<? extends BasicResponse> questionSolve(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
 
         Question byProgramNoAndQuestionNo = questionRepository.findByProgramNoAndQuestionNo(programNo, questionNo);

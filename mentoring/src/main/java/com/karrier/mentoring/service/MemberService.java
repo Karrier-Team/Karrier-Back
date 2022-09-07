@@ -58,7 +58,6 @@ public class MemberService {
     //멤버 저장
     @Transactional
     public Member saveMember(Member member) {
-
         validateDuplicateMember(member);
         return memberRepository.save(member);
     }

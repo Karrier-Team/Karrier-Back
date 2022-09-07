@@ -98,7 +98,7 @@ public class MentorController {
     }
 
     //멘토관리 - 기본정보 변경 요청시
-    @PostMapping(value = "/manage/basic")
+    @PutMapping(value = "/manage/basic")
     public ResponseEntity<? extends BasicResponse> mentorManageBasic(@Valid MentorManageBasicDto mentorManageBasicDto, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {
@@ -135,7 +135,7 @@ public class MentorController {
     }
 
     //멘토관리 - 상세정보 변경 요청시
-    @PostMapping(value = "/manage/detail")
+    @PutMapping(value = "/manage/detail")
     public ResponseEntity<? extends BasicResponse> mentorManageDetail(@Valid MentorManageDetailDto mentorManageDetailDto, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
@@ -171,7 +171,7 @@ public class MentorController {
     }
 
     //멘토관리 - 연락 정보 변경 요청시
-    @PostMapping(value = "/manage/contact")
+    @PutMapping(value = "/manage/contact")
     public ResponseEntity<? extends BasicResponse> mentorManageContact(@Valid MentorManageContactDto mentorManageContactDto, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {

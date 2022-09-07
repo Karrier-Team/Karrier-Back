@@ -94,7 +94,7 @@ public class CommunityQuestionController {
     }
 
     //질문 답변 등록 요청
-    @PostMapping({"/question/answer/new", "/question/answer/modify"})
+    @PutMapping({"/question/answer/new", "/question/answer"})
     public ResponseEntity<? extends BasicResponse> createAnswer(@Valid QuestionAnswerFormDto questionAnswerFormDto, BindingResult bindingResult) {
         //빈칸있을 경우
         if (bindingResult.hasErrors()) {
@@ -174,7 +174,7 @@ public class CommunityQuestionController {
     }
     
     //질문 수정 요청시
-    @PostMapping("/question/modify")
+    @PutMapping("/question")
     public ResponseEntity<? extends BasicResponse> modifyQuestion(@Valid QuestionFormDto questionFormDto, BindingResult bindingResult, @RequestParam("questionNo") long questionNo) {
         //빈칸있을 경우
         if (bindingResult.hasErrors()) {
@@ -197,7 +197,7 @@ public class CommunityQuestionController {
     }
 
     //질문 삭제 요청시
-    @PostMapping("/question/delete")
+    @DeleteMapping("/question")
     public ResponseEntity<? extends BasicResponse> deleteQuestion(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
 
         Question question = communityQuestionService.findQuestion(programNo, questionNo);
@@ -216,7 +216,7 @@ public class CommunityQuestionController {
     }
 
     //답변 삭제 요청시
-    @PostMapping("/question/answer/delete")
+    @DeleteMapping("/question/answer")
     public ResponseEntity<? extends BasicResponse> deleteAnswer(@RequestParam("programNo") long programNo, @RequestParam("questionNo") long questionNo) {
 
         Question question = communityQuestionService.findQuestion(programNo, questionNo);
@@ -262,7 +262,7 @@ public class CommunityQuestionController {
     }
 
     //댓글 수정 요청시
-    @PostMapping("/question/comment/modify")
+    @PutMapping("/question/comment")
     public ResponseEntity<? extends BasicResponse> modifyComment(@Valid QuestionCommentFormDto questionCommentFormDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors() || questionCommentFormDto.getCommentNo() == 0) { //빈칸있을 경우
@@ -286,7 +286,7 @@ public class CommunityQuestionController {
     }
 
     //댓글 삭제 요청시
-    @PostMapping("/question/comment/delete")
+    @DeleteMapping("/question/comment")
     public ResponseEntity<? extends BasicResponse> deleteComment(@ModelAttribute QuestionCommentFormDto questionCommentFormDto) {
 
         QuestionComment questionComment = questionCommentRepository.findByProgramNoAndQuestionNoAndCommentNo(questionCommentFormDto.getProgramNo(), questionCommentFormDto.getQuestionNo(), questionCommentFormDto.getCommentNo());
