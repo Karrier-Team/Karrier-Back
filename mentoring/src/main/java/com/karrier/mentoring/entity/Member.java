@@ -43,6 +43,7 @@ public class Member {
     @AttributeOverrides({
             @AttributeOverride(name="uploadFileName", column = @Column(name="PROFILE_IMAGE_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="PROFILE_IMAGE_STORE_NAME")),
+            @AttributeOverride(name="fileUrl", column = @Column(name="PROFILE_IMAGE_URL")),
     })
     private UploadFile profileImage;
 

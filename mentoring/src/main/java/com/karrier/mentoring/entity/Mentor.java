@@ -74,6 +74,7 @@ public class Mentor {
     @AttributeOverrides({
             @AttributeOverride(name="uploadFileName", column = @Column(name="STUDENT_INFO_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="STUDENT_INFO_STORE_NAME")),
+            @AttributeOverride(name="fileUrl", column = @Column(name="STUDENT_INFO_URL")),
     })
     @Column(nullable = false)
     private UploadFile studentInfo;

@@ -44,7 +44,7 @@ public class ReviewDetailDto {
 
     private boolean mentor;
 
-    public static ReviewDetailDto createReviewDetailDto(Review review, Program program, Member writer, String mentorName, String mentorProfileImage, String baseUrl, String myEmail) {
+    public static ReviewDetailDto createReviewDetailDto(Review review, Program program, Member writer, String mentorName, String mentorProfileImageUrl, String myEmail) {
 
         ReviewDetailDto reviewDetailDto = new ReviewDetailDto();
 
@@ -53,10 +53,10 @@ public class ReviewDetailDto {
         reviewDetailDto.setReviewNo(review.getReviewNo());
         reviewDetailDto.setWriterNickname(writer.getNickname());
         if (writer.getProfileImage() != null) { //프로필 사진이 있을 경우에만
-            reviewDetailDto.setWriterProfileImage(baseUrl + writer.getProfileImage().getStoreFileName());
+            reviewDetailDto.setWriterProfileImage(writer.getProfileImage().getFileUrl());
         }
         reviewDetailDto.setMentorName(mentorName);
-        reviewDetailDto.setMentorProfileImage(baseUrl + mentorProfileImage);
+        reviewDetailDto.setMentorProfileImage(mentorProfileImageUrl);
         reviewDetailDto.setTitle(review.getTitle());
         reviewDetailDto.setContent(review.getContent());
         reviewDetailDto.setComment(review.getComment());

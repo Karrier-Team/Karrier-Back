@@ -41,8 +41,6 @@ public class MemberController {
 
     private final S3Uploader s3Uploader;
 
-    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/";
-
     private final EmailService emailService;
 
     //회원가입 요청시
@@ -142,11 +140,8 @@ public class MemberController {
 
         //해당 member 정보에서 S3에 저장된 파일 이름 가져와서 url 전송
         Member member = memberRepository.findByEmail(email);
-        String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
-        UploadFile uploadFile = new UploadFile(member.getProfileImage().getStoreFileName(), profileImageUrl);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(uploadFile));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(member.getProfileImage()));
     }
 
     //프로필 이미지 변경 요청시
