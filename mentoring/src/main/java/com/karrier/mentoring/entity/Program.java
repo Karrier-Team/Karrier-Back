@@ -28,7 +28,7 @@ public class Program {
 
             @AttributeOverride(name="uploadFileName", column = @Column(name="MAIN_IMAGE_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="MAIN_IMAGE_STORE_NAME")),
-
+            @AttributeOverride(name="fileUrl", column = @Column(name="MAIN_IMAGE_URL")),
     })
     private UploadFile mainImage;
 

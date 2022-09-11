@@ -12,11 +12,14 @@ public class UploadFile {
 
     private String storeFileName;
 
+    private String fileUrl;
+
     protected UploadFile() {
     }
 
-    public UploadFile(String uploadFileName, String storeFileName) {
+    public UploadFile(String uploadFileName, String storeFileName, String fileUrl) {
         this.uploadFileName = uploadFileName;
         this.storeFileName = storeFileName;
+        this.fileUrl = fileUrl;
     }
 }
