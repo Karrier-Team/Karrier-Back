@@ -35,8 +35,12 @@ public class ParticipationStudentService{
         return participationStudentRepository.save(participationStudent);
     }
 
-    public List<ParticipationStudent> getParticipationStudentByEmail(String email){
+    public List<ParticipationStudent> getParticipationStudentsByEmail(String email){
         return participationStudentRepository.findByEmail(email);
+    }
+
+    public ParticipationStudent getParticipationStudentByEmailAndProgramNo(String email, long programNo){
+        return participationStudentRepository.findByEmailAndProgramNo(email, programNo);
     }
 
     public List<ProgramViewDto> getParticipationProgramViewDto(List<ParticipationStudent> participationStudentList){

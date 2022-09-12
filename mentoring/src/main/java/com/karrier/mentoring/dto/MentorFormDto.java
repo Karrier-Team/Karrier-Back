@@ -1,5 +1,6 @@
 package com.karrier.mentoring.dto;
 
+import com.karrier.mentoring.entity.Mentor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;

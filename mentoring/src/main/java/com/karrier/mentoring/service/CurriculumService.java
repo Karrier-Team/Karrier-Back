@@ -13,15 +13,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CurriculumService {
 
-    CurriculumRepository curriculumRepository;
+    private final CurriculumRepository curriculumRepository;
 
     @Transactional
     public Curriculum createCurriculum(Curriculum curriculum){
         return curriculumRepository.save(curriculum);
     }
 
+    @Transactional
+    public Curriculum modifyCurriculum(Curriculum curriculum){
+        return curriculumRepository.save(curriculum);
+    }
+
     public List<Curriculum> getCurriculumByProgramNo(long programNo){
         return curriculumRepository.findByProgramNo(programNo);
-
     }
 }
