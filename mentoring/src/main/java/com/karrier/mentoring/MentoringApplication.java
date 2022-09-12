@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MentoringApplication {
 
 	public static void main(String[] args) {
+		System.out.println("hi");
 		SpringApplication.run(MentoringApplication.class, args);
 	}
 
