@@ -71,6 +71,13 @@ public class CommunityReviewController {
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
+        Program byProgramNo = programRepository.findByProgramNo(reviewFormDto.getProgramNo());
+        if (byProgramNo == null) { // 프로그램이 존재하지 않을 경우
+            throw new NotFoundException(ErrorCode.PROGRAM_NOT_FOUND);
+        }
+        if (byProgramNo.getProgramState() == false) { // 임시저장일 경우
+            throw new NotFoundException(ErrorCode.PROGRAM_NOT_FOUND);
+        }
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();

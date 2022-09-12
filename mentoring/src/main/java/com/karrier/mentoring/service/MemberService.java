@@ -51,6 +51,8 @@ public class MemberService {
 
     private final WishListRepository wishListRepository;
 
+    private final TagRepository tagRepository;
+
     private final S3Uploader s3Uploader;
 
     private final HttpSession httpSession;
@@ -88,8 +90,8 @@ public class MemberService {
                 participationStudentRepository.deleteByProgramNo(program.getProgramNo());//참여학생 정보 삭제
                 wishListRepository.deleteByProgramNo(program.getProgramNo());//찜목록 삭제
                 recommendedTargetRepository.deleteByProgramNo(program.getProgramNo());//추천대상 삭제
+                tagRepository.deleteByProgramNo(program.getProgramNo());//태그
                 //차단회원 삭제
-                //태그??
             }
             followRepository.deleteByMentorEmail(member.getEmail());//팔로우 정보 삭제
             mentorRepository.deleteByEmail(member.getEmail()); //멘토 삭제
