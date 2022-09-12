@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,12 +16,19 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@SequenceGenerator(
+        name = "PROGRAM_SEQ_GENERATOR",
+        sequenceName = "PROGRAM_SEQ",
+        initialValue = 10,
+        allocationSize = 1
+)
 public class Program {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROGRAM_SEQ_GENERATOR")
+    @Column(name = "program_no")
     private long programNo;
-
-    @Column(nullable = false)
+    
     private String email;
 
     @Embedded
@@ -28,13 +36,15 @@ public class Program {
 
             @AttributeOverride(name="uploadFileName", column = @Column(name="MAIN_IMAGE_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="MAIN_IMAGE_STORE_NAME")),
-            @AttributeOverride(name="fileUrl", column = @Column(name="MAIN_IMAGE_URL")),
+
     })
     private UploadFile mainImage;
 
+    private String type;
+
     private String title;
 
-    private String shortIntroduce;
+    private String introduce;
 
     private Boolean onlineOffline; //온라인이 true
 
@@ -50,7 +60,6 @@ public class Program {
 
     private int price;
 
-    @Column(nullable = false)
     private LocalDateTime createDate;
 
     private LocalDateTime tempDate;
@@ -65,32 +74,28 @@ public class Program {
 
     private float averageStar;
 
-    private String tag;
-
-    @Column(nullable = false)
     private Boolean programState;
 
 
-    public static Program createProgram(Long ProgramNo, ProgramFormDto programFormDto, UploadFile mainImage, String email){
+    public static Program createProgram(ProgramFormDto programFormDto, UploadFile mainImage, String email){
         Program program = new Program();
 
-        program.setProgramNo(ProgramNo);
         program.setEmail(email);
         program.setMainImage(mainImage);
+        program.setType(programFormDto.getType());
         program.setTitle(programFormDto.getTitle());
-        program.setShortIntroduce(programFormDto.getShortIntroduce());
-        program.setOnlineOffline(programFormDto.getOnlineOffline());
+        program.setIntroduce(programFormDto.getIntroduce());
+        program.setOnlineOffline(Boolean.parseBoolean(programFormDto.getOnlineOffline()));
         program.setOfflinePlace(programFormDto.getOfflinePlace());
         program.setOpenDate(programFormDto.getOpenDate());
         program.setCloseDate(programFormDto.getCloseDate());
         program.setRunningTime(programFormDto.getRunningTime());
-        program.setMaxPeople(programFormDto.getMaxPeople());
-        program.setPrice(programFormDto.getPrice());
+        program.setMaxPeople(Integer.parseInt(programFormDto.getMaxPeople()));
+        program.setPrice(Integer.parseInt(programFormDto.getPrice()));
         program.setCreateDate(LocalDateTime.now());
         program.setApplyPeople(0);
         program.setLikeCount(0);
         program.setAverageStar(0);
-        program.setTag(programFormDto.getTag());
 
         return program;
     }
@@ -98,27 +103,16 @@ public class Program {
     public static Program updateProgram(Program program, UploadFile mainImage, ProgramFormDto programFormDto){
 
         program.setMainImage(mainImage);
+        program.setType(programFormDto.getType());
         program.setTitle(programFormDto.getTitle());
-        program.setShortIntroduce(programFormDto.getShortIntroduce());
-        program.setOnlineOffline(programFormDto.getOnlineOffline());
+        program.setIntroduce(programFormDto.getIntroduce());
+        program.setOnlineOffline(Boolean.parseBoolean(programFormDto.getOnlineOffline()));
         program.setOfflinePlace(programFormDto.getOfflinePlace());
         program.setOpenDate(programFormDto.getOpenDate());
         program.setCloseDate(programFormDto.getCloseDate());
         program.setRunningTime(programFormDto.getRunningTime());
-        program.setMaxPeople(programFormDto.getMaxPeople());
-        program.setPrice(programFormDto.getPrice());
-
-        //기존에 완전 저장된 프로그램이면 modifiedDate 수정해주기
-        if (program.getProgramState().equals(true)){
-            program.setModifiedDate(LocalDateTime.now());
-        }
-        else{
-            program.setCreateDate(LocalDateTime.now());
-        }
-
-        program.setTag(programFormDto.getTag());
-
-        program.setProgramState(true);
+        program.setMaxPeople(Integer.parseInt(programFormDto.getMaxPeople()));
+        program.setPrice(Integer.parseInt(programFormDto.getPrice()));
 
         return program;
     }
@@ -127,17 +121,16 @@ public class Program {
     public static Program updateTempProgram(Program program, UploadFile mainImage, ProgramFormDto programFormDto){
 
         program.setMainImage(mainImage);
+        program.setType(programFormDto.getType());
         program.setTitle(programFormDto.getTitle());
-        program.setShortIntroduce(programFormDto.getShortIntroduce());
-        program.setOnlineOffline(programFormDto.getOnlineOffline());
+        program.setIntroduce(programFormDto.getIntroduce());
+        program.setOnlineOffline(Boolean.parseBoolean(programFormDto.getOnlineOffline()));
         program.setOfflinePlace(programFormDto.getOfflinePlace());
         program.setOpenDate(programFormDto.getOpenDate());
         program.setCloseDate(programFormDto.getCloseDate());
         program.setRunningTime(programFormDto.getRunningTime());
-        program.setMaxPeople(programFormDto.getMaxPeople());
-        program.setPrice(programFormDto.getPrice());
-        program.setModifiedDate(LocalDateTime.now());
-        program.setTag(programFormDto.getTag());
+        program.setMaxPeople(Integer.parseInt(programFormDto.getMaxPeople()));
+        program.setPrice(Integer.parseInt(programFormDto.getPrice()));
 
         program.setProgramState(false);
 

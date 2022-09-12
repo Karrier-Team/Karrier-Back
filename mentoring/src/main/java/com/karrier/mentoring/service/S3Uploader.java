@@ -73,9 +73,9 @@ public class S3Uploader {
     private UploadFile upload(File uploadFile, String dirName) {
         String storeName = UUID.randomUUID() + uploadFile.getName();
         String fileName = dirName + "/" + storeName;   // S3에 저장된 파일 이름
-        String uploadUrl = putS3(uploadFile, fileName);// s3로 업로드
+        putS3(uploadFile, fileName); // s3로 업로드
         removeNewFile(uploadFile);
-        return new UploadFile(uploadFile.getName(), storeName, uploadUrl);
+        return new UploadFile(uploadFile.getName(), storeName);
     }
 
     // S3로 업로드

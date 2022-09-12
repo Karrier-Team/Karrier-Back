@@ -1,5 +1,6 @@
 package com.karrier.mentoring.entity;
 
+import com.karrier.mentoring.dto.RecommendedTargetDto;
 import com.karrier.mentoring.key.RecommendedTargetKey;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,11 +24,11 @@ public class RecommendedTarget implements Serializable {
     @Id
     private String target;
 
-    public static RecommendedTarget createRecommendedTarget(long programNo, String target){
+    public static RecommendedTarget createRecommendedTarget(long programNo, RecommendedTargetDto recommendedTargetDto){
         RecommendedTarget recommendedTarget = new RecommendedTarget();
 
         recommendedTarget.setProgramNo(programNo);
-        recommendedTarget.setTarget(target);
+        recommendedTarget.setTarget(recommendedTargetDto.getTarget());
 
         return recommendedTarget;
     }
