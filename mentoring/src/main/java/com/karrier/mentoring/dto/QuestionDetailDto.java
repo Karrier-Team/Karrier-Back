@@ -46,7 +46,7 @@ public class QuestionDetailDto {
     private List<QuestionCommentListDto> questionCommentListDto;
 
     //세부화면에 필요한 정보들 담기
-    public static QuestionDetailDto createQuestionDetailDto(Question question, Program program, Member member, String mentorName, String mentorProfileImage, String baseUrl, String myEmail, List<QuestionCommentListDto> questionCommentListDto) {
+    public static QuestionDetailDto createQuestionDetailDto(Question question, Program program, Member member, String mentorName, String mentorProfileImageUrl, String myEmail, List<QuestionCommentListDto> questionCommentListDto) {
 
         QuestionDetailDto questionDetailDto = new QuestionDetailDto();
 
@@ -55,10 +55,10 @@ public class QuestionDetailDto {
         questionDetailDto.setQuestionNo(question.getQuestionNo());
         questionDetailDto.setWriterNickname(member.getNickname());
         if (member.getProfileImage() != null) { // 작성자 프로필 사진이 있을 때만
-            questionDetailDto.setWriterProfileImage(baseUrl + member.getProfileImage().getStoreFileName());
+            questionDetailDto.setWriterProfileImage(member.getProfileImage().getFileUrl());
         }
         questionDetailDto.setMentorName(mentorName);
-        questionDetailDto.setMentorProfileImage(baseUrl + mentorProfileImage);
+        questionDetailDto.setMentorProfileImage(mentorProfileImageUrl);
         questionDetailDto.setTitle(question.getTitle());
         questionDetailDto.setContent(question.getContent());
         questionDetailDto.setAnswer(question.getAnswer());

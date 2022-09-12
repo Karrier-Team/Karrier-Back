@@ -71,12 +71,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("handleInternalServerException throw Exception : {}", internalServerException.getErrorCode());
         return ErrorResponse.toResponseEntity(internalServerException.getErrorCode(),request);
     }
-    // unknown
+/*    // unknown
     @ExceptionHandler( value = Exception.class)
     protected ResponseEntity<ErrorResponse> handleUnknownException(HttpServletRequest request,Exception e) {
         log.error("ErrorExceptionURI : " + request.getRequestURI());
         log.error("handleUnknownException throw Exception : {}", ErrorCode.UNKNOWN_ERROR);
         return ErrorResponse.toResponseEntity(ErrorCode.UNKNOWN_ERROR,request);
-    }
+    }*/
 }
 

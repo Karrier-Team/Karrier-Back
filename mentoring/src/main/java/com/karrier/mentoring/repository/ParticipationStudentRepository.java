@@ -15,4 +15,6 @@ public interface ParticipationStudentRepository extends JpaRepository<Participat
     long deleteByProgramNo(long programNo);
 
     long deleteByEmail(String email);
+
+    ParticipationStudent findByEmailAndProgramNo(String email, long programNo);
 }

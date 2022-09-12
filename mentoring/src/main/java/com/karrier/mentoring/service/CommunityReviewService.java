@@ -137,13 +137,13 @@ public class CommunityReviewService {
         Program program = programRepository.findByProgramNo(programNo);//프로그램 정보 찾기
         Member writer = memberRepository.findByEmail(review.getEmail());//작성자 닉네임, 프로필사진 찾기 위해
         String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
-        String mentorProfileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
+        String mentorProfileImageUrl = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();
 
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
         
-        return ReviewDetailDto.createReviewDetailDto(review, program, writer, name, mentorProfileImage, MemberController.profileImageBaseUrl, email);
+        return ReviewDetailDto.createReviewDetailDto(review, program, writer, name, mentorProfileImageUrl, email);
     }
 
     @Transactional

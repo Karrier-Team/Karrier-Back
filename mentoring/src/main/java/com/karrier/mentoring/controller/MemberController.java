@@ -3,7 +3,7 @@ package com.karrier.mentoring.controller;
 import com.karrier.mentoring.dto.MemberFormDto;
 import com.karrier.mentoring.dto.MemberManagePasswordDto;
 import com.karrier.mentoring.dto.MemberPasswordDto;
-import com.karrier.mentoring.dto.ParticipationStudentFormDto;
+import com.karrier.mentoring.dto.MemberWithoutPasswordDto;
 import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.http.BasicResponse;
 import com.karrier.mentoring.http.SuccessDataResponse;
@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.ConnectException;
 
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/members")
@@ -68,9 +67,10 @@ public class MemberController {
 
         try { // member 형태로 변환 후 데이터베이스에 member 정보 저장
             Member member = Member.createMember(memberFormDto, passwordEncoder);
-            Member newMember = memberService.saveMember(member);
 
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+            //비밀번호를 제외한 member 정보 반환
+            MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.saveMember(member));
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(memberWithoutPasswordDto));
 
         } catch (IllegalStateException e) { //이미 가입된 이메일일 경우
 
@@ -94,14 +94,16 @@ public class MemberController {
         Member member = memberRepository.findByEmail(email);
         
         //로그인 날짜 업데이트 후 저장
-        Member updatedMember = Member.updateRecentlyLoginDate(member);
-        Member savedMember = memberService.modifyMember(updatedMember);
+        Member.updateRecentlyLoginDate(member);
+        
+        //비밀번호를 제외한 멤버 정보 전달
+        MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.modifyMember(member));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(memberWithoutPasswordDto));
     }
 
     //비밀번호 변경 요청시
-    @PostMapping(value = "/manage/password")
+    @PutMapping(value = "/manage/password")
     public ResponseEntity<? extends BasicResponse> mentorManagePassword(@Valid MemberManagePasswordDto memberManagePasswordDto, BindingResult bindingResult) {
 
         //빈칸있을 경우
@@ -125,14 +127,14 @@ public class MemberController {
         }
 
         //비밀번호 변경 후 저장
-        Member updatedMember = Member.updatePassword(member, memberManagePasswordDto, passwordEncoder);
-        Member savedMember = memberService.modifyMember(updatedMember);
+        Member.updatePassword(member, memberManagePasswordDto, passwordEncoder);
+        MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.modifyMember(member));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(memberWithoutPasswordDto));
     }
 
     //프로필 변경 화면 띄웠을 경우 이전 프로필 사진 보여주기 위해
-    @GetMapping(value = "/manage/profile")
+    @GetMapping(value = "/manage/profile-image")
     public ResponseEntity<? extends BasicResponse> modifyProfile() {
 
         //사용자 email 얻기
@@ -141,19 +143,53 @@ public class MemberController {
 
         //해당 member 정보에서 S3에 저장된 파일 이름 가져와서 url 전송
         Member member = memberRepository.findByEmail(email);
-        String profileImageUrl = profileImageBaseUrl + member.getProfileImage().getStoreFileName();
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<String>(profileImageUrl));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(member.getProfileImage()));
     }
 
-    //프로필 변경 요청시
-    @PostMapping(value = "/manage/profile")
-    public ResponseEntity<? extends BasicResponse> modifyProfile(@RequestParam MultipartFile profileImageFile, @RequestParam String nickname) throws IOException {
+    //프로필 이미지 변경 요청시
+    @PutMapping(value = "/manage/profile-image")
+    public ResponseEntity<? extends BasicResponse> modifyProfileImage(@RequestParam MultipartFile profileImageFile) throws IOException {
 
         //프로필 사진이 없을 때
         if (profileImageFile.isEmpty()) {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
+
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        //프로필 사진 저장을 위해 유저 정보 가져오기
+        Member member = memberService.getMember(email);
+
+        //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
+        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
+
+
+        //member 프로필 사진 정보 수정
+        Member.modifyProfile(member, profileImage);
+
+        //DB에 저장
+        MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.modifyMember(member));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(memberWithoutPasswordDto));
+    }
+
+    @GetMapping(value = "/manage/nickname")
+    public ResponseEntity<? extends BasicResponse> checkNicknameDuplicate(@RequestParam String nickname) {
+
+        //중복된 닉네임일 경우
+        if (memberService.checkDuplicateNickName(nickname)) {
+            throw new ConflictException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        //중복이 아닐 경우
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(nickname));
+    }
+
+    //닉네임 변경 요청시
+    @PutMapping(value = "/manage/nickname")
+    public ResponseEntity<? extends BasicResponse> modifyNickname(@RequestParam String nickname) throws IOException {
 
         //닉네임이 없을 때
         if (nickname.isEmpty()) {
@@ -169,34 +205,19 @@ public class MemberController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
-        //프로필 사진 저장을 위해 유저 정보 가져오기
+        //닉네임 변경을 위해 유저 정보 가져오기
         Member member = memberService.getMember(email);
 
-        //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
-        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
-
-
         //member 프로필 사진 이름 정보 수정
-        Member updatedMember = Member.modifyProfile(member, profileImage, nickname);
+        Member.modifyNickName(member, nickname);
 
         //DB에 저장
-        Member savedMember = memberService.modifyMember(updatedMember);
+        MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.modifyMember(member));
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(memberWithoutPasswordDto));
     }
 
-    @PostMapping(value = "/manage/nickname")
-    public ResponseEntity<? extends BasicResponse> modifyProfile(@RequestParam String nickname) {
-
-        //중복된 닉네임일 경우
-        if (memberService.checkDuplicateNickName(nickname)) {
-            throw new ConflictException(ErrorCode.DUPLICATE_NICKNAME);
-        }
-        //중복이 아닐 경우
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
-    }
-
-    @PostMapping(value = "/manage/delete")
+    @DeleteMapping(value = "/manage")
     public ResponseEntity<? extends BasicResponse> deleteMember(@RequestParam String email) {
 
         Member byEmail = memberRepository.findByEmail(email);

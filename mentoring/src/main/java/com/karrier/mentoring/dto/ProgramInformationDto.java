@@ -1,12 +1,10 @@
 package com.karrier.mentoring.dto;
 
-import com.karrier.mentoring.entity.Curriculum;
-import com.karrier.mentoring.entity.Mentor;
-import com.karrier.mentoring.entity.ParticipationStudent;
-import com.karrier.mentoring.entity.Program;
+import com.karrier.mentoring.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Blob;
 import java.util.List;
 
 @Getter
@@ -25,8 +23,6 @@ public class ProgramInformationDto {
 
     private int likeCount;
 
-    private String tag;
-
     private String introduce;
 
     private String club;
@@ -41,16 +37,28 @@ public class ProgramInformationDto {
 
     private String title;
 
-    private String shortIntroduce;
+    private String mentorIntroduce;
+
+    private String state;
+
+    private Boolean isMyWishList;
+
+    private Boolean isMyFollowList;
+
+    private Boolean isMyParticipate;
 
     private List<Curriculum> curriculumList;
+
+    private List<RecommendedTarget> recommendedTargetList;
+
+    private List<Tag> tagList;
 
     private List<ParticipationStudent> participationStudentList;
 
     //private List<수강후기>
     //private List<질의응답>
 
-    public static ProgramInformationDto createProgramInformationDto(Program program, Mentor mentor, String profileImage, List<Curriculum> curriculumList, List<ParticipationStudent> participationStudentList){
+    public static ProgramInformationDto createProgramInformationDto(Program program, Mentor mentor, String profileImage, List<Curriculum> curriculumList, List<RecommendedTarget> recommendedTargetList, List<Tag> tagList, List<ParticipationStudent> participationStudentList, Boolean isMyWishList, Boolean isMyFollowList,  Boolean isMyParticipate){
 
         ProgramInformationDto programInformationDto = new ProgramInformationDto();
 
@@ -60,17 +68,22 @@ public class ProgramInformationDto {
         programInformationDto.setFacebookAddress(mentor.getFacebookAddress());
         programInformationDto.setInstarAddress(mentor.getInstarAddress());
         programInformationDto.setLikeCount(program.getLikeCount());
-        programInformationDto.setTag(program.getTag());
-        programInformationDto.setIntroduce(mentor.getIntroduce());
+        programInformationDto.setMentorIntroduce(mentor.getIntroduce());
         programInformationDto.setClub(mentor.getClub());
         programInformationDto.setContest(mentor.getContest());
         programInformationDto.setExternalActivity(mentor.getExternalActivity());
         programInformationDto.setIntern(mentor.getIntern());
         programInformationDto.setMainImage(program.getMainImage().getStoreFileName());
         programInformationDto.setTitle(program.getTitle());
-        programInformationDto.setShortIntroduce(program.getShortIntroduce());
+        programInformationDto.setIntroduce(program.getIntroduce());
+        programInformationDto.setState(program.getState());
         programInformationDto.setCurriculumList(curriculumList);
+        programInformationDto.setRecommendedTargetList(recommendedTargetList);
+        programInformationDto.setTagList(tagList);
         programInformationDto.setParticipationStudentList(participationStudentList);
+        programInformationDto.setIsMyWishList(isMyWishList);
+        programInformationDto.setIsMyFollowList(isMyFollowList);
+        programInformationDto.setIsMyParticipate(isMyParticipate);
 
         return programInformationDto;
     }

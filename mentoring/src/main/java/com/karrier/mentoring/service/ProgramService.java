@@ -2,10 +2,7 @@ package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.dto.ProgramInformationDto;
 import com.karrier.mentoring.dto.ProgramViewDto;
-import com.karrier.mentoring.entity.Curriculum;
-import com.karrier.mentoring.entity.Mentor;
-import com.karrier.mentoring.entity.ParticipationStudent;
-import com.karrier.mentoring.entity.Program;
+import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +26,13 @@ public class ProgramService {
 
     private final ParticipationStudentRepository participationStudentRepository;
 
+    private final RecommendedTargetRepository recommendedTargetRepository;
+
+    private final TagRepository tagRepository;
+
+    private final WishListRepository wishListRepository;
+
+    private final FollowRepository followRepository;
     @Transactional
     public Program createProgram(Program program){
         return programRepository.save(program);
@@ -197,26 +201,30 @@ public class ProgramService {
         return programRepository.findByEmail(email);
     }
 
-    public List<Program> getProgramsByEmailAndState(String email, Boolean complete){
-        return programRepository.findByEmailAndProgramState(email, complete);
-    }
-
-    public List<Program> getProgramsByEmailsAndState(List<String> emails){
-        return programRepository.findByProgramStateAndEmailIn(true, emails);
-    }
-
-    public List<Program> getProgramsByTitleContaining(List<String> emails, String title){
-        return programRepository.findByProgramStateAndEmailInAndTitleContaining(true, emails, title);
-    }
-
-    public ProgramInformationDto getProgramInformationDto(long programNo){
+    public ProgramInformationDto getProgramInformationDto(long programNo, String email){
         Program program = programRepository.findByProgramNo(programNo);
         Mentor mentor = mentorRepository.findByEmail(program.getEmail());
         String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
         List<Curriculum> curriculumList = curriculumRepository.findByProgramNo(programNo);
+        List<RecommendedTarget> recommendedTargetList = recommendedTargetRepository.findByProgramNo(programNo);
+        List<Tag> tagList = tagRepository.findByProgramNo(programNo);
         List<ParticipationStudent> participationStudentList = participationStudentRepository.findByProgramNo(programNo);
+        Boolean isMyWishList = true;
+        Boolean isMyFollowList = true;
+        Boolean isMyParticipate = true;
 
-        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, participationStudentList);
+        if(wishListRepository.findByProgramNoAndEmail(programNo, email) == null){
+            isMyWishList = false;
+        }
+        if(followRepository.findByMemberEmailAndMentorEmail(email, mentor.getEmail())==null){
+            isMyFollowList = false;
+        }
+        if(participationStudentRepository.findByEmailAndProgramNo(email, programNo)==null){
+            isMyParticipate = false;
+        }
+
+
+        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, recommendedTargetList, tagList, participationStudentList, isMyWishList, isMyFollowList, isMyParticipate);
 
         return programInformationDto;
     }

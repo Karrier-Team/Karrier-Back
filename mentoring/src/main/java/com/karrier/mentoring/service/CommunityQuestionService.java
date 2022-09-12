@@ -160,7 +160,7 @@ public class CommunityQuestionService {
         Program program = programRepository.findByProgramNo(programNo);//프로그램 정보 찾기
         Member writer = memberRepository.findByEmail(question.getEmail());//작성자 닉네임, 프로필을 위해 찾기
         String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
-        String mentorProfileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();//멘토 프로필 사진 찾기
+        String mentorProfileImageUrl = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();//멘토 프로필 사진 찾기
         List<QuestionComment> questionCommentList = questionCommentRepository.findByProgramNoAndQuestionNo(programNo, questionNo);//댓글 찾기
 
         //사용자 email 얻기
@@ -173,7 +173,7 @@ public class CommunityQuestionService {
             String profileImageUrl = null;//프로필 사진 정보
             String commentName; // 닉네임 정보
             if (member.getProfileImage() != null) {
-                profileImageUrl = MemberController.profileImageBaseUrl + member.getProfileImage().getStoreFileName(); // 프로필이 있는 회원만
+                profileImageUrl = member.getProfileImage().getFileUrl(); // 프로필이 있는 회원만
             }
             if (member.getRole().equals(Role.MENTOR_APPROVE)) { // 멘토일 때는 이름을 가져와야 하므로
                 commentName = mentorRepository.findByEmail(member.getEmail()).getName();
@@ -182,7 +182,7 @@ public class CommunityQuestionService {
             }
             questionCommentListDto.add(QuestionCommentListDto.createQuestionCommentListDto(questionComment, commentName, profileImageUrl, email));// 댓글 보여주기 위한 정보형태로 변환
         }
-        return QuestionDetailDto.createQuestionDetailDto(question, program, writer, name, mentorProfileImage, MemberController.profileImageBaseUrl, email, questionCommentListDto);
+        return QuestionDetailDto.createQuestionDetailDto(question, program, writer, name, mentorProfileImageUrl, email, questionCommentListDto);
     }
 
     //question 수정, 답변 추가, 수정 됐을 때

@@ -3,6 +3,7 @@ package com.karrier.mentoring.service;
 import com.karrier.mentoring.dto.FollowShowDto;
 import com.karrier.mentoring.entity.Follow;
 import com.karrier.mentoring.entity.Mentor;
+import com.karrier.mentoring.entity.Member;
 import com.karrier.mentoring.repository.FollowRepository;
 import com.karrier.mentoring.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,18 +67,50 @@ public class FollowService {
             }
         }
 
-        ArrayList<FollowShowDto> followShowDtoArrayList = getFollowShowDtoList(mentorList);
+        ArrayList<FollowShowDto> followShowDtoArrayList = getFollowingShowDtoList(mentorList);
 
 
         return followShowDtoArrayList;
     }
 
-    public ArrayList<FollowShowDto> getFollowShowDtoList(List<Mentor> mentors) {
+    public ArrayList<FollowShowDto> getFollowingShowDtoList(List<Mentor> mentors) {
         ArrayList<FollowShowDto> followShowDtoArrayList = new ArrayList<>();
 
         for (Mentor mentor : mentors) {
             String profileImage = memberRepository.findByEmail(mentor.getEmail()).getProfileImage().getStoreFileName();
             followShowDtoArrayList.add(FollowShowDto.createFollowShowDto(mentor, profileImage));
+        }
+
+        return followShowDtoArrayList;
+
+    }
+
+    public List<FollowShowDto> getFollowerDtoList(List<Member> members, String searchWord) {
+        List<Member> memberList = new ArrayList<>();
+
+        if (searchWord == null) {
+            memberList = members;
+        }
+        else {
+            for (Member member : members) {
+                if (member.getNickname().contains(searchWord)) {
+                    memberList.add(member);
+                }
+            }
+        }
+
+        ArrayList<FollowShowDto> followShowDtoArrayList = getFollowerShowDtoList(memberList);
+
+
+        return followShowDtoArrayList;
+    }
+
+    public ArrayList<FollowShowDto> getFollowerShowDtoList(List<Member> members){
+        ArrayList<FollowShowDto> followShowDtoArrayList = new ArrayList<>();
+
+        for (Member member : members) {
+            String profileImage = member.getProfileImage().getStoreFileName();
+            followShowDtoArrayList.add(FollowShowDto.createFollowerShowDto(member, profileImage));
         }
 
         return followShowDtoArrayList;

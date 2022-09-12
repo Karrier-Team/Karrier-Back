@@ -43,6 +43,7 @@ public class Member {
     @AttributeOverrides({
             @AttributeOverride(name="uploadFileName", column = @Column(name="PROFILE_IMAGE_UPLOAD_NAME")),
             @AttributeOverride(name="storeFileName", column = @Column(name="PROFILE_IMAGE_STORE_NAME")),
+            @AttributeOverride(name="fileUrl", column = @Column(name="PROFILE_IMAGE_URL")),
     })
     private UploadFile profileImage;
 
@@ -101,12 +102,15 @@ public class Member {
         return member;
     }
 
-    //프로필 변경시 닉네임과 프로필 사진 변경
-    public static Member modifyProfile(Member member, UploadFile uploadFile, String nickname) {
-
-        member.setNickname(nickname);
+    //프로필 변경시 프로필 사진 변경
+    public static Member modifyProfile(Member member, UploadFile uploadFile) {
         member.setProfileImage(uploadFile);
+        return member;
+    }
 
+    //프로필 변경시 닉네임 변경
+    public static Member modifyNickName(Member member, String nickname) {
+        member.setNickname(nickname);
         return member;
     }
 
