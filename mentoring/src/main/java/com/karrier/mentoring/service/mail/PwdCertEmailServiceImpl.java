@@ -87,7 +87,6 @@ public class PwdCertEmailServiceImpl implements EmailService{
         return message;
     }
 
-    @Override
     public void verifyEmail(String token) {
 
         // 이메일 토큰을 찾아옴

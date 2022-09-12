@@ -11,6 +11,4 @@ public interface EmailService {
     //이메일 만들기
     public MimeMessage createMessage(String to) throws Exception;
 
-    //이메일 인증
-    public void verifyEmail(String token);
 }
