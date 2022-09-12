@@ -3,8 +3,10 @@ package com.karrier.mentoring.controller;
 import com.karrier.mentoring.dto.ParticipationStudentFormDto;
 import com.karrier.mentoring.dto.ProgramViewDto;
 import com.karrier.mentoring.entity.ParticipationStudent;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.repository.ParticipationStudentRepository;
 import com.karrier.mentoring.service.ParticipationStudentService;
+import com.karrier.mentoring.service.ProgramService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("http://localhost:3000")
 @RequestMapping("/participation")
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +28,8 @@ import java.util.List;
 public class ParticipationStudentController {
 
     private final ParticipationStudentService participationStudentService;
+
+    private final ProgramService programService;
 
     private final ParticipationStudentRepository participationStudentRepository;
 
@@ -44,6 +47,19 @@ public class ParticipationStudentController {
 
         ParticipationStudent participationStudent = ParticipationStudent.createParticipationStudent(participationStudentFormDto, email, programNo);
 
+        Program program = programService.getProgramByNo(programNo);
+
+        if((program.getApplyPeople() >= program.getMaxPeople())||(!program.getState().equals("Recruiting"))){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수강신청 인원이 초과되었습니다.");
+        }
+        else{
+            program.setApplyPeople(program.getApplyPeople()+1);
+            if(program.getApplyPeople() == program.getMaxPeople()){
+                program.setState("Recruit_complete");
+            }
+            programService.updateProgram(program);
+        }
+
         // DB에 추가
         ParticipationStudent newParticipationStudent = participationStudentService.createParticipationStudent(participationStudent);
 
@@ -57,7 +73,7 @@ public class ParticipationStudentController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
-        List<ParticipationStudent> participationStudentList = participationStudentRepository.findByEmail(email);
+        List<ParticipationStudent> participationStudentList = participationStudentService.getParticipationStudentByEmail(email);
 
         List<ProgramViewDto> programViewDtoList = participationStudentService.getParticipationProgramViewDto(participationStudentList);
 

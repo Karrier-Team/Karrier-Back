@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ public class ParticipationStudentFormDto {
     @NotBlank(message = "연락처는 필수 입력 값입니다.")
     private String phoneNo;
 
+    @Positive
     @NotBlank(message = "나이는 필수 입력 값입니다.")
     private String age;
 

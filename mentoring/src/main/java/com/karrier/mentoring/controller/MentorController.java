@@ -1,15 +1,13 @@
 package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.dto.*;
-import com.karrier.mentoring.entity.Member;
-import com.karrier.mentoring.entity.Mentor;
-import com.karrier.mentoring.entity.Program;
-import com.karrier.mentoring.entity.UploadFile;
+import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.http.BasicResponse;
 import com.karrier.mentoring.http.SuccessDataResponse;
 import com.karrier.mentoring.http.SuccessResponse;
 import com.karrier.mentoring.http.error.ErrorCode;
 import com.karrier.mentoring.http.error.exception.BadRequestException;
+import com.karrier.mentoring.http.error.exception.UnAuthorizedException;
 import com.karrier.mentoring.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +37,10 @@ public class MentorController {
     private final CommunityQuestionService communityQuestionService;
 
     private final CommunityReviewService communityReviewService;
+
+    private final ProgramService programService;
+
+    private final FollowService followService;
 
     private final S3Uploader s3Uploader;
 
@@ -286,5 +288,79 @@ public class MentorController {
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
+    }
+
+
+    //mentor 입장에서 나를 팔로우 하고 있는 member 정보 보기
+    @GetMapping(value = "/follower-list")
+    public ResponseEntity<? extends BasicResponse> myFollowers(@RequestParam("keyword") String keyword){
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String mentorEmail = ((UserDetails) principal).getUsername();
+
+        List<Follow> followers =  followService.getFollowers(mentorEmail);
+
+        List<Member> memberList = new ArrayList<>();
+
+        // followers의 email을 통해 member 뽑아주기
+        for (Follow follow : followers){
+            Member member = memberService.getMember(follow.getMemberEmail());
+            memberList.add(member);
+        }
+
+        List<FollowShowDto> followShowDtoList = followService.getFollowerDtoList(memberList, keyword);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(followShowDtoList));
+    }
+
+    //mentor 자신의 모든 프로그램 정보 보기
+    @GetMapping(value = "/manage/program-list")
+    public ResponseEntity<? extends BasicResponse> viewMyPrograms(){
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        Member member = memberService.getMember(email);
+
+        if(member.getRole() != Role.MENTOR_APPROVE){
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        //mentor가 만든 program 보기
+        List<Program> programs = programService.getProgramsByEmail(email);
+        List<ProgramViewDto> programViewDtoList= programService.getProgramViewDtoList(programs);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
+    }
+
+    //mentor 자신의 모든 프로그램 정보 보기(최신순, 제목순, 프로그램제목 검색)
+    @GetMapping(value = "/wish-list")
+    public ResponseEntity<? extends BasicResponse> viewMyWishList(@RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        Member member = memberService.getMember(email);
+
+        //member의 권한이 없는 경우
+        if(member.getRole() != Role.MENTOR_APPROVE){
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        //mentor가 만든 program 보기
+        List<Program> programs = programService.getProgramsByEmail(email);
+        List<ProgramViewDto> programViewDtoList= programService.getWishPrograms(programs, order, category, keyword);
+
+        int totalWish = 0;
+
+        for(ProgramViewDto programViewDto : programViewDtoList){
+            totalWish = totalWish + programViewDto.getLikeCount();
+        }
+
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.add(programViewDtoList);
+        objects.add(totalWish);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(objects));
     }
 }
