@@ -11,6 +11,7 @@ import com.karrier.mentoring.http.error.exception.ConflictException;
 import com.karrier.mentoring.http.error.exception.NotFoundException;
 import com.karrier.mentoring.http.error.exception.UnAuthorizedException;
 import com.karrier.mentoring.service.*;
+import com.karrier.mentoring.service.mail.ProgramInfoEmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -49,6 +49,8 @@ public class ProgramController {
     private final ParticipationStudentService participationStudentService;
 
     String mainImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/main-image/";
+
+    private final ProgramInfoEmailServiceImpl programInfoEmailService;
 
     //기존에 없었던 프로그램을 만들때 mentor 정보 보여주기 위해
     @GetMapping(value = "/new")
@@ -646,6 +648,9 @@ public class ProgramController {
 
         // DB에 추가
         participationStudentService.createParticipationStudent(participationStudent);
+
+        // 이메일 전송
+        programInfoEmailService.sendSimpleMessage(participationStudent);
 
         return ResponseEntity.ok().body(new SuccessResponse());
     }

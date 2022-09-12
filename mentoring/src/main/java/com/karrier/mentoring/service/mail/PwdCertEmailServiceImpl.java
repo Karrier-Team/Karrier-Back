@@ -1,6 +1,7 @@
 package com.karrier.mentoring.service.mail;
 
 import com.karrier.mentoring.entity.Member;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.http.error.ErrorCode;
 import com.karrier.mentoring.http.error.exception.BadRequestException;
 import com.karrier.mentoring.http.error.exception.InternalServerException;
@@ -22,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class PwdCertEmailServiceImpl implements EmailService{
+public class PwdCertEmailServiceImpl<T> implements EmailService<T>{
 
 
     private final JavaMailSender javaMailSender;
@@ -75,7 +76,7 @@ public class PwdCertEmailServiceImpl implements EmailService{
             message.addRecipients(Message.RecipientType.TO, to);//보내는 대상
             message.setSubject("Karrier 인증번호가 도착했습니다.");//제목
             message.setText(msgg, "utf-8", "html");//내용
-            message.setFrom(new InternetAddress("tsi0521o@gmail.com","Karrier"));//보내는 사람
+            message.setFrom(new InternetAddress("good.karrier@gmail.com","Karrier"));//보내는 사람
         } catch (MessagingException e) {
             e.printStackTrace();
             throw new InternalServerException(ErrorCode.MESSAGING_ERROR);
@@ -85,6 +86,11 @@ public class PwdCertEmailServiceImpl implements EmailService{
         }
 
         return message;
+    }
+
+    @Override
+    public MimeMessage createMessage(String to, Program program) {
+        return null;
     }
 
     public void verifyEmail(String token) {
@@ -99,8 +105,14 @@ public class PwdCertEmailServiceImpl implements EmailService{
     }
 
     @Override
-    public void sendSimpleMessage(String to) {
-        MimeMessage message = createMessage(to);
+    public void sendSimpleMessage(T to) {
+        if(!(to instanceof String))
+            return;
+        String toStr = (String) to;
+        MimeMessage message = createMessage(toStr);
         javaMailSender.send(message);
     }
+
+
+
 }
