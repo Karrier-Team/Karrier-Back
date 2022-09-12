@@ -12,20 +12,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RecommendedTargetService {
-
-    private final RecommendedTargetRepository recommendedTargetRepository;
+    RecommendedTargetRepository recommendedTargetRepository;
 
     @Transactional
     public RecommendedTarget createRecommendedTarget(RecommendedTarget recommendedTarget){
         return recommendedTargetRepository.save(recommendedTarget);
     }
 
-    @Transactional
-    public RecommendedTarget modifyRecommendedTarget(RecommendedTarget recommendedTarget){
-        return recommendedTargetRepository.save(recommendedTarget);
-    }
-
-    public List<RecommendedTarget> getRecommendedTargetListByNo(long programNo){
+    public List<RecommendedTarget> findRecommendedTargetListByNo(long programNo){
         return recommendedTargetRepository.findByProgramNo(programNo);
 
     }

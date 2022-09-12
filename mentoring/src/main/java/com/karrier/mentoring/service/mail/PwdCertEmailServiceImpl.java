@@ -75,7 +75,7 @@ public class PwdCertEmailServiceImpl implements EmailService{
             message.addRecipients(Message.RecipientType.TO, to);//보내는 대상
             message.setSubject("Karrier 인증번호가 도착했습니다.");//제목
             message.setText(msgg, "utf-8", "html");//내용
-            message.setFrom(new InternetAddress("good.karrier@gmail.com","Karrier"));//보내는 사람
+            message.setFrom(new InternetAddress("tsi0521o@gmail.com","Karrier"));//보내는 사람
         } catch (MessagingException e) {
             e.printStackTrace();
             throw new InternalServerException(ErrorCode.MESSAGING_ERROR);

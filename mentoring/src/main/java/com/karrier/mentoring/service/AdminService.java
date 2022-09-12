@@ -41,8 +41,7 @@ public class AdminService {
         ArrayList<MentorRoleDto> mentorRoleDtoList = new ArrayList<>();
 
         for(Mentor mentor : mentorList){
-            Member member = memberRepository.findByEmail(mentor.getEmail());
-            mentorRoleDtoList.add(MentorRoleDto.createMentorRoleDto(mentor, member));
+            mentorRoleDtoList.add(MentorRoleDto.createMentorRoleDto(mentor));
         }
         return mentorRoleDtoList;
     }

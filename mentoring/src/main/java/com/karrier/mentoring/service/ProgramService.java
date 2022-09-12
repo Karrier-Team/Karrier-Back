@@ -2,7 +2,10 @@ package com.karrier.mentoring.service;
 
 import com.karrier.mentoring.dto.ProgramInformationDto;
 import com.karrier.mentoring.dto.ProgramViewDto;
-import com.karrier.mentoring.entity.*;
+import com.karrier.mentoring.entity.Curriculum;
+import com.karrier.mentoring.entity.Mentor;
+import com.karrier.mentoring.entity.ParticipationStudent;
+import com.karrier.mentoring.entity.Program;
 import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +28,6 @@ public class ProgramService {
     private final CurriculumRepository curriculumRepository;
 
     private final ParticipationStudentRepository participationStudentRepository;
-
-    private final RecommendedTargetRepository recommendedTargetRepository;
-
-    private final TagRepository tagRepository;
 
     @Transactional
     public Program createProgram(Program program){
@@ -215,11 +214,9 @@ public class ProgramService {
         Mentor mentor = mentorRepository.findByEmail(program.getEmail());
         String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
         List<Curriculum> curriculumList = curriculumRepository.findByProgramNo(programNo);
-        List<RecommendedTarget> recommendedTargetList = recommendedTargetRepository.findByProgramNo(programNo);
-        List<Tag> tagList = tagRepository.findByProgramNo(programNo);
         List<ParticipationStudent> participationStudentList = participationStudentRepository.findByProgramNo(programNo);
 
-        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, recommendedTargetList, tagList, participationStudentList);
+        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, participationStudentList);
 
         return programInformationDto;
     }

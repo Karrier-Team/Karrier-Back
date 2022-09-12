@@ -1,15 +1,11 @@
 package com.karrier.mentoring.entity;
 
 
-import com.karrier.mentoring.dto.CurriculumDto;
 import com.karrier.mentoring.key.CurriculumKey;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -25,14 +21,15 @@ public class Curriculum implements Serializable {
     @Id
     private String curriculumTitle;
 
-    private String curriculumContent;
+    @Column(nullable = false)
+    private String content;
 
-    public static Curriculum createCurriculum(long programNo, CurriculumDto curriculumDto){
+    public static Curriculum createCurriculum(long programNo, String curriculumTitle, String content){
         Curriculum curriculum = new Curriculum();
 
         curriculum.setProgramNo(programNo);
-        curriculum.setCurriculumTitle(curriculumDto.getCurriculumTitle());
-        curriculum.setCurriculumContent(curriculumDto.getCurriculumContent());
+        curriculum.setCurriculumTitle(curriculumTitle);
+        curriculum.setContent(content);
 
         return curriculum;
     }

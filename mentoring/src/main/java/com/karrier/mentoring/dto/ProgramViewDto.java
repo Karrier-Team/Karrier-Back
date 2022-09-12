@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 public class ProgramViewDto {
 
-    private long programNo;
-
     private String name;
 
     private String title;
@@ -24,13 +22,10 @@ public class ProgramViewDto {
 
     private Boolean onlineOffline;
 
-    private String state;
-
     public static ProgramViewDto createProgramViewDto(Program program, String name, String profileImage, String major){
 
         ProgramViewDto programViewDto = new ProgramViewDto();
 
-        programViewDto.setProgramNo(program.getProgramNo());
         programViewDto.setName(name);
         programViewDto.setTitle(program.getTitle());
         programViewDto.setProfileImage(profileImage);
@@ -38,7 +33,6 @@ public class ProgramViewDto {
         programViewDto.setMajor(major);
         programViewDto.setLikeCount(program.getLikeCount());
         programViewDto.setOnlineOffline(program.getOnlineOffline());
-        programViewDto.setState(program.getState());
 
         return programViewDto;
 

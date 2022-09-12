@@ -6,11 +6,8 @@ import com.karrier.mentoring.key.ParticipationStudentKey;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import javax.persistence.IdClass;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 import javax.persistence.Table;
@@ -29,26 +26,35 @@ public class ParticipationStudent implements Serializable {
     @Id
     private String email;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String gender;
 
+    @Column(nullable = false)
     private String phoneNo;
 
+    @Column(nullable = false)
     private String age;
 
+    @Column(nullable = false)
     private String region;
 
+    @Column(nullable = false)
     private String schoolName;
 
+    @Column(nullable = false)
     private String applicationRoute;
 
+    @Column(nullable = false)
     private String introduce;
 
     private String questionCategory;
 
     private String questionContent;
 
+    @Column(nullable = false)
     private LocalDateTime applyDate;
 
     public static ParticipationStudent createParticipationStudent(ParticipationStudentFormDto participationStudentFormDto, String email, long programNo){
@@ -58,7 +64,6 @@ public class ParticipationStudent implements Serializable {
         participationStudent.setEmail(email);
         participationStudent.setName(participationStudentFormDto.getName());
         participationStudent.setGender(participationStudentFormDto.getGender());
-        participationStudent.setPhoneNo(participationStudentFormDto.getPhoneNo());
         participationStudent.setAge(participationStudentFormDto.getAge());
         participationStudent.setRegion(participationStudentFormDto.getRegion());
         participationStudent.setSchoolName(participationStudentFormDto.getSchoolName());
