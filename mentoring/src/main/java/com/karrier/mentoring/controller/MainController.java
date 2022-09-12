@@ -1,6 +1,8 @@
 package com.karrier.mentoring.controller;
 
 import com.karrier.mentoring.auth.PrincipalDetails;
+import com.karrier.mentoring.service.mail.InfoEmailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,16 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MainController {
 
+    @Autowired
+    InfoEmailServiceImpl infoEmailService;
+
     @GetMapping(value = "/")
     public String main() {
         return "Server is running";
     }
 
-    @GetMapping(value = "/username")
+    @GetMapping(value = "/test")
     public String username() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String myEmail = ((UserDetails) principal).getUsername();
-        return myEmail;
+        infoEmailService.sendSimpleMessage("tsi0521o@gmail.com");
+        return "myEmail";
     }
 
 }

@@ -14,6 +14,7 @@ import com.karrier.mentoring.repository.*;
 import com.karrier.mentoring.service.MemberService;
 import com.karrier.mentoring.service.S3Uploader;
 import com.karrier.mentoring.service.mail.EmailService;
+import com.karrier.mentoring.service.mail.PwdCertEmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,9 @@ public class MemberController {
 
     private final S3Uploader s3Uploader;
 
-    private final EmailService emailService;
+    public static final String profileImageBaseUrl = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/";
+
+    private final PwdCertEmailServiceImpl pwdCertEmailService;
 
     //회원가입 요청시
     @PostMapping(value = "/new")
@@ -235,7 +238,7 @@ public class MemberController {
 
     @PostMapping(value = "/change/password")
     public ResponseEntity<? extends BasicResponse> sendPasswordChangeTokenEmail(@RequestParam(required = true) String email) throws Exception {
-        emailService.sendSimpleMessage(email);
+        pwdCertEmailService.sendSimpleMessage(email);
         return ResponseEntity.ok().body(new SuccessResponse());
     }
 
@@ -251,7 +254,7 @@ public class MemberController {
 
     @PostMapping(value = "/verify/password/token")
     public ResponseEntity<? extends BasicResponse> verifyEmail(@RequestParam(required = true) String token){
-        emailService.verifyEmail(token);
+        pwdCertEmailService.verifyEmail(token);
         return ResponseEntity.ok().body(new SuccessResponse());
     }
 
