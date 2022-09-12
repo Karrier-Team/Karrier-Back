@@ -23,8 +23,6 @@ public enum ErrorCode {
     /* 403 FORBIDDEN : 해당 권한으로 접근이 허락 되지 않는 정보*/
     AUTH_ENTRY_DENIED(HttpStatus.FORBIDDEN, "유효한 토큰이 아닙니다."),
 
-
-
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버 정보를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 정보를 찾을 수 없습니다"),
