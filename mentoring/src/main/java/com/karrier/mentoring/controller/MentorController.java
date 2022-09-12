@@ -8,6 +8,7 @@ import com.karrier.mentoring.http.SuccessResponse;
 import com.karrier.mentoring.http.error.ErrorCode;
 import com.karrier.mentoring.http.error.exception.BadRequestException;
 import com.karrier.mentoring.http.error.exception.UnAuthorizedException;
+import com.karrier.mentoring.repository.MemberRepository;
 import com.karrier.mentoring.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,8 @@ public class MentorController {
 
     private final ProgramService programService;
 
+    private final MemberRepository memberRepository;
+
     private final FollowService followService;
 
     private final S3Uploader s3Uploader;
@@ -69,17 +72,23 @@ public class MentorController {
 
         //S3 스토리지에 파일 저장 후 파일 이름 반환
         UploadFile studentInfo = s3Uploader.upload(mentorFormDto.getStudentInfoFile(), "student-info");
-        UploadFile profileImage = s3Uploader.upload(mentorFormDto.getProfileImageFile(), "profile-image");
+
+        //프로필 사진 저장을 위해 유저 정보 가져온 후 프로필 사진 업데이트
+        Member member = memberService.getMember(email);
+        if (member.getProfileImage() != null) { //이미 프로필 사진 있을 경우 원래꺼 삭제 후 새로운거 저장
+            UploadFile profileImage = s3Uploader.modifyProfileImage(mentorFormDto.getProfileImageFile(), "profile-image", member.getProfileImage().getStoreFileName());
+            Member.signUpMentor(member, profileImage);
+
+        } else { //없을 경우 새로운 사진 저장
+            UploadFile profileImage = s3Uploader.upload(mentorFormDto.getProfileImageFile(), "profile-image");
+            Member.signUpMentor(member, profileImage);
+        }
 
         //멘토 정보 저장
         Mentor mentor = Mentor.createMentor(mentorFormDto, studentInfo, email);
 
-        //프로필 사진 저장을 위해 유저 정보 가져온 후 프로필 사진 업데이트
-        Member member = memberService.getMember(email);
-        Member updatedMember = Member.signUpMentor(member, profileImage);
-
         //DB에 저장
-        ArrayList<Object> objects = mentorService.createMentor(mentor, updatedMember);
+        ArrayList<Object> objects = mentorService.createMentor(mentor, member);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<Object>(objects));
     }

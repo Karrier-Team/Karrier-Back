@@ -19,7 +19,7 @@ import java.util.List;
 @SequenceGenerator(
         name = "PROGRAM_SEQ_GENERATOR",
         sequenceName = "PROGRAM_SEQ",
-        initialValue = 10,
+        initialValue = 1,
         allocationSize = 1
 )
 public class Program {

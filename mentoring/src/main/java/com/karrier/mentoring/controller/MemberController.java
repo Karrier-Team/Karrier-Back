@@ -160,12 +160,16 @@ public class MemberController {
         //프로필 사진 저장을 위해 유저 정보 가져오기
         Member member = memberService.getMember(email);
 
-        //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
-        UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
-
-
-        //member 프로필 사진 정보 수정
-        Member.modifyProfile(member, profileImage);
+        if (member.getProfileImage() != null) {
+            //S3 스토리지에 이전 파일 삭제 후 새로운 파일 저장, 저장된 파일 이름 반환
+            UploadFile profileImage = s3Uploader.modifyProfileImage(profileImageFile, "profile-image", member.getProfileImage().getStoreFileName());
+            //member 프로필 사진 정보 수정
+            Member.modifyProfile(member, profileImage);
+        } else { //없을 경우 새로운 사진 저장
+            UploadFile profileImage = s3Uploader.upload(profileImageFile, "profile-image");
+            //member 프로필 사진 정보 수정
+            Member.modifyProfile(member, profileImage);
+        }
 
         //DB에 저장
         MemberWithoutPasswordDto memberWithoutPasswordDto = MemberWithoutPasswordDto.createMemberWithoutPasswordDto(memberService.modifyMember(member));
