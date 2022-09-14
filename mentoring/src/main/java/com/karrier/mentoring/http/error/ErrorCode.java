@@ -70,7 +70,8 @@ public enum ErrorCode {
 
     /* 500 서버 내부 에러 */
     MESSAGING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"이메일 전송과정에서 에러가 발생했습니다."),
-    UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러입니다.");
+    UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러입니다."),
+    TYPE_CAST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"형변환 과정에서 에러가 발생했습니다.");
     ;
 
 

@@ -14,6 +14,7 @@ import com.karrier.mentoring.repository.CurriculumRepository;
 import com.karrier.mentoring.service.AdminService;
 import com.karrier.mentoring.service.MemberService;
 import com.karrier.mentoring.service.MentorService;
+import com.karrier.mentoring.service.mail.MentorAcceptEmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class AdminController {
 
     private final MemberService memberService;
     private final AdminService adminService;
+    private final MentorAcceptEmailServiceImpl mentorAcceptEmailService;
 
     // MENTOR_WAIT 상태인 멘토 정보 보여주기
     @GetMapping(value = "/control-mentors")
@@ -71,7 +73,7 @@ public class AdminController {
                 //멤버 역할 바꿔주기
                 Member updatedMember = Member.changeMentorRole(member);
                 adminService.modifyMember(updatedMember);
-
+                mentorAcceptEmailService.sendSimpleMessage(updatedMember);
                 return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
             }
             //역할을 바꾸려는 멤버의 역할이 대기중이 아닐때
