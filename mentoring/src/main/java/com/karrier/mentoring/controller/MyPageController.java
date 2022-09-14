@@ -171,26 +171,21 @@ public class MyPageController {
         return ResponseEntity.ok().body(new SuccessDataResponse<>(reviewListDtoList));
     }
 
-    @GetMapping(value = "/participation")
-    public ResponseEntity<Object> myParticipation(@RequestParam("state") String state){
+    @GetMapping(value = "/manage/program-list")
+    public ResponseEntity<? extends BasicResponse> myParticipation(@RequestParam("state") String state){
 
         // 사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
-        List<ParticipationStudent> participationStudentList = participationStudentRepository.findByEmail(email);
-
-        if (participationStudentList == null) {//해당 유저가 참여하는 프로그램이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no participation error");
-        }
-
+        List<ParticipationStudent> participationStudentList = participationStudentService.getParticipationStudentsByEmail(email);
         List<ProgramViewDto> programViewDtoList = participationStudentService.getParticipationProgramViewDto(participationStudentList);
 
         List<ProgramViewDto> onlineProgramViewDtoList = new ArrayList<>();
         List<ProgramViewDto> offlineProgramViewDtoList = new ArrayList<>();
 
-        if(state.equals("noOption")){
-            return ResponseEntity.status(HttpStatus.OK).body(programViewDtoList);
+        if(state.equals("all")){
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
         }
         else if(state.equals("online")){
             for(ProgramViewDto programViewDto : programViewDtoList){
@@ -198,7 +193,7 @@ public class MyPageController {
                     onlineProgramViewDtoList.add(programViewDto);
                 }
             }
-            return ResponseEntity.status(HttpStatus.OK).body(onlineProgramViewDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(onlineProgramViewDtoList));
         }
         else if(state.equals("offline")){
             for(ProgramViewDto programViewDto : programViewDtoList){
@@ -206,24 +201,21 @@ public class MyPageController {
                     offlineProgramViewDtoList.add(programViewDto);
                 }
             }
-            return ResponseEntity.status(HttpStatus.OK).body(offlineProgramViewDtoList);
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(offlineProgramViewDtoList));
         }
         else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
     }
 
-    @GetMapping(value = "/wishlist")
-    public ResponseEntity<Object> showWishList(@RequestParam("orderType") String orderType, @RequestParam("searchType") String searchType, @RequestParam("searchWord") String searchWord){
+    //member 입장에서 나의 찜 목록 보기(최신순, 제목순 정렬) (제목, 멘토이름 검색)
+    @GetMapping(value = "/manage/wish-list")
+    public ResponseEntity<? extends BasicResponse> showWishList(@RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
         List<WishList> wishLists = wishListService.getMyWishLists(email);
-
-        if (wishLists == null) {//해당 유저의 찜 목록이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no wishlist error");
-        }
 
         List<Program> programs = new ArrayList<>();
 
@@ -231,39 +223,97 @@ public class MyPageController {
             programs.add(programService.getProgramByNo(wishList.getProgramNo()));
         }
 
-        List<ProgramViewDto> programViewDtoList = programService.getWishPrograms(programs, orderType, searchType, searchWord);
+        List<ProgramViewDto> programViewDtoList = programService.getWishPrograms(programs, order, category, keyword);
 
-        if (programViewDtoList == null) {//조건에 맞는 프로그램 목록이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no wishlist error with condition");
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
+    }
+
+    // 멘티 입장에서 팔로우된 멘토 list 팔로우에서 지우기
+    @PostMapping(value = "/manage/wish-list/delete")
+    public ResponseEntity<? extends BasicResponse> deleteWishList(ProgramNoData programNoData) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        for(Long programNo : programNoData.getProgramNoList()){
+            WishList wishList = wishListService.getWishList(programNo, email);
+
+            if(wishList == null){
+                throw new NotFoundException(ErrorCode.WISHLIST_NOT_FOUND);
+            }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(programViewDtoList);
+        for(Long programNo : programNoData.getProgramNoList()){
+            Program program = programService.getProgramByNo(programNo);
+
+            if(program == null){
+                throw new NotFoundException(ErrorCode.PROGRAM_NOT_FOUND);
+            }
+        }
+
+        for(Long programNo : programNoData.getProgramNoList()){
+            wishListService.deleteWishList(programNo, email);
+
+            Program program = programService.getProgramByNo(programNo);
+            program.setLikeCount(program.getLikeCount()-1);
+
+            programService.updateProgram(program);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
     }
 
     //member 입장에서 내가 팔로우 하고 있는 mentor 정보 보기
-    @GetMapping(value = "/follow-list")
-    public ResponseEntity<Object> myFollowings(@RequestParam("searchType") String searchType, @RequestParam("searchWord") String searchWord){
+    @GetMapping(value = "/manage/following-list")
+    public ResponseEntity<? extends BasicResponse> myFollowings(@RequestParam("category") String category, @RequestParam("keyword") String keyword){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberEmail = ((UserDetails) principal).getUsername();
 
         List<Follow> followings = followService.getFollowings(memberEmail);
-
-        if (followings == null) {//해당 유저의 팔로우 목록이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no follow-list error");
-        }
-
         List<Mentor> mentors = new ArrayList<>();
 
         for(Follow follow : followings){
             mentors.add(mentorService.getMentor(follow.getMentorEmail()));
         }
-        List<FollowShowDto> followShowDtoList = followService.getFollowingDtoList(mentors, searchType, searchWord);
 
-        if (followShowDtoList == null) {//해당 조건의 팔로우 목록이 없을 때
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no follow-list error with condition");
+        List<FollowShowDto> followShowDtoList = followService.getFollowingDtoList(mentors, category, keyword);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(followShowDtoList));
+    }
+
+    // 멘티 입장에서 팔로우된 멘토 list 팔로우에서 지우기
+    @PostMapping(value = "/manage/following-list/delete")
+    public ResponseEntity<? extends BasicResponse> deleteFollow(EmailData emails) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        List<Mentor> mentorList = new ArrayList<>();
+
+        for (String mentorEmail : emails.getEmailList()) {
+            Mentor mentor = mentorService.getMentor(mentorEmail);
+            //멘토를 찾지 못한 경우
+            if (mentor == null) {
+                throw new NotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+            }
+            mentorList.add(mentor);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(followShowDtoList);
+        for(Mentor mentor : mentorList){
+            Follow follow = followService.getFollow(email, mentor.getEmail());
+            //follow 항목이 없는 경우
+            if(follow == null){
+                throw new NotFoundException(ErrorCode.FOLLOW_NOT_FOUND);
+            }
+        }
+
+        for(Mentor mentor : mentorList){
+            followService.deleteFollow(email,mentor.getEmail());
+
+            mentor.setFollowNo(mentor.getFollowNo()-1);
+            mentorService.updateMentor(mentor);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
     }
 }

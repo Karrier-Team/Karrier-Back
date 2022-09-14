@@ -28,4 +28,9 @@ public class TagService {
     public List<Tag> getTagByNo(long programNo){
         return tagRepository.findByProgramNo(programNo);
     }
+
+    @Transactional
+    public long removeTagByProgramNo(long programNo){
+        return tagRepository.deleteByProgramNo(programNo);
+    }
 }

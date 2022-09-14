@@ -33,6 +33,7 @@ public enum ErrorCode {
     PROGRAM_SIZE_ERROR(HttpStatus.BAD_REQUEST, "프로그램 인원이 꽉 찼습니다."),
     PROGRAM_CHANGE_ERROR(HttpStatus.BAD_REQUEST, "이미 저장된 프로그램은 임시로 바꿀수 없습니다."),
     VALIDATE_SOCIAL_USER(HttpStatus.BAD_REQUEST, "소셜 로그인 회원가입자는 해당 절차를 진행할 수 없습니다."),
+    PROGRAM_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "완성된 프로그램이 아닙니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "권한이 없는 사용자 입니다."),

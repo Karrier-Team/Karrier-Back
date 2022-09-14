@@ -10,6 +10,7 @@ import com.karrier.mentoring.http.SuccessDataResponse;
 import com.karrier.mentoring.http.SuccessResponse;
 import com.karrier.mentoring.http.error.ErrorCode;
 import com.karrier.mentoring.http.error.exception.BadRequestException;
+import com.karrier.mentoring.http.error.exception.UnAuthorizedException;
 import com.karrier.mentoring.repository.CurriculumRepository;
 import com.karrier.mentoring.service.AdminService;
 import com.karrier.mentoring.service.MemberService;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/admin")
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class AdminController {
         }
         //관리자가 아닌 사람이 접속할 때
         else{
-            throw new BadRequestException(ErrorCode.UNAUTHORIZED_USER);
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
         }
     }
 
@@ -83,7 +85,7 @@ public class AdminController {
         }
         //관리자가 아닌 사람이 접속할 때
         else{
-            throw new BadRequestException(ErrorCode.UNAUTHORIZED_USER);
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
         }
     }
 }

@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/programs")
 @RestController
 @RequiredArgsConstructor
@@ -259,6 +260,20 @@ public class ProgramController {
             if(!(programFormDto.getMainImageFile().isEmpty())){
                 //S3 스토리지에 파일 저장 후 파일 이름 반환
                 mainImage = s3Uploader.upload(programFormDto.getMainImageFile(), "main-image");
+            }
+
+            try {
+                int price = Integer.parseInt(programFormDto.getPrice());
+                //가격에 숫자를 입력하지 않은 경우
+            } catch (NumberFormatException e){
+                throw new BadRequestException(ErrorCode.PRICE_DATA_TYPE_NOT_INT);
+            }
+
+            try {
+                int maxPeople = Integer.parseInt(programFormDto.getMaxPeople());
+                //최대 수강 인원에 숫자를 입력하지 않은 경우
+            } catch (NumberFormatException e){
+                throw new BadRequestException(ErrorCode.MAX_PEOPLE_DATA_TYPE_NOT_INT);
             }
 
             //프로그램 정보 저장
@@ -511,6 +526,9 @@ public class ProgramController {
 
             Program savedProgram = Program.updateProgram(program, mainImage, programFormDto);
             programService.updateProgram(savedProgram);
+            recommendedTargetService.removeRecommendedTargetByProgramNo(programNo);
+            curriculumService.removeCurriculumByProgramNo(programNo);
+            tagService.removeTagByProgramNo(programNo);
 
             for(RecommendedTargetDto recommendedTargetDto : recommendedTargetData.getRecommendedTargetDtoList()){
                 RecommendedTarget recommendedTarget = RecommendedTarget.createRecommendedTarget(programNo, recommendedTargetDto);
@@ -534,6 +552,20 @@ public class ProgramController {
             if(!(programFormDto.getMainImageFile().isEmpty())){
                 //S3 스토리지에 파일 저장 후 파일 이름 반환
                 mainImage = s3Uploader.upload(programFormDto.getMainImageFile(), "main-image");
+            }
+
+            try {
+                int price = Integer.parseInt(programFormDto.getPrice());
+                //가격에 숫자를 입력하지 않은 경우
+            } catch (NumberFormatException e){
+                throw new BadRequestException(ErrorCode.PRICE_DATA_TYPE_NOT_INT);
+            }
+
+            try {
+                int maxPeople = Integer.parseInt(programFormDto.getMaxPeople());
+                //최대 수강 인원에 숫자를 입력하지 않은 경우
+            } catch (NumberFormatException e){
+                throw new BadRequestException(ErrorCode.MAX_PEOPLE_DATA_TYPE_NOT_INT);
             }
 
             //프로그램 정보 업데이트
@@ -602,6 +634,10 @@ public class ProgramController {
         String email = ((UserDetails) principal).getUsername();
 
         Program program = programService.getProgramByNo(programNo);
+
+        if(!program.getProgramState()){
+            throw new BadRequestException(ErrorCode.PROGRAM_NOT_COMPLETE);
+        }
 
         // 있는 경우 program관련 정보들 Dto로 넘김
         ProgramInformationDto programInformationDto = programService.getProgramInformationDto(programNo, email);

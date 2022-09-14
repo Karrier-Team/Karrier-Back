@@ -34,7 +34,7 @@ public class ProgramViewDto {
         programViewDto.setName(name);
         programViewDto.setTitle(program.getTitle());
         programViewDto.setProfileImage(profileImage);
-        programViewDto.setMainImage(program.getMainImage().getStoreFileName());
+        programViewDto.setMainImage(program.getMainImage().getFileUrl());
         programViewDto.setMajor(major);
         programViewDto.setLikeCount(program.getLikeCount());
         programViewDto.setOnlineOffline(program.getOnlineOffline());
