@@ -37,7 +37,7 @@ public class MentorAcceptEmailServiceImpl<T> implements EmailService<T>{
         Member mentorMemberObject = memberService.getMember(mentor.getEmail());
         String mentorImg = mentorMemberObject.getProfileImage().getFileUrl();
         if(mentorImg==null){
-            mentorImg = ""; // 추후 basic 사진 기재
+            mentorImg = "https://karrier.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.png"; // default 사진
         }
         String msgg="<div\n" +
                 "      style=\"\n" +

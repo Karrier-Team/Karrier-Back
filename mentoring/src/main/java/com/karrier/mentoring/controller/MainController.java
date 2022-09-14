@@ -1,7 +1,10 @@
 package com.karrier.mentoring.controller;
 
+import com.karrier.mentoring.auth.PrincipalDetails;
 import com.karrier.mentoring.service.mail.ProgramInfoEmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +24,9 @@ public class MainController {
 
     @GetMapping(value = "/test")
     public String username() {
-        infoEmailService.sendSimpleMessage("tsi0521o@gmail.com");
-        return "myEmail";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((PrincipalDetails) principal).getUsername();
+        return email;
     }
 
 }
