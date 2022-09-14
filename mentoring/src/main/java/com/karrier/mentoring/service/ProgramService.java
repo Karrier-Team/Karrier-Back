@@ -1,10 +1,11 @@
 package com.karrier.mentoring.service;
 
-import com.karrier.mentoring.dto.ProgramInformationDto;
-import com.karrier.mentoring.dto.ProgramViewDto;
+import com.karrier.mentoring.dto.*;
 import com.karrier.mentoring.entity.*;
 import com.karrier.mentoring.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,13 @@ public class ProgramService {
     private final WishListRepository wishListRepository;
 
     private final FollowRepository followRepository;
+
+    private final ReviewRepository reviewRepository;
+
+    private final QuestionRepository questionRepository;
+
+    private final QuestionCommentRepository questionCommentRepository;
+
     @Transactional
     public Program createProgram(Program program){
         return programRepository.save(program);
@@ -204,11 +212,51 @@ public class ProgramService {
     public ProgramInformationDto getProgramInformationDto(long programNo, String email){
         Program program = programRepository.findByProgramNo(programNo);
         Mentor mentor = mentorRepository.findByEmail(program.getEmail());
-        String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
+        String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();
         List<Curriculum> curriculumList = curriculumRepository.findByProgramNo(programNo);
         List<RecommendedTarget> recommendedTargetList = recommendedTargetRepository.findByProgramNo(programNo);
         List<Tag> tagList = tagRepository.findByProgramNo(programNo);
         List<ParticipationStudent> participationStudentList = participationStudentRepository.findByProgramNo(programNo);
+
+        List<ReviewDetailDto> reviewDetailDtoList = new ArrayList<>();
+        List<Review> reviewList = reviewRepository.findByProgramNo(programNo);
+
+        for (Review review : reviewList) {
+            Member writer = memberRepository.findByEmail(review.getEmail());//작성자 닉네임, 프로필사진 찾기 위해
+            String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
+            String mentorProfileImageUrl = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();
+
+            reviewDetailDtoList.add(ReviewDetailDto.createReviewDetailDto(review, program, writer, name, mentorProfileImageUrl, email));
+        }
+
+        List<QuestionDetailDto> questionDetailDtoList = new ArrayList<>();
+        List<Question> questionList = questionRepository.findByProgramNo(programNo);
+
+        for(Question question : questionList){
+            Member writer = memberRepository.findByEmail(question.getEmail());//작성자 닉네임, 프로필을 위해 찾기
+            String name = mentorRepository.findByEmail(program.getEmail()).getName();//멘토 이름 찾기
+            String mentorProfileImageUrl = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();//멘토 프로필 사진 찾기
+            List<QuestionComment> questionCommentList = questionCommentRepository.findByProgramNoAndQuestionNo(programNo, question.getQuestionNo());//댓글 찾기
+
+            List<QuestionCommentListDto> questionCommentListDto = new ArrayList<>();
+            for (QuestionComment questionComment : questionCommentList) {
+                Member member = memberRepository.findByEmail(questionComment.getEmail());//프로필 사진, 닉네임을 위해
+                String profileImageUrl = null;//프로필 사진 정보
+                String commentName; // 닉네임 정보
+                if (member.getProfileImage() != null) {
+                    profileImageUrl = member.getProfileImage().getFileUrl(); // 프로필이 있는 회원만
+                }
+                if (member.getRole().equals(Role.MENTOR_APPROVE)) { // 멘토일 때는 이름을 가져와야 하므로
+                    commentName = mentorRepository.findByEmail(member.getEmail()).getName();
+                } else {
+                    commentName = member.getNickname();
+                }
+                questionCommentListDto.add(QuestionCommentListDto.createQuestionCommentListDto(questionComment, commentName, profileImageUrl, email));// 댓글 보여주기 위한 정보형태로 변환
+            }
+
+            questionDetailDtoList.add(QuestionDetailDto.createQuestionDetailDto(question, program, writer, name, mentorProfileImageUrl, email, questionCommentListDto));
+        }
+
         Boolean isMyWishList = true;
         Boolean isMyFollowList = true;
         Boolean isMyParticipate = true;
@@ -224,7 +272,7 @@ public class ProgramService {
         }
 
 
-        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, recommendedTargetList, tagList, participationStudentList, isMyWishList, isMyFollowList, isMyParticipate);
+        ProgramInformationDto programInformationDto = ProgramInformationDto.createProgramInformationDto(program, mentor, profileImage, curriculumList, recommendedTargetList, tagList, participationStudentList, isMyWishList, isMyFollowList, isMyParticipate, reviewDetailDtoList, questionDetailDtoList);
 
         return programInformationDto;
     }

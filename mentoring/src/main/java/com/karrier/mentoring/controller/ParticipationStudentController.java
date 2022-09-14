@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/participation")
 @RestController
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class ParticipationStudentController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
-        List<ParticipationStudent> participationStudentList = participationStudentService.getParticipationStudentByEmail(email);
+        List<ParticipationStudent> participationStudentList = participationStudentService.getParticipationStudentsByEmail(email);
 
         List<ProgramViewDto> programViewDtoList = participationStudentService.getParticipationProgramViewDto(participationStudentList);
 

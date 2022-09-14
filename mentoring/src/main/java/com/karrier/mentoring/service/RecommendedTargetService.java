@@ -28,4 +28,9 @@ public class RecommendedTargetService {
         return recommendedTargetRepository.findByProgramNo(programNo);
 
     }
+
+    @Transactional
+    public long removeRecommendedTargetByProgramNo(long programNo){
+        return recommendedTargetRepository.deleteByProgramNo(programNo);
+    }
 }

@@ -28,4 +28,9 @@ public class CurriculumService {
     public List<Curriculum> getCurriculumByProgramNo(long programNo){
         return curriculumRepository.findByProgramNo(programNo);
     }
+
+    @Transactional
+    public long removeCurriculumByProgramNo(long programNo){
+        return curriculumRepository.deleteByProgramNo(programNo);
+    }
 }

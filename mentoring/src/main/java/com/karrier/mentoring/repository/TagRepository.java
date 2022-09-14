@@ -9,4 +9,6 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, TagKey> {
 
     List<Tag> findByProgramNo(long programNo);
+
+    long deleteByProgramNo(long programNo);
 }
