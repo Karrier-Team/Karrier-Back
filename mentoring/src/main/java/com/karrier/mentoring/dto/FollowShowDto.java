@@ -15,13 +15,17 @@ public class FollowShowDto {
 
     private String major;
 
+    private String department;
+
     private String profileImage;
 
     public static FollowShowDto createFollowShowDto(Mentor mentor, String profileImage){
 
         FollowShowDto followShowDto = new FollowShowDto();
 
+        followShowDto.setEmail(mentor.getEmail());
         followShowDto.setName(mentor.getName());
+        followShowDto.setEmail(mentor.getDepartment());
         followShowDto.setMajor(mentor.getMajor());
         followShowDto.setProfileImage(profileImage);
 

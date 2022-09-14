@@ -211,6 +211,25 @@ public class MyPageController {
 
     //member 입장에서 나의 찜 목록 보기(최신순, 제목순 정렬) (제목, 멘토이름 검색)
     @GetMapping(value = "/manage/wish-list")
+    public ResponseEntity<? extends BasicResponse> showWishList(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        List<WishList> wishLists = wishListService.getMyWishLists(email);
+
+        List<Program> programs = new ArrayList<>();
+
+        for(WishList wishList : wishLists){
+            programs.add(programService.getProgramByNo(wishList.getProgramNo()));
+        }
+
+        List<ProgramViewDto> programViewDtoList = programService.getWishPrograms(programs, null, null, null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
+    }
+
+    //member 입장에서 나의 찜 목록 보기(최신순, 제목순 정렬) (제목, 멘토이름 검색)
+    @GetMapping(value = "/manage/wish-list/search")
     public ResponseEntity<? extends BasicResponse> showWishList(@RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
@@ -265,6 +284,25 @@ public class MyPageController {
 
     //member 입장에서 내가 팔로우 하고 있는 mentor 정보 보기
     @GetMapping(value = "/manage/following-list")
+    public ResponseEntity<? extends BasicResponse> myFollowings(){
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberEmail = ((UserDetails) principal).getUsername();
+
+        List<Follow> followings = followService.getFollowings(memberEmail);
+        List<Mentor> mentors = new ArrayList<>();
+
+        for(Follow follow : followings){
+            mentors.add(mentorService.getMentor(follow.getMentorEmail()));
+        }
+
+        List<FollowShowDto> followShowDtoList = followService.getFollowingDtoList(mentors, null, null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(followShowDtoList));
+    }
+
+    //member 입장에서 내가 팔로우 하고 있는 mentor 정보 보기
+    @GetMapping(value = "/manage/following-list/search")
     public ResponseEntity<? extends BasicResponse> myFollowings(@RequestParam("category") String category, @RequestParam("keyword") String keyword){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

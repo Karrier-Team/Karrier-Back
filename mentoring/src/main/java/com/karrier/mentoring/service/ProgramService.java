@@ -146,7 +146,15 @@ public class ProgramService {
     {
         List<Program> programList = new ArrayList<>();
 
-        if(searchType.equals("프로그램제목")){
+        if(searchType == null){
+            for(Program program : programs){
+                if(program.getProgramState().equals(true)){
+                    programList.add(program);
+                }
+            }
+            programList.sort(Comparator.comparing(Program::getCreateDate).reversed());
+        }
+        else if(searchType.equals("프로그램제목")){
 
             if(searchWord == null){
                 for(Program program : programs){
@@ -208,7 +216,7 @@ public class ProgramService {
             String name = mentorRepository.findByEmail(program.getEmail()).getName();
             String major = mentorRepository.findByEmail(program.getEmail()).getMajor();
             String department = mentorRepository.findByEmail(program.getEmail()).getDepartment();
-            String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getStoreFileName();
+            String profileImage = memberRepository.findByEmail(program.getEmail()).getProfileImage().getFileUrl();
 
             programViewDtoArrayList.add(ProgramViewDto.createProgramViewDto(program, name, profileImage, major, department));
         }

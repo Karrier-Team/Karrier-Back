@@ -45,7 +45,11 @@ public class FollowService {
     public List<FollowShowDto> getFollowingDtoList(List<Mentor> mentors, String searchType, String searchWord) {
         List<Mentor> mentorList = new ArrayList<>();
 
-        if (searchType.equals("멘토이름")) {
+        if(searchType == null){
+            mentorList = mentors;
+        }
+
+        else if (searchType.equals("멘토이름")) {
             if (searchWord == null) {
                 mentorList = mentors;
             } else {
@@ -77,7 +81,7 @@ public class FollowService {
         ArrayList<FollowShowDto> followShowDtoArrayList = new ArrayList<>();
 
         for (Mentor mentor : mentors) {
-            String profileImage = memberRepository.findByEmail(mentor.getEmail()).getProfileImage().getStoreFileName();
+            String profileImage = memberRepository.findByEmail(mentor.getEmail()).getProfileImage().getFileUrl();
             followShowDtoArrayList.add(FollowShowDto.createFollowShowDto(mentor, profileImage));
         }
 
