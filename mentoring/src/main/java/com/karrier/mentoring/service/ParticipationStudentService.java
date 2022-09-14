@@ -54,8 +54,9 @@ public class ParticipationStudentService{
             Member member = memberRepository.findByEmail(mentor.getEmail());
             String profileImage = member.getProfileImage().getStoreFileName();
             String major = mentor.getMajor();
+            String department = mentor.getDepartment();
 
-            programViewDtoList.add(ProgramViewDto.createProgramViewDto(program, name, profileImage, major));
+            programViewDtoList.add(ProgramViewDto.createProgramViewDto(program, name, profileImage, major, department));
         }
 
         return programViewDtoList;

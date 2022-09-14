@@ -9,5 +9,5 @@ public interface MentorRepository extends JpaRepository<Mentor, String> {
 
     long deleteByEmail(String email);
     
-    List<Mentor> findByMajor(String major);
+    List<Mentor> findByDepartment(String department);
 }

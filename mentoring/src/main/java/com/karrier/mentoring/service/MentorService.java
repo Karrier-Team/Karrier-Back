@@ -56,7 +56,7 @@ public class MentorService {
         return programRepository.findByEmail(email);
     }
 
-    public List<Mentor> getEmailsByMajor(String major){
-        return mentorRepository.findByMajor(major);
+    public List<Mentor> getEmailsByDepartment(String department){
+        return mentorRepository.findByDepartment(department);
     }
 }

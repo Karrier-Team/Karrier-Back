@@ -605,8 +605,25 @@ public class ProgramController {
 
     //특정 major program들 조건에 따라 순서로 얻기
     @GetMapping(value = "/major")
+    public ResponseEntity<? extends BasicResponse> viewPrograms(@RequestParam("major") String major){
+        List<Mentor> mentors = mentorService.getEmailsByDepartment(major);
+
+        // 해당 mentor들이 만든 program list 만들기
+        List<String> emails = new ArrayList<>();
+
+        for(Mentor mentor : mentors){
+            emails.add(mentor.getEmail());
+        }
+
+        List<ProgramViewDto> programViewDtoList = programService.getPrograms(emails, null, null, null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
+    }
+
+    //특정 major program들 조건에 따라 순서로 얻기
+    @GetMapping(value = "/major/search")
     public ResponseEntity<? extends BasicResponse> viewPrograms(@RequestParam("major") String major, @RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
-        List<Mentor> mentors = mentorService.getEmailsByMajor(major);
+        List<Mentor> mentors = mentorService.getEmailsByDepartment(major);
 
         // 해당 mentor들이 만든 program list 만들기
         List<String> emails = new ArrayList<>();

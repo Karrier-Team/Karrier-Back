@@ -26,7 +26,9 @@ public class ProgramViewDto {
 
     private String state;
 
-    public static ProgramViewDto createProgramViewDto(Program program, String name, String profileImage, String major){
+    private String department;
+
+    public static ProgramViewDto createProgramViewDto(Program program, String name, String profileImage, String major, String department){
 
         ProgramViewDto programViewDto = new ProgramViewDto();
 
@@ -36,6 +38,7 @@ public class ProgramViewDto {
         programViewDto.setProfileImage(profileImage);
         programViewDto.setMainImage(program.getMainImage().getFileUrl());
         programViewDto.setMajor(major);
+        programViewDto.setDepartment(department);
         programViewDto.setLikeCount(program.getLikeCount());
         programViewDto.setOnlineOffline(program.getOnlineOffline());
         programViewDto.setState(program.getState());
