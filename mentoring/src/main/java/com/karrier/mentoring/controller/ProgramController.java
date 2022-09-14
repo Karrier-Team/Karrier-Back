@@ -580,21 +580,30 @@ public class ProgramController {
 
             //프로그램 정보 저장
             programService.updateProgram(updatedProgram);
+            recommendedTargetService.removeRecommendedTargetByProgramNo(programNo);
+            curriculumService.removeCurriculumByProgramNo(programNo);
+            tagService.removeTagByProgramNo(programNo);
 
             // 추천대상 정보 변경
-            for(RecommendedTargetDto recommendedTargetDto : recommendedTargetData.getRecommendedTargetDtoList()){
-                RecommendedTarget recommendedTarget = RecommendedTarget.createRecommendedTarget(programNo, recommendedTargetDto);
-                recommendedTargetService.modifyRecommendedTarget(recommendedTarget);
+            if(recommendedTargetData.getRecommendedTargetDtoList()!=null){
+                for(RecommendedTargetDto recommendedTargetDto : recommendedTargetData.getRecommendedTargetDtoList()){
+                    RecommendedTarget recommendedTarget = RecommendedTarget.createRecommendedTarget(programNo, recommendedTargetDto);
+                    recommendedTargetService.createRecommendedTarget(recommendedTarget);
+                }
             }
 
-            for(CurriculumDto curriculumDto : curriculumData.getCurriculumDtoList()){
-                Curriculum curriculum = Curriculum.createCurriculum(programNo, curriculumDto);
-                curriculumService.modifyCurriculum(curriculum);
+            if(curriculumData.getCurriculumDtoList()!=null){
+                for(CurriculumDto curriculumDto : curriculumData.getCurriculumDtoList()){
+                    Curriculum curriculum = Curriculum.createCurriculum(programNo, curriculumDto);
+                    curriculumService.createCurriculum(curriculum);
+                }
             }
 
-            for(TagDto tagDto : tagData.getTagDtoList()){
-                Tag tag = Tag.createTag(programNo, tagDto);
-                tagService.modifyTag(tag);
+            if(tagData.getTagDtoList()!=null){
+                for(TagDto tagDto : tagData.getTagDtoList()){
+                    Tag tag = Tag.createTag(programNo, tagDto);
+                    tagService.createTag(tag);
+                }
             }
         }
 
