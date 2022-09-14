@@ -289,19 +289,25 @@ public class ProgramController {
 
             long programNo = savedProgram.getProgramNo();
 
-            for(RecommendedTargetDto recommendedTargetDto : recommendedTargetData.getRecommendedTargetDtoList()){
-                RecommendedTarget recommendedTarget = RecommendedTarget.createRecommendedTarget(programNo, recommendedTargetDto);
-                recommendedTargetService.createRecommendedTarget(recommendedTarget);
+            if(recommendedTargetData.getRecommendedTargetDtoList()!=null){
+                for(RecommendedTargetDto recommendedTargetDto : recommendedTargetData.getRecommendedTargetDtoList()){
+                    RecommendedTarget recommendedTarget = RecommendedTarget.createRecommendedTarget(programNo, recommendedTargetDto);
+                    recommendedTargetService.createRecommendedTarget(recommendedTarget);
+                }
             }
 
-            for(CurriculumDto curriculumDto : curriculumData.getCurriculumDtoList()){
-                Curriculum curriculum = Curriculum.createCurriculum(programNo, curriculumDto);
-                curriculumService.createCurriculum(curriculum);
+            if(curriculumData.getCurriculumDtoList()!=null){
+                for(CurriculumDto curriculumDto : curriculumData.getCurriculumDtoList()){
+                    Curriculum curriculum = Curriculum.createCurriculum(programNo, curriculumDto);
+                    curriculumService.createCurriculum(curriculum);
+                }
             }
 
-            for(TagDto tagDto : tagData.getTagDtoList()){
-                Tag tag = Tag.createTag(programNo, tagDto);
-                tagService.createTag(tag);
+            if(tagData.getTagDtoList()!=null){
+                for(TagDto tagDto : tagData.getTagDtoList()){
+                    Tag tag = Tag.createTag(programNo, tagDto);
+                    tagService.createTag(tag);
+                }
             }
 
         }
