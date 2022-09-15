@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/"})
 @RequestMapping("/community")
 @RestController
 @RequiredArgsConstructor

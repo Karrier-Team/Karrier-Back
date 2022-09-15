@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/"})
 @RequestMapping("/members")
 @RestController
 @RequiredArgsConstructor
