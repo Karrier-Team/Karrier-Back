@@ -8,7 +8,7 @@
 
 
 ## Goal
-- We are a platform that solves students who have career concerns through the Carrier service.
+- We are a platform that solves students who have career concerns through the Karrier service.
 
 
 ## Spec
