@@ -750,4 +750,26 @@ public class ProgramController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<ParticipationCompleteDto>(participationCompleteDto));
     }
+
+    @PostMapping(value = "/delete-participate")
+    public ResponseEntity<? extends BasicResponse> deleteParticipateProgram(@RequestParam("programNo") long programNo){
+
+        // 사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        ParticipationStudent participationStudent = participationStudentService.getParticipationStudentByEmailAndProgramNo(email, programNo);
+
+        if(participationStudent==null){
+            throw new NotFoundException(ErrorCode.PARTICIPATION_NOT_FOUND);
+        }
+
+        Program program = programService.getProgramByNo(programNo);
+
+        program.setApplyPeople(program.getApplyPeople()-1);
+
+        participationStudentService.deleteParticipationStudent(participationStudent);
+
+        return ResponseEntity.ok().body(new SuccessResponse());
+    }
 }

@@ -35,6 +35,11 @@ public class ParticipationStudentService{
         return participationStudentRepository.save(participationStudent);
     }
 
+    @Transactional
+    public void deleteParticipationStudent(ParticipationStudent participationStudent){
+        participationStudentRepository.delete(participationStudent);
+    }
+
     public List<ParticipationStudent> getParticipationStudentsByEmail(String email){
         return participationStudentRepository.findByEmail(email);
     }
