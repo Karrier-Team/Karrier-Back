@@ -8,6 +8,8 @@ public interface AnswerLikeRepository extends JpaRepository<AnswerLike, Question
 
     AnswerLike findByProgramNoAndQuestionNoAndEmail(long programNo, long questionNo, String email);
 
+    long deleteByProgramNoAndQuestionNoAndEmail(long programNo, long questionNo, String email);
+
     long deleteByProgramNo(long programNo);
 
     long deleteByEmail(String email);

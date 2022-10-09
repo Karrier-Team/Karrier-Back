@@ -10,6 +10,8 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, ReviewLi
 
     long deleteByProgramNoAndReviewNo(long programNo, long reviewNo);
 
+    long deleteByProgramNoAndReviewNoAndEmail(long programNo, long reviewNo, String email);
+
     long deleteByProgramNo(long programNo);
 
     long deleteByEmail(String email);
