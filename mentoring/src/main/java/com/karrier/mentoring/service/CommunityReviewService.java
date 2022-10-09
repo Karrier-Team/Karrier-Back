@@ -171,6 +171,14 @@ public class CommunityReviewService {
         return reviewLikeRepository.findByProgramNoAndReviewNoAndEmail(programNo, reviewNo, email);
     }
 
+    //리뷰 좋아요 삭제
+    @Transactional
+    public Review deleteReviewLike(Review review, String email) {
+        reviewLikeRepository.deleteByProgramNoAndReviewNoAndEmail(review.getProgramNo(), review.getReviewNo(), email);
+        return reviewRepository.save(review);
+    }
+
+
     //좋아요1 증가와 누가 좋아요 눌렀는지 저장
     @Transactional
     public ArrayList<Object> likeReview(Review review, ReviewLike reviewLike) {

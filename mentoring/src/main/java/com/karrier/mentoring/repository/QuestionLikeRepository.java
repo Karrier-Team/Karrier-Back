@@ -10,6 +10,8 @@ public interface QuestionLikeRepository extends JpaRepository<QuestionLike, Ques
 
     long deleteByProgramNoAndQuestionNo(long programNo, long questionNo);
 
+    long deleteByProgramNoAndQuestionNoAndEmail(long programNo, long questionNo, String email);
+
     long deleteByProgramNo(long programNo);
 
     long deleteByEmail(String email);

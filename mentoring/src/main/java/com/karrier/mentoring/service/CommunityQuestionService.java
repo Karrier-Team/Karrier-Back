@@ -212,9 +212,23 @@ public class CommunityQuestionService {
             return questionLikeRepository.findByProgramNoAndQuestionNoAndEmail(programNo, questionNo, email);
     }
 
+    //질문 좋아요 삭제
+    @Transactional
+    public Question deleteQuestionLike(Question question, String email) {
+        questionLikeRepository.deleteByProgramNoAndQuestionNoAndEmail(question.getProgramNo(), question.getQuestionNo(), email);
+        return questionRepository.save(question);
+    }
+
     //질문 답변 좋아요 정보 찾기 (좋아요 눌렀는지 확인하기 위해)
     public AnswerLike findAnswerLike(long programNo, long questionNo, String email) {
         return answerLikeRepository.findByProgramNoAndQuestionNoAndEmail(programNo, questionNo, email);
+    }
+
+    //질문 답변 좋아요 삭제
+    @Transactional
+    public Question deleteAnswerLike(Question question, String email) {
+        answerLikeRepository.deleteByProgramNoAndQuestionNoAndEmail(question.getProgramNo(), question.getQuestionNo(), email);
+        return questionRepository.save(question);
     }
 
     //질문 좋아요1 증가된 것 저장과 누가 좋아요 눌렀는지 저장

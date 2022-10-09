@@ -146,9 +146,10 @@ public class CommunityReviewController {
         ReviewLike reviewLike = communityReviewService.findReviewLike(programNo, reviewNo, email);
 
         if (reviewLike != null) { //이미 좋아요 한 경우
-            throw new ConflictException(ErrorCode.DUPLICATE_LIKE);
+            review.setReviewLikeNo(review.getReviewLikeNo()-1); // 좋아요 1 감소
+            Review updatedReview = communityReviewService.deleteReviewLike(review, email);
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedReview));
         }
-
         review.setReviewLikeNo(review.getReviewLikeNo()+1); // 좋아요 1 증가
         ReviewLike newReviewLike = ReviewLike.createReviewLike(programNo, reviewNo, email);
         ArrayList<Object> objects = communityReviewService.likeReview(review, newReviewLike);

@@ -143,7 +143,9 @@ public class CommunityQuestionController {
 
         QuestionLike questionLike = communityQuestionService.findQuestionLike(programNo, questionNo, email);
         if (questionLike != null) { //이미 좋아요 한 회원일 경우
-            throw new ConflictException(ErrorCode.DUPLICATE_LIKE);
+            question.setQuestionLikeNo(question.getQuestionLikeNo()-1); // 좋아요 1 감소
+            Question updatedQuestion = communityQuestionService.deleteQuestionLike(question, email);
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedQuestion));
         }
 
         question.setQuestionLikeNo(question.getQuestionLikeNo()+1); // 좋아요 1 증가
@@ -170,7 +172,9 @@ public class CommunityQuestionController {
 
         AnswerLike answerLike = communityQuestionService.findAnswerLike(programNo, questionNo, email);
         if (answerLike != null) { //이미 좋아요 한 회원일 경우
-            throw new ConflictException(ErrorCode.DUPLICATE_LIKE);
+            question.setAnswerLikeNo(question.getAnswerLikeNo()-1); // 좋아요 1 감소
+            Question updatedQuestion = communityQuestionService.deleteAnswerLike(question, email);
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedQuestion));
         }
 
         question.setAnswerLikeNo(question.getAnswerLikeNo()+1); // 좋아요 1 증가
