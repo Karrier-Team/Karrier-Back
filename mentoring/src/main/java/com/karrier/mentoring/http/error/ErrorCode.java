@@ -46,7 +46,7 @@ public enum ErrorCode {
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버 정보를 찾을 수 없습니다."),
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 정보를 찾을 수 없습니다"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "수강후기 정보를 찾을 수 없습니다"),
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "질문 정보를 찾을 수 없습니다"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글 정보를 찾을 수 없습니다"),
     ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "답변 정보를 찾을 수 없습니다"),
@@ -63,8 +63,6 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다"),
     DUPLICATE_PARTICIPATION(HttpStatus.CONFLICT, "이미 참여한 프로그램입니다"),
 
-    DUPLICATE_LIKE(HttpStatus.CONFLICT, "이미 좋아요 한 회원입니다"),
-
     /* 415 UNSUPPORTED_MEDIA_TYPE : 지원하지 않는 미디어 타입 에러 */
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE,"지원하지 않는 미디어 타입입니다."),
 
@@ -73,7 +71,6 @@ public enum ErrorCode {
     MESSAGING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"이메일 전송과정에서 에러가 발생했습니다."),
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 내부 에러입니다."),
     TYPE_CAST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"형변환 과정에서 에러가 발생했습니다.");
-    ;
 
 
     private final HttpStatus httpStatus;

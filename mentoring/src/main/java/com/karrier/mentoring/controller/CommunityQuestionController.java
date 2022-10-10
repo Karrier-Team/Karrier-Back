@@ -201,8 +201,8 @@ public class CommunityQuestionController {
         if (!question.getEmail().equals(email)) { //작성자가 아닐 경우
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
         }
-        Question updatedQuestion = Question.updateQuestion(questionFormDto, question);
-        Question savedQuestion = communityQuestionService.updateQuestion(updatedQuestion);
+        Question.updateQuestion(questionFormDto, question);
+        Question savedQuestion = communityQuestionService.updateQuestion(question);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(savedQuestion));
     }

@@ -30,7 +30,7 @@ public class CommunityReviewService {
 
     private final MentorRepository mentorRepository;
 
-    //새로운 수강후기 등록
+    //수강후기 등록, 수정
     @Transactional
     public Review saveReview(Review review) {
 
@@ -49,8 +49,12 @@ public class CommunityReviewService {
                 }
             }
         }
-        review.setReviewNo(max+1); // 수강후기 번호 세팅
-
+        if (review.getReviewNo() == 0) { // 처음 작성하는 수강후기 일 때만 번호 세팅
+            review.setReviewNo(max + 1); // 수강후기 번호 세팅
+        } else { // 수강후기 수정시 프로그램 평균 계산을 위해
+            sum -= review.getStar();
+            index -= 1;
+        }
         averageStar = sum / (float) index;//평균 별점 계산
         Program program = programRepository.findByProgramNo(review.getProgramNo());
         program.setAverageStar(averageStar);

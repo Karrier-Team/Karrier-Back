@@ -58,6 +58,17 @@ public class Review implements Serializable {
         return review;
     }
 
+    //Review를 수정
+    public static Review updateReview(ReviewFormDto reviewFormDto, Review review) {
+
+        review.setTitle(reviewFormDto.getTitle());
+        review.setContent(reviewFormDto.getContent());
+        review.setRegisterDate(LocalDateTime.now());
+        review.setStar(reviewFormDto.getStar());
+
+        return review;
+    }
+
     //기존 review에 댓글 정보 추가해서 반환
     public static Review createComment(ReviewCommentFormDto reviewCommentFormDto, Review review) {
 

@@ -1,10 +1,8 @@
 package com.karrier.mentoring.controller;
 
-import com.karrier.mentoring.dto.ReviewCommentFormDto;
-import com.karrier.mentoring.dto.ReviewDetailDto;
-import com.karrier.mentoring.dto.ReviewFormDto;
-import com.karrier.mentoring.dto.ReviewListDto;
+import com.karrier.mentoring.dto.*;
 import com.karrier.mentoring.entity.Program;
+import com.karrier.mentoring.entity.Question;
 import com.karrier.mentoring.entity.Review;
 import com.karrier.mentoring.entity.ReviewLike;
 import com.karrier.mentoring.http.BasicResponse;
@@ -110,7 +108,7 @@ public class CommunityReviewController {
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
-        Review review = communityReviewService.findReview(reviewCommentFormDto.getProgramNo(), reviewCommentFormDto.getReviewNo()); //이전에 저장했던 후기 정보 가져오기
+        Review review = communityReviewService.findReview(reviewCommentFormDto.getProgramNo(), reviewCommentFormDto.getReviewNo()); //수강후기 정보 가져오기
 
         if (review == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
@@ -124,8 +122,8 @@ public class CommunityReviewController {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
         }
 
-        Review reviewWithComment = Review.createComment(reviewCommentFormDto, review); //후기에 댓글 정보 추가하기
-        Review updatedReview = communityReviewService.updateReview(reviewWithComment); //DB에 저장
+        Review.createComment(reviewCommentFormDto, review); //후기에 댓글 정보 추가하기
+        Review updatedReview = communityReviewService.updateReview(review); //DB에 저장
 
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedReview));
     }
@@ -157,6 +155,29 @@ public class CommunityReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(objects));
     }
 
+    //수강후기 수정 요청시
+    @PutMapping("/review")
+    public ResponseEntity<? extends BasicResponse> modifyReview(@Valid ReviewFormDto reviewFormDto, BindingResult bindingResult, @RequestParam("reviewNo") long reviewNo) {
+        //빈칸있을 경우
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        }
+        Review review = communityReviewService.findReview(reviewFormDto.getProgramNo(), reviewNo);
+        if (review == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
+            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+        }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+        if (!review.getEmail().equals(email)) { //작성자가 아닐 경우
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+        Review.updateReview(reviewFormDto, review);
+        Review updatedReview = communityReviewService.saveReview(review);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedReview));
+    }
+
     //수강후기 삭제 요청시
     @DeleteMapping("/review")
     public ResponseEntity<? extends BasicResponse> deleteReview(@RequestParam("programNo") long programNo, @RequestParam("reviewNo") long reviewNo) {
@@ -176,12 +197,40 @@ public class CommunityReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse());
     }
 
+    //수강후기 댓글 수정 요청시
+    @PutMapping("/review/comment")
+    public ResponseEntity<? extends BasicResponse> modifyComment(@Valid ReviewCommentFormDto reviewCommentFormDto, BindingResult bindingResult) {
+        //빈칸있을 경우
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        }
+        Review review = communityReviewService.findReview(reviewCommentFormDto.getProgramNo(), reviewCommentFormDto.getReviewNo());
+        if (review == null) { //해당 리뷰가 없을 때
+            throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
+        }
+        if (review.getCommentDate() == null) { //리뷰의 댓글이 없을 때
+            throw new NotFoundException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        String commentEmail = programRepository.findByProgramNo(review.getProgramNo()).getEmail();//수강후기 댓글 단 사람 이메일 찾기
+        if (!email.equals(commentEmail)) { //작성자가 아닐 경우
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+        Review.createComment(reviewCommentFormDto, review); //후기에 댓글 정보 추가하기
+        Review updatedReview = communityReviewService.updateReview(review); //DB에 저장
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(updatedReview));
+    }
+
     //수강후기 댓글 삭제 요청시
     @DeleteMapping("/review/comment")
     public ResponseEntity<? extends BasicResponse> deleteComment(@RequestParam("programNo") long programNo, @RequestParam("reviewNo") long reviewNo) {
 
         Review review = communityReviewService.findReview(programNo, reviewNo);
-        if (review == null) { //해당 프로그램 번호가 없을 때
+        if (review == null) { //해당 리뷰가 없을 때
             throw new NotFoundException(ErrorCode.REVIEW_NOT_FOUND);
         }
         if (review.getCommentDate() == null) { //리뷰의 댓글이 없을 때
