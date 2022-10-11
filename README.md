@@ -73,14 +73,14 @@ macOS 12.3.1
 
 ## 주요기능⭐️
 
-### 1. 멘토링 프로그램 - 단과대학, 학과별, 프로그램
+### 1. 멘토링 프로그램 - 단과대학, 학과별, 프로그램 소개, 수강신청, 신청완료
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentoring-department.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentoring-program.png" width="30%" height="30%">
 </div>
 
 
-### 2. 멘토 - 멘토모집, 프로그램 만들기
+### 2. 멘토 - 멘토모집 지원서, 개인프로그램관리, 프로그램 만들기, 프로필 설정
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Metor-recruit.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentor-make-program.png" width="30%" height="30%">
@@ -94,7 +94,7 @@ macOS 12.3.1
 </div>
 
 
-### 4. 마이페이지 - 찜, 팔로우, 수강목록, 질의응답, 수강후기, 프로필설정
+### 4. 마이페이지 - 찜, 팔로우, 수강목록, 프로필 설정
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mypage-like.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mypage-following.png" width="30%" height="30%">
