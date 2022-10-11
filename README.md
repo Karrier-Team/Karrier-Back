@@ -112,4 +112,4 @@ macOS 12.3.1
 #### **이승민**([LEESEUNGMIN](https://github.com/leeseungmin4966)) : Back-End Developer(소셜로그인, 이메일인증 구현)
 
 
-## 라이
+## 라이센스
