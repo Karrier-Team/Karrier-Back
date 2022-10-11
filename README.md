@@ -103,8 +103,8 @@ macOS 12.3.1
 
 ## 팀원 정보
 #### **문준용**([Junyong Moon](https://github.com/mn1121m)) : Product Manager(서비스 기획, UX/UI 설계, 프로젝트의 운영 및 관리)
-#### **맹정현**([Hyun](https://github.com/Mjunghyun)) : Service Planner(서비스 기획, UI 설계)
-#### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UI Designer(UI 디자인, UI 유지보수 및 개선)
+#### **맹정현**([Hyun](https://github.com/Mjunghyun)) : Service Planner(서비스 기획, UX/UI 설계)
+#### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UX/UI Designer(UX/UI 디자인, UX/UI 유지보수 및 개선)
 #### **홍희림**([heerim](https://github.com/Henry-Hong)) : Front-End Developer(멘토링, 커뮤니티, 마이페이지 구현)
 #### **이승열**([LEESEUNGYEOL](https://github.com/tigermint)) : Front-End Developer(멘토링, 멘토 구현)
 #### **박지민**([박지민](https://github.com/wlals761)) : Back-End Developer(멘토, 커뮤니티 구현)
