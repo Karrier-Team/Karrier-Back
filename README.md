@@ -73,7 +73,7 @@ macOS 12.3.1
 
 ## 주요기능⭐️
 
-### 1. 멘토링 프로그램 - 학과별, 프로그램
+### 1. 멘토링 프로그램 - 단과대학, 학과별, 프로그램
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentoring-department.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentoring-program.png" width="30%" height="30%">
@@ -94,14 +94,14 @@ macOS 12.3.1
 </div>
 
 
-### 4. 마이페이지 - 찜, 팔로우, 수강목록
+### 4. 마이페이지 - 찜, 팔로우, 수강목록, 질의응답, 수강후기, 프로필설정
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mypage-like.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mypage-following.png" width="30%" height="30%">
 </div>
 
 
-## 기여자
+## 팀원 정보
 #### **문준용**([Junyong Moon](https://github.com/mn1121m)) : Product Manager(서비스 기획, UX/UI 설계, 프로젝트의 운영 및 관리)
 #### **맹정현**([Hyun](https://github.com/Mjunghyun)) : Service Planner(서비스 기획, UI 설계)
 #### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UI Designer(UI 디자인, UI 유지보수 및 개선)
@@ -112,4 +112,4 @@ macOS 12.3.1
 #### **이승민**([LEESEUNGMIN](https://github.com/leeseungmin4966)) : Back-End Developer(소셜로그인, 이메일인증 구현)
 
 
-## 라이선스
+## 라이
