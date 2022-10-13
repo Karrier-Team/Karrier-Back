@@ -196,11 +196,17 @@ public class ProgramService {
                 }
             }
 
+            if(orderType == null){
+                programList.sort(Comparator.comparing(Program::getCreateDate).reversed());
+            }
             if(orderType.equals("최신순")){
                 programList.sort(Comparator.comparing(Program::getCreateDate).reversed());
             }
             else if(orderType.equals("제목순")){
                 programList.sort(Comparator.comparing(Program::getTitle));
+            }
+            else{
+                programList.sort(Comparator.comparing(Program::getCreateDate).reversed());
             }
         }
 

@@ -358,7 +358,7 @@ public class ProgramController {
     }
 
     //기존에 있었던 프로그램 완전 저장으로 수정
-    @PostMapping(value = "/change")
+    @PutMapping(value = "/change")
     public ResponseEntity<? extends BasicResponse> programFormOldToNew(@Valid ProgramFormDto programFormDto, @RequestParam("programNo") long programNo, RecommendedTargetData recommendedTargetData, CurriculumData curriculumData, TagData tagData, @RequestParam("nextState") String nextState, BindingResult bindingResult) throws IOException{
 
         //사용자 email 얻기
@@ -698,6 +698,10 @@ public class ProgramController {
         ParticipationStudent participationStudent = ParticipationStudent.createParticipationStudent(participationStudentFormDto, email, programNo);
 
         Program program = programService.getProgramByNo(programNo);
+
+        if(program == null){
+            throw new ConflictException(ErrorCode.PROGRAM_NOT_FOUND);
+        }
 
         if(participationStudentService.getParticipationStudentByEmailAndProgramNo(email, programNo) != null){
             throw new ConflictException(ErrorCode.DUPLICATE_PARTICIPATION);

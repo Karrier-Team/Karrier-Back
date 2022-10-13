@@ -171,7 +171,7 @@ public class MyPageController {
         return ResponseEntity.ok().body(new SuccessDataResponse<>(reviewListDtoList));
     }
 
-    @GetMapping(value = "/manage/program-list")
+    @GetMapping(value = "/manage/programs")
     public ResponseEntity<? extends BasicResponse> myParticipation(@RequestParam("state") String state){
 
         // 사용자 email 얻기
@@ -210,7 +210,7 @@ public class MyPageController {
     }
 
     //member 입장에서 나의 찜 목록 보기(최신순, 제목순 정렬) (제목, 멘토이름 검색)
-    @GetMapping(value = "/manage/wish-list")
+    @GetMapping(value = "/manage/wishes")
     public ResponseEntity<? extends BasicResponse> showWishList(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
@@ -229,7 +229,7 @@ public class MyPageController {
     }
 
     //member 입장에서 나의 찜 목록 보기(최신순, 제목순 정렬) (제목, 멘토이름 검색)
-    @GetMapping(value = "/manage/wish-list/search")
+    @GetMapping(value = "/manage/wishes?")
     public ResponseEntity<? extends BasicResponse> showWishList(@RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
@@ -248,7 +248,7 @@ public class MyPageController {
     }
 
     // 멘티 입장에서 팔로우된 멘토 list 팔로우에서 지우기
-    @PostMapping(value = "/manage/wish-list/delete")
+    @DeleteMapping(value = "/manage/wishes/delete")
     public ResponseEntity<? extends BasicResponse> deleteWishList(ProgramNoData programNoData) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -283,7 +283,7 @@ public class MyPageController {
     }
 
     //member 입장에서 내가 팔로우 하고 있는 mentor 정보 보기
-    @GetMapping(value = "/manage/following-list")
+    @GetMapping(value = "/manage/followings")
     public ResponseEntity<? extends BasicResponse> myFollowings(){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -302,7 +302,7 @@ public class MyPageController {
     }
 
     //member 입장에서 내가 팔로우 하고 있는 mentor 정보 보기
-    @GetMapping(value = "/manage/following-list/search")
+    @GetMapping(value = "/manage/followings?")
     public ResponseEntity<? extends BasicResponse> myFollowings(@RequestParam("category") String category, @RequestParam("keyword") String keyword){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -321,7 +321,7 @@ public class MyPageController {
     }
 
     // 멘티 입장에서 팔로우된 멘토 list 팔로우에서 지우기
-    @PostMapping(value = "/manage/following-list/delete")
+    @DeleteMapping(value = "/manage/followings/delete")
     public ResponseEntity<? extends BasicResponse> deleteFollow(EmailData emails) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();

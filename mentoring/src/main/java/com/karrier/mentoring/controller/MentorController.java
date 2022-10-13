@@ -301,7 +301,7 @@ public class MentorController {
 
 
     //mentor 입장에서 나를 팔로우 하고 있는 member 정보 보기
-    @GetMapping(value = "/follower-list")
+    @GetMapping(value = "/manage/followers")
     public ResponseEntity<? extends BasicResponse> myFollowers(@RequestParam("keyword") String keyword){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -323,7 +323,7 @@ public class MentorController {
     }
 
     //mentor 자신의 모든 프로그램 정보 보기
-    @GetMapping(value = "/manage/program-list")
+    @GetMapping(value = "/manage/programs")
     public ResponseEntity<? extends BasicResponse> viewMyPrograms(){
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -342,8 +342,39 @@ public class MentorController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(programViewDtoList));
     }
 
+    //mentor 자신의 모든 프로그램 정보 모두 보기 기본값 최신순
+    @GetMapping(value = "/manage/wishes")
+    public ResponseEntity<? extends BasicResponse> viewMyWishList(){
+        //사용자 email 얻기
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails) principal).getUsername();
+
+        Member member = memberService.getMember(email);
+
+        //member의 권한이 없는 경우
+        if(member.getRole() != Role.MENTOR_APPROVE){
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        //mentor가 만든 program 보기
+        List<Program> programs = programService.getProgramsByEmail(email);
+        List<ProgramViewDto> programViewDtoList= programService.getWishPrograms(programs, null, null, null);
+
+        int totalWish = 0;
+
+        for(ProgramViewDto programViewDto : programViewDtoList){
+            totalWish = totalWish + programViewDto.getLikeCount();
+        }
+
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.add(programViewDtoList);
+        objects.add(totalWish);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(objects));
+    }
+
     //mentor 자신의 모든 프로그램 정보 보기(최신순, 제목순, 프로그램제목 검색)
-    @GetMapping(value = "/wish-list")
+    @GetMapping(value = "/manage/wishes?")
     public ResponseEntity<? extends BasicResponse> viewMyWishList(@RequestParam("order") String order, @RequestParam("category") String category, @RequestParam("keyword") String keyword){
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

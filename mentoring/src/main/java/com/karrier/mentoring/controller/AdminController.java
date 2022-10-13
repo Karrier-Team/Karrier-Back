@@ -58,7 +58,7 @@ public class AdminController {
     }
 
     // MENTOR_WAIT 상태인 멘토 한명 MENTOR_APPROVED 로 바꿔주기
-    @PostMapping(value = "/control-mentors")
+    @PutMapping(value = "/control-mentors")
     public ResponseEntity<? extends BasicResponse> controlMentorRole(@RequestParam("mentorEmail") String mentorEmail){
 
         // 열할을 바꿔줄 member 찾기
