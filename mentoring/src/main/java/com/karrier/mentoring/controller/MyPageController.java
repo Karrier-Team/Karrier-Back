@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/"})
+@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/", "https://www.karrier.co.kr/"})
 @RequestMapping("/my-page")
 @RestController
 @RequiredArgsConstructor
@@ -56,39 +56,23 @@ public class MyPageController {
 
     private final ParticipationStudentRepository participationStudentRepository;
 
-    //나의 전체 질문 리스트 띄우기
+    //나의 전체 질문 리스트 출력 + 검색
     @GetMapping("/manage/question")
-    public ResponseEntity<? extends BasicResponse> questionList() {
-
+    public ResponseEntity<? extends BasicResponse> questionListSearch(@RequestParam(name = "category", required = false) String category,
+                                                                      @RequestParam(name = "keyword", required = false) String keyword) {
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
 
-        List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);
-
+        List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);//나의 질문 리스트
         if (myPageQuestionList == null) { //나의 질문이 없을 경우
             return ResponseEntity.ok().body(new SuccessDataResponse<>(new ArrayList()));
         }
-        return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageQuestionList));
-    }
-
-    //나의 전체 질문 리스트 검색
-    @GetMapping("/manage/question/search")
-    public ResponseEntity<? extends BasicResponse> questionListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
-
-        if (category.isEmpty() || keyword.isEmpty()) { //빈칸있을 경우
-            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        if (category == null || keyword == null) { //검색조건이나 내용을 입력하지 않았을 경우 전체 리스트 출력
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageQuestionList));
         }
 
-        //사용자 email 얻기
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails) principal).getUsername();
-
-        List<QuestionListDto> myPageQuestionList = communityQuestionService.findMyPageQuestionList(email);
         List<QuestionListDto> questionListDtoList = new ArrayList<>();
-        if (myPageQuestionList == null) {//나의 질문이 없을 때
-            return ResponseEntity.ok().body(new SuccessDataResponse<>(questionListDtoList));
-        }
         for (QuestionListDto questionListDto : myPageQuestionList) {
             if (category.equals("질문제목")) {
                 if (questionListDto.getTitle().contains(keyword)) {//해당 키워드가 있을 경우
@@ -124,38 +108,23 @@ public class MyPageController {
         return ResponseEntity.ok().body(new SuccessDataResponse<>(question));
     }
 
-    //나의 전체 리뷰 리스트 띄우기
+    //나의 전체 리뷰 리스트 출력 + 검색
     @GetMapping("/manage/review")
-    public ResponseEntity<? extends BasicResponse> reviewList() {
-
+    public ResponseEntity<? extends BasicResponse> reviewListSearch(@RequestParam(name = "category", required = false) String category,
+                                                                    @RequestParam(name = "keyword", required = false) String keyword) {
         //사용자 email 얻기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails) principal).getUsername();
-
+        
         List<ReviewListDto> myPageReviewList = communityReviewService.findMyPageReviewList(email);
         if (myPageReviewList == null) { //나의 수강후기 없을 때
             return ResponseEntity.ok().body(new SuccessDataResponse<>(new ArrayList()));
         }
-        return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageReviewList));
-    }
-
-    //나의 전체 리뷰 리스트 검색
-    @GetMapping("/manage/review/search")
-    public ResponseEntity<? extends BasicResponse> reviewListSearch(@RequestParam("category") String category, @RequestParam("keyword") String keyword) {
-
-        if (category.isEmpty() || keyword.isEmpty()) { //빈칸있을 경우
-            throw new BadRequestException(ErrorCode.BLANK_FORM);
+        if (category == null || keyword == null) { //검색조건이나 검색내용이 비었을 경우
+            return ResponseEntity.ok().body(new SuccessDataResponse<>(myPageReviewList));
         }
 
-        //사용자 email 얻기
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((UserDetails) principal).getUsername();
-
-        List<ReviewListDto> myPageReviewList = communityReviewService.findMyPageReviewList(email);
         List<ReviewListDto> reviewListDtoList = new ArrayList<>();
-        if (myPageReviewList == null) { //나의 수강후기 없을 때
-            return ResponseEntity.ok().body(new SuccessDataResponse<>(reviewListDtoList));
-        }
         for (ReviewListDto reviewListDto : myPageReviewList) {
             if (category.equals("후기제목")) {
                 if (reviewListDto.getTitle().contains(keyword)) {//해당 키워드가 있을 경우

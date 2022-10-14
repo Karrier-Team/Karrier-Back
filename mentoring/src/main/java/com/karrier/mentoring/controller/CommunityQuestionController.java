@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/"})
+@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/", "https://www.karrier.co.kr/"})
 @RequestMapping("/community")
 @RestController
 @RequiredArgsConstructor
@@ -36,24 +36,19 @@ public class CommunityQuestionController {
     private final QuestionCommentRepository questionCommentRepository;
     private final ProgramRepository programRepository;
 
-    //해당 프로그램 전체 질문 리스트 띄우기
+    //해당 프로그램 전체 리뷰 리스트 띄우기 + 검색할 경우 (질문제목, 질문내용, 닉네임)
     @GetMapping("/question")
-    public ResponseEntity<? extends BasicResponse> questionList(@RequestParam("programNo") long programNo) {
-
-        List<QuestionListDto> questionList = communityQuestionService.findQuestionList(programNo);
-        if (questionList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(new ArrayList()));
+    public ResponseEntity<? extends BasicResponse> questionList(@RequestParam("programNo") long programNo,
+                                                                @RequestParam(name = "category", required = false) String category,
+                                                                @RequestParam(name = "keyword", required = false) String keyword) {
+        if (category == null || keyword == null) { // 검색조건 중 하나라도 입력하지 않을 경우 전체 리스트 띄우기
+            List<QuestionListDto> questionList = communityQuestionService.findQuestionList(programNo);
+            if (questionList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
+                return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(new ArrayList()));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(questionList));
-    }
 
-    //해당 프로그램 전체 리뷰 리스트에서 검색할 경우 (질문제목, 질문내용, 닉네임)
-    @GetMapping("/question/search")
-    public ResponseEntity<? extends BasicResponse> questionList(@RequestParam("programNo") long programNo, @RequestParam("category") String category, @RequestParam("keyword") String keyword) {
-
-        if (programNo == 0 || category.isEmpty() || keyword.isEmpty()) {
-            throw new BadRequestException(ErrorCode.BLANK_FORM);
-        }
         List<QuestionListDto> questionList = communityQuestionService.QuestionSearchList(programNo, category, keyword);
         if (questionList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
             return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(new ArrayList()));
@@ -129,7 +124,7 @@ public class CommunityQuestionController {
     }
 
     //질문 좋아요 요청시
-    @PostMapping("/question/like")
+    @PostMapping("/question/heart")
     public ResponseEntity<? extends BasicResponse> likeAnswer(@RequestParam("programNo") long programNo,@RequestParam("questionNo") long questionNo) {
 
         Question question = communityQuestionService.findQuestion(programNo, questionNo);
@@ -156,7 +151,7 @@ public class CommunityQuestionController {
     }
 
     //답변 좋아요 요청시
-    @PostMapping("/question/answer/like")
+    @PostMapping("/question/answer/heart")
     public ResponseEntity<? extends BasicResponse> likeQuestion(@RequestParam("programNo") long programNo,@RequestParam("questionNo") long questionNo) {
 
         Question question = communityQuestionService.findQuestion(programNo, questionNo);
