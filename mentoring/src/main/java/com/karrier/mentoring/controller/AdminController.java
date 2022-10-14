@@ -36,7 +36,7 @@ public class AdminController {
     private final MentorAcceptEmailServiceImpl mentorAcceptEmailService;
 
     // MENTOR_WAIT 상태인 멘토 정보 보여주기
-    @GetMapping(value = "/control-mentors")
+    @GetMapping(value = "/manage/members")
     public  ResponseEntity<? extends BasicResponse> controlMentorsRole(@RequestParam("mentorRole") Role mentorRole){
 
         //유저 정보 가져오기
@@ -58,7 +58,7 @@ public class AdminController {
     }
 
     // MENTOR_WAIT 상태인 멘토 한명 MENTOR_APPROVED 로 바꿔주기
-    @PutMapping(value = "/control-mentors")
+    @PutMapping(value = "/manage/members")
     public ResponseEntity<? extends BasicResponse> controlMentorRole(@RequestParam("mentorEmail") String mentorEmail){
 
         // 열할을 바꿔줄 member 찾기
