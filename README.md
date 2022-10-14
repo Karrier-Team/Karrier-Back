@@ -29,7 +29,7 @@
 
 
 ## 시연영상
-[![Video Label](https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/home.png)](https://www.youtube.com/watch?v=wH-yKksu-MY)  
+[![Video Label](https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/main_home.png)](https://www.youtube.com/watch?v=wH-yKksu-MY)  
 **(클릭하면 유튜브 링크로 이동합니다)**
 
 
