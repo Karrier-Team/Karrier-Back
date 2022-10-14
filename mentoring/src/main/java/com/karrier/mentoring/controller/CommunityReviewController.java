@@ -27,7 +27,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/"})
+@CrossOrigin({"http://localhost:3000", "https://web-reactapp-48f224l75lf6ut.gksl1.cloudtype.app/", "https://www.karrier.co.kr/"})
 @RequestMapping("/community")
 @RestController
 @RequiredArgsConstructor
@@ -37,23 +37,17 @@ public class CommunityReviewController {
 
     private final ProgramRepository programRepository;
 
-    //해당 프로그램 전체 리뷰 리스트 띄우기
+    //해당 프로그램 전체 리뷰 리스트 출력 + 검색할 경우 (후기제목, 후기내용, 닉네임)
     @GetMapping("/review")
-    public ResponseEntity<? extends BasicResponse> reviewList(@RequestParam("programNo") long programNo) {
-
-        List<ReviewListDto> reviewList = communityReviewService.findReviewList(programNo);
-        if (reviewList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(new ArrayList()));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
-    }
-
-    //해당 프로그램 전체 리뷰 리스트에서 검색할 경우 (후기제목, 후기내용, 닉네임)
-    @GetMapping("/review/search")
-    public ResponseEntity<? extends BasicResponse> reviewList(@RequestParam("programNo") long programNo, @RequestParam("category") String category, @RequestParam("keyword") String keyword) {
-
-        if (programNo == 0 || category.isEmpty() || keyword.isEmpty()) {
-            throw new BadRequestException(ErrorCode.BLANK_FORM);
+    public ResponseEntity<? extends BasicResponse> reviewList(@RequestParam(name = "programNo") long programNo,
+                                                              @RequestParam(name = "category", required = false) String category,
+                                                              @RequestParam(name = "keyword", required = false) String keyword) {
+        if (category == null || keyword == null) {
+            List<ReviewListDto> reviewList = communityReviewService.findReviewList(programNo);
+            if (reviewList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
+                return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(new ArrayList()));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessDataResponse<>(reviewList));
         }
         List<ReviewListDto> reviewList = communityReviewService.ReviewSearchList(programNo, category, keyword);
         if (reviewList == null) {//해당 프로그램에 해당하는 데이터가 없을 때
@@ -129,12 +123,12 @@ public class CommunityReviewController {
     }
 
     //수강후기 좋아요 요청시
-    @PostMapping("/review/like")
+    @PostMapping("/review/heart")
     public ResponseEntity<? extends BasicResponse> likeReview(@RequestParam("programNo") long programNo,@RequestParam("reviewNo") long reviewNo) {
 
         Review review = communityReviewService.findReview(programNo, reviewNo);
         if (review == null) { //해당 프로그램 번호와 리뷰 번호에 해당하는 데이터가 없을 때
-            throw new BadRequestException(ErrorCode.BLANK_FORM);
+            throw new BadRequestException(ErrorCode.REVIEW_NOT_FOUND);
         }
 
         //사용자 email 얻기
