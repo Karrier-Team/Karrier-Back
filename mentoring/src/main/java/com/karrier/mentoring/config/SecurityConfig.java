@@ -65,9 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .successHandler(new LoginSuccessfulHandler())
                 .and()
                     .oauth2Login()
-                        .successHandler(new OAuthLoginSuccessfulHandler())
+                        .defaultSuccessUrl("/")
                         .userInfoEndpoint()
-                        .userService(customOAuth2UserService);
+                        .userService(customOAuth2UserService)
+                        ;
     }
 
     @Override
