@@ -18,6 +18,7 @@ public class OAuthLoginSuccessfulHandler implements AuthenticationSuccessHandler
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((PrincipalDetails) principal).getUsername();
-        response.sendRedirect("/members/update-login/"+email);
+        System.out.println(request.getRequestURL().toString());
+        response.sendRedirect("http://localhost:3000/members/update-login/"+email);
     }
 }
