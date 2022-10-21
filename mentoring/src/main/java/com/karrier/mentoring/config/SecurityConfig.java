@@ -4,6 +4,7 @@ package com.karrier.mentoring.config;
 import com.karrier.mentoring.auth.CustomOAuth2UserService;
 import com.karrier.mentoring.auth.PrincipalDetailsService;
 import com.karrier.mentoring.handler.LoginSuccessfulHandler;
+import com.karrier.mentoring.handler.OAuthLoginSuccessfulHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,8 +65,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .successHandler(new LoginSuccessfulHandler())
                 .and()
                     .oauth2Login()
+                        .successHandler(new OAuthLoginSuccessfulHandler())
                         .userInfoEndpoint()
-                            .userService(customOAuth2UserService);
+                        .userService(customOAuth2UserService);
     }
 
     @Override
