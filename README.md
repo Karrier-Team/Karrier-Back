@@ -105,15 +105,49 @@ macOS 12.3.1
 </div>
 
 
-## 팀원 정보
-#### **문준용**([Junyong Moon](https://github.com/mn1121m)) : Product Owner(서비스 기획, UX/UI 설계, 프로젝트의 운영 및 관리)
-#### **맹정현**([Hyun](https://github.com/Mjunghyun)) : Product Manager(서비스 기획, UX/UI 설계)
-#### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UX/UI Designer(UX/UI 디자인, UX/UI 유지보수 및 개선)
-#### **홍희림**([heerim](https://github.com/Henry-Hong)) : Front-End Developer(멘토링, 커뮤니티, 마이페이지 구현)
-#### **이승열**([LEESEUNGYEOL](https://github.com/tigermint)) : Front-End Developer(멘토링, 멘토 구현)
-#### **박지민**([박지민](https://github.com/wlals761)) : Back-End Developer(멘토, 커뮤니티 구현)
-#### **최준**([readyChoi](https://github.com/readyChoi)) : Back-End Developer(멘토링 프로그램, 마이페이지 구현)
-#### **이승민**([LEESEUNGMIN](https://github.com/leeseungmin4966)) : Back-End Developer(소셜로그인, 이메일인증 구현)
+
+## 팀 소개
+
+<table>
+   <tr>
+      <td colspan="1" align="center"><strong>Product Owner</strong></td>
+      <td colspan="1" align="center"><strong>Product Manager</strong></td>
+      <td colspan="1" align="center"><strong>Product Designer</strong></td>
+      <td colspan="2" align="center"><strong>Front-End Developer</strong></td>
+      <td colspan="3" align="center"><strong>Back-End Developer</strong></td>
+
+   </tr>
+  <tr>
+    <td align="center">
+    <a href="https://github.com/mn1121m"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PO_Moon.jpeg" width="150px;" alt="문준용"/><br /><sub><b>문준용</b></sub></a><br />
+    </td>
+     <td align="center">
+        <a href="https://github.com/Mjunghyun"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PM_Hyun.jpeg" width="150px" alt="맹정현"/><br /><sub><b>맹정현</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/leekihyeok"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Designer_Lee.jpeg" width="150px" alt="이기혁"/><br /><sub><b>이기혁</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/Henry-Hong"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Front-end_Hong.jpeg" width="150px" alt="홍희림"/><br /><sub><b>홍희림</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/tigermint"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Front-end_Lee.jpeg" width="150px" alt="이승열"/><br /><sub><b>이승열</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/wlals761"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Park.jpeg" width="150px" alt="박지민"/><br /><sub><b>박지민</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/readyChoi"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Choi.jpeg" width="150px" alt="최준"/><br /><sub><b>최준</b></sub></a>
+     </td>
+      </td>
+     <td align="center">
+        <a href="https://github.com/leeseungmin4966"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Lee.jpeg" width="150px" alt="이승민"/><br /><sub><b>이승민</b></sub></a>
+     </td>
+    
+   
+  <tr>
+</table>
+
 
 
 ## 라이센스
