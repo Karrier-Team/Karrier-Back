@@ -1,4 +1,4 @@
-# Karrier_Main🦋
+# Karrier_Main
 
 
 <p align="center"><img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/LogoName.png" width="50%" height="50%"></p>
@@ -80,20 +80,25 @@ macOS 12.3.1
 </div>
 
 
-### 2. 멘토 - 멘토모집, 개인프로그램관리, 프로그램 만들기, 프로필 설정
+### 2. 멘토 - 멘토모집, 프로그램 만들기
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentorRecruit.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentor_ProgramMaking_Info.png" width="30%" height="30%">
 </div>
 
 
 ### 3. 커뮤니티 - 질의응답, 수강후기
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityQuestion1.png" width="30%" height="30%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="30%" height="30%">
 </div>
 
+<div style="float:left;margin:0 10px 10px 0" markdown="1">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="30%" height="30%">
+</div>
 
-### 4. 마이페이지 - 찜, 팔로우, 수강목록, 프로필 설정
+### 4. 마이페이지 - 찜, 팔로우
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageLike.png" width="30%" height="30%">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageFollowing.png" width="30%" height="30%">
