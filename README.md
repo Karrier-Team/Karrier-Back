@@ -119,7 +119,7 @@ macOS 12.3.1
    </tr>
   <tr>
     <td align="center">
-    <a href="https://github.com/mn1121m"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PO_Moon.jpeg" width="150px;" alt="문준용"/><br /><sub><b>문준용</b></sub></a><br />
+    <a href="https://github.com/fancy-log"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PO_Moon.jpeg" width="150px;" alt="문준용"/><br /><sub><b>문준용</b></sub></a><br />
     </td>
      <td align="center">
         <a href="https://github.com/Mjunghyun"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PM_Hyun.jpeg" width="150px" alt="맹정현"/><br /><sub><b>맹정현</b></sub></a>
