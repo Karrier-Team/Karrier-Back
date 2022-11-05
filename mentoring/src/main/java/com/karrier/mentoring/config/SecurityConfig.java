@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("/members/manage/**", "/members/update-info/**", "/community/**").hasAnyAuthority("USER", "MENTOR_APPROVE", "MENTOR_WAIT", "ADMIN")
                     .mvcMatchers("/mentors/manage/**", "/programs/new", "/programs/change").hasAuthority("MENTOR_APPROVE")
                     .mvcMatchers("/admin/**").hasAuthority("ADMIN")
-                    .mvcMatchers("/", "/members/**","/members/password/change").permitAll()
+                    .mvcMatchers("/", "/members/**","/members/password/change", "/programs/major/**", "/programs/show/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .httpBasic()

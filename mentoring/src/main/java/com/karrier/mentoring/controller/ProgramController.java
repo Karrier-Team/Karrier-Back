@@ -99,7 +99,7 @@ public class ProgramController {
                 throw new BadRequestException(ErrorCode.BLANK_FORM);
             }
 
-            if(programFormDto.getTitle().length() > 15){
+            if(programFormDto.getTitle().length() > 30){
                 throw new BadRequestException(ErrorCode.TITLE_SIZE_ERROR);
             }
 
@@ -393,7 +393,7 @@ public class ProgramController {
                 throw new BadRequestException(ErrorCode.BLANK_FORM);
             }
 
-            if(programFormDto.getTitle().length() > 15){
+            if(programFormDto.getTitle().length() > 30){
                 throw new BadRequestException(ErrorCode.TITLE_SIZE_ERROR);
             }
 
