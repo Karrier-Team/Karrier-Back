@@ -1,4 +1,4 @@
-# Karrier_Main🦋
+# Karrier_Main
 
 
 <p align="center"><img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/LogoName.png" width="50%" height="50%"></p>
@@ -75,40 +75,79 @@ macOS 12.3.1
 
 ### 1. 멘토링 프로그램 - 단과대학, 학과별, 프로그램 소개, 수강신청, 신청완료
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringDepartment.png" width="30%" height="30%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringProgram.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringDepartment.png" width="40%" height="40%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringProgram.png" width="40%" height="40%">
 </div>
 
 
-### 2. 멘토 - 멘토모집, 개인프로그램관리, 프로그램 만들기, 프로필 설정
+### 2. 멘토 - 멘토모집, 프로그램 만들기
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentorRecruit.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentorRecruit.png" width="40%" height="40%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Mentor_ProgramMaking_Info.png" width="40%" height="40%">
 </div>
 
 
 ### 3. 커뮤니티 - 질의응답, 수강후기
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityQuestion1.png" width="30%" height="30%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityQuestion1.png" width="40%" height="40%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="40%" height="40%">
 </div>
 
-
-### 4. 마이페이지 - 찜, 팔로우, 수강목록, 프로필 설정
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageLike.png" width="30%" height="30%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageFollowing.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1.png" width="40%" height="40%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="40%" height="40%">
+</div>
+
+### 4. 마이페이지 - 찜, 팔로우
+<div style="float:left;margin:0 10px 10px 0" markdown="1">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageLike.png" width="40%" height="40%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageFollowing.png" width="40%" height="40%">
 </div>
 
 
-## 팀원 정보
-#### **문준용**([Junyong Moon](https://github.com/mn1121m)) : Product Owner(서비스 기획, UX/UI 설계, 프로젝트의 운영 및 관리)
-#### **맹정현**([Hyun](https://github.com/Mjunghyun)) : Product Manager(서비스 기획, UX/UI 설계)
-#### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UX/UI Designer(UX/UI 디자인, UX/UI 유지보수 및 개선)
-#### **홍희림**([heerim](https://github.com/Henry-Hong)) : Front-End Developer(멘토링, 커뮤니티, 마이페이지 구현)
-#### **이승열**([LEESEUNGYEOL](https://github.com/tigermint)) : Front-End Developer(멘토링, 멘토 구현)
-#### **박지민**([박지민](https://github.com/wlals761)) : Back-End Developer(멘토, 커뮤니티 구현)
-#### **최준**([readyChoi](https://github.com/readyChoi)) : Back-End Developer(멘토링 프로그램, 마이페이지 구현)
-#### **이승민**([LEESEUNGMIN](https://github.com/leeseungmin4966)) : Back-End Developer(소셜로그인, 이메일인증 구현)
+
+## 팀 소개
+
+<table>
+   <tr>
+      <td colspan="1" align="center"><strong>Product Owner</strong></td>
+      <td colspan="1" align="center"><strong>Product Manager</strong></td>
+      <td colspan="1" align="center"><strong>Product Designer</strong></td>
+      <td colspan="2" align="center"><strong>Front-End Developer</strong></td>
+      <td colspan="3" align="center"><strong>Back-End Developer</strong></td>
+
+   </tr>
+  <tr>
+    <td align="center">
+    <a href="https://github.com/fancy-log"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PO_Moon.jpeg" width="150px;" alt="문준용"/><br /><sub><b>문준용</b></sub></a><br />
+    </td>
+     <td align="center">
+        <a href="https://github.com/Mjunghyun"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/PM_Hyun.jpeg" width="150px" alt="맹정현"/><br /><sub><b>맹정현</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/leekihyeok"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Designer_Lee.jpeg" width="150px" alt="이기혁"/><br /><sub><b>이기혁</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/Henry-Hong"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Front-end_Hong.jpeg" width="150px" alt="홍희림"/><br /><sub><b>홍희림</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/tigermint"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Front-end_Lee.jpeg" width="150px" alt="이승열"/><br /><sub><b>이승열</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/wlals761"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Park.jpeg" width="150px" alt="박지민"/><br /><sub><b>박지민</b></sub></a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/readyChoi"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Choi.jpeg" width="150px" alt="최준"/><br /><sub><b>최준</b></sub></a>
+     </td>
+      </td>
+     <td align="center">
+        <a href="https://github.com/leeseungmin4966"><img src="https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/Back-end_Lee.jpeg" width="150px" alt="이승민"/><br /><sub><b>이승민</b></sub></a>
+     </td>
+    
+   
+  <tr>
+</table>
+
 
 
 ## 라이센스
