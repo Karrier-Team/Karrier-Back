@@ -151,3 +151,4 @@ macOS 12.3.1
 
 
 ## 라이센스
+apache license 2.0
