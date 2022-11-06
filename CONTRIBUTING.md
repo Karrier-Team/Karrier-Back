@@ -40,6 +40,6 @@ Pull Request를 작성하기 위해서는 아래의 플로우를 따라야 합�
 3. **Pull Request 보내기**
 - 개발이 완료됐다면 저희의 `main` 브랜치로 PR을 보내시면 됩니다.
 - [PR작성법](https://github.com/Karrier-Team/Karrier_Main/wiki/pull-request-convention)을 참고해주세요.
-- 각종 수정사항들은 모두 반영하여 Issue에 적거나 Backend API가 달라진경우 [API 명세서]()를 참고하여 주세요.
+- 각종 수정사항들은 모두 반영하여 Issue에 적거나 Backend API가 달라진경우 [API 명세서](https://github.com/Karrier-Team/Karrier_Main/wiki/api-description)를 참고하여 주세요.
 - PR이 승인된다면 이메일로 승인 메일이 전송됩니다!
 
