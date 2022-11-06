@@ -104,7 +104,10 @@ macOS 12.3.1
 
 
 
-## 기여자
+## 기여
+기여를 하기위해선 [기여 가이드라인](https://github.com/Karrier-Team/Karrier_Main/blob/main/CONTRIBUTING.md)을 참조해주세요!
+
+## 메인 기여자
 #### **문준용**([fancy](https://github.com/fancy-log)) : PO(프로젝트 기획, 운영 및 관리, UX/UI 설계)
 #### **맹정현**([Hyun](https://github.com/Mjunghyun)) : PM(프로젝트 기획, UX/UI 설계)
 #### **이기혁**([leekihyeok](https://github.com/leekihyeok)) : UX/UI Designer(UX/UI 디자인)
