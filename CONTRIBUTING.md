@@ -17,7 +17,7 @@
 
 1. [ 전체 아키텍처 ](https://github.com/Karrier-Team/Karrier_Main/wiki/service-architecture)
 2. [ BackEnd 프로젝트 구조 ](https://github.com/Karrier-Team/Karrier_Main/wiki/backend-architecture)
-3. [ FrontEnd 프로젝트 구조 ]([#-좀-더-구체적으로-가르쳐주세요](https://github.com/Karrier-Team/Karrier_Main/wiki/frontend-architecture))
+3. [ FrontEnd 프로젝트 구조 ](https://github.com/Karrier-Team/Karrier_Main/wiki/frontend-architecture)
 4. [ Database 설계 ](https://github.com/Karrier-Team/Karrier_Main/wiki/erd) 
 
 ### 코드 기여하기
