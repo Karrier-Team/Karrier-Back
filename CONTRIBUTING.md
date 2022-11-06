@@ -15,10 +15,10 @@
 ## 🛠 컨트리뷰션 플로우
 컨트리뷰션을 진행하기 위해서는 아래 항목들을 모두 인지하고, 충분히 되새겨 이해하신 후에 진행해주세요!
 
-1. [ 전체 아키텍처 ](#-easymemd가-뭐예요)
-2. [ BackEnd 프로젝트 구조 ](#-좀-더-구체적으로-가르쳐주세요)
-3. [ FrontEnd 프로젝트 구조 ](#-좀-더-구체적으로-가르쳐주세요)
-4. [ Database 설계 ](#-기능-엿보기) 
+1. [ 전체 아키텍처 ](https://github.com/Karrier-Team/Karrier_Main/wiki/service-architecture)
+2. [ BackEnd 프로젝트 구조 ](https://github.com/Karrier-Team/Karrier_Main/wiki/backend-architecture)
+3. [ FrontEnd 프로젝트 구조 ]([#-좀-더-구체적으로-가르쳐주세요](https://github.com/Karrier-Team/Karrier_Main/wiki/frontend-architecture))
+4. [ Database 설계 ](https://github.com/Karrier-Team/Karrier_Main/wiki/erd) 
 
 ### 코드 기여하기
 
@@ -32,14 +32,14 @@ Pull Request를 작성하기 위해서는 아래의 플로우를 따라야 합�
 - **이슈를 표현하는 정확한 단계를 최대한 자세히 설명**하십시오. 무엇을 하는지만 말하지 말고, 어떻게 하는지를 설명하십시오. 예를 들어 커서를 움직인경우, 마우스를 사용했는지 키보드를 사용했는지 조차 명시해주세요.
 - 이슈를 설명하는 **구체적인 예를 포함**시켜주세요. 파일 또는 GitHub 프로젝트에 대한 링크를 포함해주세요.
 - 또한 **어떤 행동이 나타날 것으로 예상하는지와 그 이유를 설명**해주세요. 추가적으로, 설명된 단계를 따르고 문제를 명확하게 보여주는 스크린샷과 애니메이션 GIF를 포함시켜주세요!
-- [이슈 작성법](이슈주소) 을 확인하여 더욱 명확한 이슈 작성을 위해 도와주세요!
+- [이슈 작성법](https://github.com/Karrier-Team/Karrier_Main/wiki/issue-convention) 을 확인하여 더욱 명확한 이슈 작성을 위해 도와주세요!
 
 2. **커밋 메시지 컨벤션**
-- [커밋 메시지 컨벤션]()를 참고해주세요.
+- [커밋 메시지 컨벤션](https://github.com/Karrier-Team/Karrier_Main/wiki/commit-message-convention)를 참고해주세요.
 
 3. **Pull Request 보내기**
 - 개발이 완료됐다면 저희의 `main` 브랜치로 PR을 보내시면 됩니다.
-- [PR작성법]()을 참고해주세요.
+- [PR작성법](https://github.com/Karrier-Team/Karrier_Main/wiki/pull-request-convention)을 참고해주세요.
 - 각종 수정사항들은 모두 반영하여 Issue에 적거나 Backend API가 달라진경우 [API 명세서]()를 참고하여 주세요.
 - PR이 승인된다면 이메일로 승인 메일이 전송됩니다!
 
