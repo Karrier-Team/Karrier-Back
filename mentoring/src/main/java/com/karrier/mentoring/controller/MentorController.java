@@ -61,7 +61,7 @@ public class MentorController {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
 
-        //프로필 사진이 없을 때
+        //재학증명서가 없을 때
         if (mentorFormDto.getStudentInfoFile().isEmpty()) {
             throw new BadRequestException(ErrorCode.BLANK_FORM);
         }
