@@ -17,7 +17,7 @@
 
 ### 설치
 ``` 
-
+git clone https://github.com/Karrier-Team/Karrier_Main.git
 ```
 
 
