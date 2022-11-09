@@ -91,18 +91,18 @@ macOS 12.3.1
 ### 3. 커뮤니티 - 질의응답, 수강후기
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityQuestion1.png" width="40%" height="40%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="33%" height="33%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityQuestion1-1.png" width="40%" height="40%">
 </div>
 
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1.png" width="40%" height="40%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="33%" height="33%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/CommunityReview1-1.png" width="40%" height="40%">
 </div>
 
 ### 4. 마이페이지 - 찜, 팔로우
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageLike.png" width="40%" height="40%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageFollowing.png" width="30%" height="30%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MypageFollowing.png" width="40%" height="40%">
 </div>
 
 
