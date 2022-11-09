@@ -77,7 +77,7 @@ macOS 12.3.1
 ### 1. 멘토링 프로그램 - 단과대학, 학과별, 프로그램 소개, 수강신청, 신청완료
 <div style="float:left;margin:0 10px 10px 0" markdown="1">
 <img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringDepartment.png" width="40%" height="40%">
-<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringProgram.png" width="35%" height="35%">
+<img src = "https://github.com/Karrier-Team/Karrier-Front/blob/main/src/images/MentoringProgram.png" width="40%" height="40%">
 </div>
 
 
